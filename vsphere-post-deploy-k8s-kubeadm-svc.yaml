@@ -1,0 +1,137 @@
+---
+id: 30158
+guid: "14ffb8d7-5a0a-4407-892b-399f8c842d53"
+name: "vsphere-post-deploy-k8s-kubeadm-svc"
+type: "SERVICE_COMPLETION"
+fulfillment_rule: "NONE"
+add_owner_as_admin: false
+auto_deploy: false
+users: []
+organizations: []
+target_type: null
+info_messages: []
+prompt_message: null
+steps:
+- name: "Deploy k8s"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{request.service.components[1].target.ipAddress}"
+    credentials: "kubeadm-template"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "KVER=`echo #{request.service.components['kubernetes_version'].settings.customAttribute['kubernetes_version']}\
+      \ | cut -f1 -d'-'`; kubeadm init --apiserver-advertise-address=#{request.service.components[1].target.ipAddress}\
+      \ --pod-network-cidr=192.168.0.0/16 --kubernetes-version=v$KVER &>/root/kubeadm.log"
+    capture_output: true
+- name: "Get deploy status"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{request.service.components[1].target.ipAddress}"
+    credentials: "kubeadm-template"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "wget http://git.embotics.com/vCommander/scripts/raw/master/get_namespace_status.sh;\
+      \ chmod +x get_namespace_status.sh; ./get_namespace_status.sh kube-system"
+    capture_output: true
+- name: "Set up kubeconfig"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{request.service.components[1].target.ipAddress}"
+    credentials: "kubeadm-template"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "mkdir -p $HOME/.kube; cp -i /etc/kubernetes/admin.conf $HOME/.kube/config;\
+      \ chown $(id -u):$(id -g) $HOME/.kube/config"
+    capture_output: true
+- name: "Deploy calico"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{request.service.components[1].target.ipAddress}"
+    credentials: "kubeadm-template"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "kubectl apply -f https://docs.projectcalico.org/v2.6/getting-started/kubernetes/installation/hosted/kubeadm/1.6/calico.yaml"
+    capture_output: true
+- name: "get kube-system status"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{request.service.components[1].target.ipAddress}"
+    credentials: "kubeadm-template"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "./get_namespace_status.sh kube-system"
+    capture_output: true
+- name: "Get kubeadm join info"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{request.service.components[1].target.ipAddress}"
+    credentials: "kubeadm-template"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "grep 'kubeadm join' /root/kubeadm.log"
+    capture_output: true
+- name: "Join first worker"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{request.service.components[2].target.ipAddress}"
+    credentials: "kubeadm-template"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "echo \"#{steps[6].output}\" | sed 's/^ *//g' | sed 's/ *$//' |\
+      \ /bin/bash"
+    capture_output: true
+- name: "Join second worker"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{request.service.components[3].target.ipAddress}"
+    credentials: "kubeadm-template"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "echo \"#{steps[6].output}\" | sed 's/^ *//g' | sed 's/ *$//' |\
+      \ /bin/bash"
+    capture_output: true
+- name: "get kube system status"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{request.service.components[1].target.ipAddress}"
+    credentials: "kubeadm-template"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "./get_namespace_status.sh kube-system"
+    capture_output: true
+- name: "get kubeconfig"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{request.service.components[1].target.ipAddress}"
+    credentials: "kubeadm-template"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "cat /root/.kube/config"
+    capture_output: true
+- name: "K8S_ADD_TO_INV"
+  type: "K8S_ADD_TO_INV"
+  condition: null
+  data:
+    server: "#{request.service.components['kubernetes_name'].settings.customAttribute['kubernetes_name']}"
+    configuration: "#{steps[10].output}"
+- name: "Send Email"
+  type: "EMAIL"
+  condition: null
+  data:
+    address_list: "#{request.requester.email}"
+    email_body: "Your Kubernetes cluster has been provisioned with 2 worker nodes.\
+      \  The master is available at:\n\n#{request.service.components[1].target.ipAddress}\n\
+      root / Secret1\n\nYour admin.conf kubeconfig is:\n\n/root/.kube/config\n\nTo\
+      \ join another node to your cluster, run this command on the node:\n\n#{steps[6].output}"
+    email_subject: "Kubernetes Cluster"
+    include_details: true

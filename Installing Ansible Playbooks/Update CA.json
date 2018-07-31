@@ -1,0 +1,56 @@
+{
+  "id" : 2649622,
+  "guid" : "b5d460fe-a09f-4da6-83a7-bb7f46cdcf26",
+  "name" : "Update CA",
+  "type" : "COMMAND",
+  "change_description" : null,
+  "fulfillment_rule" : null,
+  "add_owner_as_admin" : false,
+  "auto_deploy" : false,
+  "users" : [ ],
+  "organizations" : [ ],
+  "target_type" : "NO_INVENTORY_TARGET",
+  "info_messages" : [ ],
+  "prompt_message" : null,
+  "system_version" : "trunk (1006050068)",
+  "steps" : [ {
+    "name" : "New Values",
+    "type" : "TEXT_INPUT_OUTPUT",
+    "condition" : null,
+    "data" : {
+      "OutputTemplate" : "<allowedValues>foo1</allowedValues>\n<allowedValues>bar2</allowedValues>    <allowedValues>baz3</allowedValues>"
+    }
+  }, {
+    "name" : "Get Attribute ID",
+    "type" : "REST",
+    "condition" : null,
+    "data" : {
+      "success_codes" : "200",
+      "credentials" : "vCommander superuser",
+      "result_filter" : "//CustomAttribute/id/text()",
+      "failure_action" : "FAIL_STEP",
+      "rest_action" : "GET",
+      "format" : "XML",
+      "header" : "",
+      "body" : "",
+      "url" : "https://localhost:8443/webservices/services/rest/v2/attributes/name/Ansible+Playbooks",
+      "capture_output" : true
+    }
+  }, {
+    "name" : "Update Attribute",
+    "type" : "REST",
+    "condition" : null,
+    "data" : {
+      "success_codes" : "200",
+      "credentials" : "vCommander superuser",
+      "result_filter" : "",
+      "failure_action" : "FAIL_STEP",
+      "rest_action" : "PUT",
+      "format" : "XML",
+      "header" : "",
+      "body" : "<CustomAttribute>\n    <displayName>Ansible Playbooks</displayName>\n    <id>#{steps[2].output}</id>\n    <type>ATTRIBUTE</type>\n    <description>List of software installed</description>\n    <name>Ansible Playbooks</name>\n    <portalEditable>false</portalEditable>\n    <targetManagedObjectTypes>FORMVALUE</targetManagedObjectTypes>\n    <validationMessage></validationMessage>\n    <value></value>\n    <allowValuesEmpty>false</allowValuesEmpty>\n#{steps[1].output}\n</CustomAttribute>",
+      "url" : "https://localhost:8443/webservices/services/rest/v2/attributes/#{steps[2].output}",
+      "capture_output" : true
+    }
+  } ]
+}

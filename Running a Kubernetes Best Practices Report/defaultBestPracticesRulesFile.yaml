@@ -1,0 +1,72 @@
+name: Standard Configuration #Optional name for the configuration
+version: v1.0.0 #Optional version for this configuration
+vcommander_version:
+  min: v7.0 #Minimum vCommander version that supports the options in this configuration
+infrastructure_context: #Infrastructure related options for this configuration - eg. nodes limits and configuration
+  containers_per_cluster:
+    max: 300000 #maximum number of containers allowed in the cluster
+  pods_per_cluster:
+    max: 150000 #maximum number of pods allowed in the cluster
+  pods_per_node:
+    max: 100 #maximum number of pods allowed in the node
+  nodes_per_cluster:
+    max: 5000 #maximum nodes allowed in the cluster
+  nodes: #Configuration that should apply to all versions
+    container_runtime_version: #Container orchestrator version - requires at least one min or max value
+      max: docker://1.13.1 #Optional maximum docker runtime version
+      min: docker://1.12.0 #Optional minimum docker runtime version
+    kube_proxy_version: #Proxy version - requires at least one min or max value
+      max: v1.8.7 #Optional maximum version of the proxy on the node
+      min: v1.7.3 #Optional minimum version of the proxy on the node
+    kubelet_version: #Kubelet version -  - requires at least one min or max value
+      max: v1.10.3 #Optional maximum version of the kubelet on the node
+      min: v1.7.3 #Optional minimum version of the kubelet on the node
+    node_allocatable: #Allocatable is the maximum number of resources available to schedule pods with on the node
+      cpu: #Maximum cpu resources available on the node - requires at least one min or max value
+        min: 1 #Optional minimum of 2 cpu per node
+        max: 4 #Optional maximum of 4 cpu per node
+      memory: #Maximum memory resources available on the node - requires at least one min or max value
+        min: 2000000Ki #Optional maximum of 2GB per node
+        max: 16000000Ki #Optional maximum of 16GB per node
+      pods: #Maximum memory resources available on the node - requires at least one min or max value
+        min: 50 #Optional minimum of 50 scheduable pods available per node
+        max: 200 #Optional maximum of 200 pods available per node
+    node_capacity: #Capacity is the maximum number of resources available on the node
+      cpu: #Maximum cpu resources available on the node - requires at least one min or max value
+        min: 1 #Optional minimum of 2 cpu per node
+        max: 4 #Optional maximum of 4 cpu per node
+      memory: #Maximum memory resources available on the node - requires at least one min or max value
+        min: 2000000Ki #Optional maximum of 2GB per node
+        max: 16000000Ki #Optional maximum of 16GB per node
+      pods: #Maximum memory resources available on the node - requires at least one min or max value
+        min: 110 #Optional minimum of 110 scheduable pods available per node
+        max: 200 #Optional maximum of 200 pods available per node
+network_context: #Network related options for this configuration - eg. hostPort should not be used
+  allow_host_network: false #Using host network allows for direct access to the network interface on the node which has security concerns (amongst other concerns)
+  allow_host_port: false #Using host port locks the ports down on the node for a specific container/pod which is not suggested (amongst other concerns)
+  require_network_policy: true #Network policies should be used to control traffic between pods
+volume_context: #Volume related options for this configuration - eg. Allow volumes that have been lost to exist
+  pvc: #Persistent volume claim configuration parameters
+    allow_lost: false #If false, fails if any persistent volume claim has a status of lost
+    pending_age: 30 #Maximum age in days for a pending persistent volume claim
+  pv: #Persistent volume configuration parameters
+    allow_persistent_host_volumes: false #Persistent host volumes are not supported in any way and WILL NOT WORK in a multi-node cluster
+  volumes: #Volume configuration parameters
+    allow_host_volumes: false #Host volumes are not extensible in that they require knowledge of the host's volume situation and does not allow easy migration to another node or cluster
+security_context: #Security related options for this configuration - eg. Identify pods without a securityContext
+  require_pod_security_context: true #Pods should have an associated securityContext to ensure pod access permissions
+deployment_context: #Deployment related options for this configurations - eq. Pod specific configurations such as no naked pods
+  allow_default_namespace: false #Allows resources to exist in the default namespace - this behaviour is not recommended as there are security concerns and also issues reserving quota on the default namespace
+  allow_unavailable_replicas: false #Allows replicas to be unavailable for resources like Deployments, Replica Sets, etc.
+  allow_unbound_resources: false #Allows resources that do not have associated ResourceQuotas
+  pods:
+    allow_latest_image_tag: false #Allows containers to use images with the latest tag - this makes it hard to track which version of the image is running and hard to roll back.
+    allow_naked_pods: false #Allows pods to exist without owners (eg. owned by a deployment, job, etc.)
+    pull_policy: IfNotPresent #Requires all container pull policies to use specified value to avoid unusual pull behaviour
+    status:
+       container_creating_age: 1 #Maximum age in days for a pod stuck in ContainerCreating status
+       pending_age: 1 #Maximum age in days for a pending pod
+       crash_back_loop_detection: true #Identifies pods that are in the CrashLoopBackoff
+    require_complex_labels: true #Requires pods to have at least 3 labels (eg. app: myapp, tier: frontend, phase: test, deployment: v3)
+  require_latest_api_version: true #Ensures that all resources use the latest, stable v1 API version
+  require_namespace_resource_quota: true #Required that all namespaces have an associated ResourceQuota to ensure all resources inside have a default quota

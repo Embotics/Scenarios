@@ -1,0 +1,168 @@
+---
+id: 28
+guid: "3b4f1904-68ba-4788-be75-3778dcfcc8a9"
+name: "aws-post-deploy-k8s-kubeadm-component"
+type: "COMPONENT_COMPLETION"
+fulfillment_rule: "NONE"
+add_owner_as_admin: false
+auto_deploy: false
+users: []
+organizations: []
+target_type: null
+info_messages: []
+prompt_message: null
+steps:
+- name: "Wait For Event"
+  type: "WAIT"
+  condition: null
+  data:
+    failure_action: "FAIL_STEP"
+    wait_for_type: "IP"
+    timeout: 360
+- name: "Wait"
+  type: "WAIT"
+  condition: null
+  data:
+    failure_action: "PROCEED_TO_NEXT_STEP"
+    wait_for_type: "ELAPSED_TIME"
+    timeout: 60
+- name: "Set Hostname"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{target.dnsName}"
+    credentials: "aws"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "sudo hostnamectl set-hostname #{target.deployedName}"
+    capture_output: true
+- name: "swapoff"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{target.dnsName}"
+    credentials: "aws"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "sudo swapoff -a"
+    capture_output: true
+- name: "Disable Selinux"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{target.dnsName}"
+    credentials: "aws"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "sudo sed -i -e 's/enforcing/disabled/g' /etc/selinux/config; sudo\
+      \ setenforce 0"
+    capture_output: true
+- name: "Add Docker Common Repo"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{target.dnsName}"
+    credentials: "aws"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "sudo /bin/bash -c \"cat > /etc/yum.repos.d/virt7-docker-common-release.repo\
+      \ << EOM\n[virt7-docker-common-release]\nname=virt7-docker-common-release\n\
+      baseurl=http://cbs.centos.org/repos/virt7-docker-common-release/x86_64/os/\n\
+      gpgcheck=0\nEOM\""
+    capture_output: true
+- name: "Add Kubernetes Repo"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{target.dnsName}"
+    credentials: "aws"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "sudo /bin/bash -c \"cat > /etc/yum.repos.d/kubernetes.repo << EOM\n\
+      [kubernetes]\nname=Kubernetes\nbaseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64\n\
+      enabled=1\ngpgcheck=1\nrepo_gpgcheck=1\ngpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg\
+      \ https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg\nEOM\""
+    capture_output: true
+- name: "yum update"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{target.dnsName}"
+    credentials: "aws"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "sudo yum -y update"
+    capture_output: true
+- name: "Install Docker"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{target.dnsName}"
+    credentials: "aws"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "sudo yum -y install docker; sudo systemctl enable docker; sudo\
+      \ systemctl start docker"
+    capture_output: true
+- name: "Install Kubelet"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{target.dnsName}"
+    credentials: "aws"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "sudo yum install -y kubelet-#{request.service.components['kubernetes_version'].settings.customAttribute['kubernetes_version']};\
+      \ sudo systemctl enable kubelet; sudo systemctl start kubelet"
+    capture_output: true
+- name: "Install kubectl"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{target.dnsName}"
+    credentials: "aws"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "sudo yum install -y kubectl-#{request.service.components['kubernetes_version'].settings.customAttribute['kubernetes_version']}"
+    capture_output: true
+- name: "Install kubeadm"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{target.dnsName}"
+    credentials: "aws"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "sudo yum install -y kubeadm-#{request.service.components['kubernetes_version'].settings.customAttribute['kubernetes_version']}"
+    capture_output: true
+- name: "Enable iptables bridge"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{target.dnsName}"
+    credentials: "aws"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "sudo /bin/bash -c \"cat > /etc/sysctl.d/k8s.conf << EOM\nnet.bridge.bridge-nf-call-ip6tables\
+      \ = 1\nnet.bridge.bridge-nf-call-iptables = 1\nEOM\""
+    capture_output: true
+- name: "Reload sysctl"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{target.dnsName}"
+    credentials: "aws"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "sudo sysctl --system"
+    capture_output: true
+- name: "daemon reload"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{target.dnsName}"
+    credentials: "aws"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "sudo systemctl daemon-reload; sudo systemctl restart kubelet"
+    capture_output: true

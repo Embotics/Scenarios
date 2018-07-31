@@ -1,0 +1,39 @@
+---
+name: "K8s Best Practices and E-mail"
+type: "COMMAND"
+change_description: null
+fulfillment_rule: null
+add_owner_as_admin: false
+auto_deploy: false
+users: []
+organizations: []
+target_type: "MANAGEMENTSERVER"
+info_messages: []
+prompt_message: null
+system_version: "trunk (1006050070)"
+steps:
+- name: "Kubernetes Best Practices"
+  type: "K8S_BESTPRACTICES"
+  condition: null
+  data:
+    rules_file: ""
+- name: "XSLT Transform"
+  type: "TEXT_XSLT"
+  condition: null
+  data:
+    stylesheet: ""
+    destination: "C:\\temp\\output.htm"
+    source: "#{steps[1].output}"
+    parameters: "TITLE=Embotics Kubernetes Best Practices Report\\nTESTCASE=Checks\
+      \ for\\nPACKAGE=Resource\\nSHOWDETAILS=false"
+- name: "Email Attachment"
+  type: "EMAIL_ATTACHMENT"
+  condition: null
+  data:
+    cc: ""
+    attachment: "#{steps[2].output}"
+    attachment_type: "text/html"
+    subject: "K8s Best Practices Report"
+    to: "test@embotics.com"
+    body: "These are the results of an Embotics Kubernetes Best Practices Report for\
+      \ \\n #{target.managedSystem.name}"
