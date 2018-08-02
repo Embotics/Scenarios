@@ -1,5 +1,5 @@
 ---
-id: 62
+id: 44
 guid: "6994a3a1-e5bd-43a9-bbe1-a9097f8c8c6a"
 name: "vsphere-post-deploy-k8s-kubeadm-component"
 type: "COMPONENT_COMPLETION"
@@ -12,8 +12,9 @@ organizations: []
 target_type: null
 info_messages: []
 prompt_message: null
+system_version: "trunk (1006050088)"
 steps:
-- name: "Wait For Event"
+- name: "Wait for IP address"
   type: "WAIT"
   condition: null
   data:
@@ -97,6 +98,23 @@ steps:
     timeout: 300
     command_line: "sed -i '/swap/d' /etc/fstab"
     capture_output: true
+- name: "reboot"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{target.ipv4Addresses}"
+    credentials: "kubeadm-template"
+    failure_action: "PROCEED_TO_NEXT_STEP"
+    timeout: 300
+    command_line: "reboot"
+    capture_output: true
+- name: "wait for reboot"
+  type: "WAIT"
+  condition: null
+  data:
+    failure_action: "FAIL_STEP"
+    wait_for_type: "IP"
+    timeout: 300
 - name: "Install Docker"
   type: "SSH"
   condition: null

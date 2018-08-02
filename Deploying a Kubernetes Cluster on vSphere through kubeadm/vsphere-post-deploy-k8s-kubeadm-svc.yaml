@@ -1,8 +1,9 @@
 ---
-id: 30158
+id: 45
 guid: "14ffb8d7-5a0a-4407-892b-399f8c842d53"
 name: "vsphere-post-deploy-k8s-kubeadm-svc"
 type: "SERVICE_COMPLETION"
+change_description: null
 fulfillment_rule: "NONE"
 add_owner_as_admin: false
 auto_deploy: false
@@ -11,6 +12,7 @@ organizations: []
 target_type: null
 info_messages: []
 prompt_message: null
+system_version: "trunk (1006050088)"
 steps:
 - name: "Deploy k8s"
   type: "SSH"
