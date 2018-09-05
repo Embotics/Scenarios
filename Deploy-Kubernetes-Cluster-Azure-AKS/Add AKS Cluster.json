@@ -1,0 +1,20 @@
+{
+  "name" : "Add AKS Cluster",
+  "type" : "CLOUDTEMPLATE_COMPLETION",
+  "steps" : [ {
+    "name" : "Get kubeconfig from Azure",
+    "type" : "GET_AKS_KUBE_CONFIG",
+    "condition" : null,
+    "data" : {
+      "cluster_name" : "#{target.settings.inputField['Kubernetes Cluster Name']}"
+    }
+  }, {
+    "name" : "Add Cluster to Inventory",
+    "type" : "K8S_ADD_TO_INV",
+    "condition" : null,
+    "data" : {
+      "server" : "#{target.settings.inputField['Kubernetes Cluster Name']}",
+      "configuration" : "#{steps[1].output}"
+    }
+  } ]
+}

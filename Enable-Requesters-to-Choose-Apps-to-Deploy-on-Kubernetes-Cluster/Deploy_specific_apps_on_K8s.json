@@ -1,0 +1,42 @@
+{
+  "id" : 894342,
+  "guid" : "45f47cbb-300d-4248-bfa4-c040402ff451",
+  "name" : "Deploy specific apps on K8s",
+  "type" : "CHANGE_COMPLETION",
+  "fulfillment_rule" : null,
+  "add_owner_as_admin" : false,
+  "auto_deploy" : false,
+  "users" : [ ],
+  "organizations" : [ ],
+  "target_type" : null,
+  "info_messages" : [ ],
+  "prompt_message" : null,
+  "steps" : [ {
+    "name" : "Deploy nginx",
+    "type" : "K8S_DEPLOY",
+    "condition" : "\"#{target.settings.customAttribute['Application to Install']}\" -eq ngnix",
+    "data" : {
+      "KEY_CREATE_UPDATE" : "CREATE_OR_UPDATE",
+      "KEY_MANIFEST" : "apiVersion: extensions/v1beta1 # for versions before 1.9.0 use apps/v1beta2\nkind: Deployment\nmetadata:\n  name: nginx-deployment\nspec:\n  selector:\n    matchLabels:\n      app: nginx\n  replicas: 2 # tells deployment to run 2 pods matching the template\n  template: # create pods using pod definition in this template\n    metadata:\n      # unlike pod-nginx.yaml, the name is not included in the meta data as a unique name is\n      # generated from the deployment name\n      labels:\n        app: nginx\n    spec:\n      containers:\n      - name: nginx\n        image: nginx:1.7.9\n        ports:\n        - containerPort: 80",
+      "KEY_NAMESPACE" : "default"
+    }
+  }, {
+    "name" : "Deploy Mongo",
+    "type" : "K8S_DEPLOY",
+    "condition" : "\"#{target.settings.customAttribute['Application to Install']}\" -eq ngnix",
+    "data" : {
+      "KEY_CREATE_UPDATE" : "CREATE_OR_UPDATE",
+      "KEY_MANIFEST" : "apiVersion: v1\nkind: ReplicationController\nmetadata:\n  labels:\n    name: mongo\n  name: mongo-controller\nspec:\n  replicas: 1\n  template:\n    metadata:\n      labels:\n        name: mongo\n    spec:\n      containers:\n      - image: mongo\n        name: mongo\n        ports:\n        - name: mongo\n          containerPort: 27017\n          hostPort: 27017\n        volumeMounts:\n            - name: mongo-persistent-storage\n              mountPath: /data/db\n      volumes:\n        - name: mongo-persistent-storage\n          gcePersistentDisk:\n            pdName: mongo-disk\n            fsType: ext4",
+      "KEY_NAMESPACE" : "default"
+    }
+  }, {
+    "name" : "Deploy Redis",
+    "type" : "K8S_DEPLOY",
+    "condition" : "\"#{target.settings.customAttribute['Application to Install']}\" -eq redis",
+    "data" : {
+      "KEY_CREATE_UPDATE" : "CREATE_OR_UPDATE",
+      "KEY_MANIFEST" : "apiVersion: v1\nkind: ReplicationController\nmetadata:\n  name: redis\nspec:\n  replicas: 1\n  selector:\n    name: redis\n  template:\n    metadata:\n      labels:\n        name: redis\n    spec:\n      containers:\n      - name: redis\n        image: k8s.gcr.io/redis:v1\n        ports:\n        - containerPort: 6379\n        resources:\n          limits:\n            cpu: \"0.1\"\n        volumeMounts:\n        - mountPath: /redis-master-data\n          name: data\n      volumes:\n        - name: data\n          emptyDir: {}\n\n",
+      "KEY_NAMESPACE" : "default"
+    }
+  } ]
+}

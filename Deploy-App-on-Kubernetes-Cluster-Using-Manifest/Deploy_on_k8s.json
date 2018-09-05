@@ -1,0 +1,24 @@
+{
+  "id" : 165430,
+  "guid" : "ecd1216e-44dc-42de-be38-036a912242ad",
+  "name" : "Deploy on K8s",
+  "type" : "CHANGE_COMPLETION",
+  "fulfillment_rule" : null,
+  "add_owner_as_admin" : false,
+  "auto_deploy" : false,
+  "users" : [ ],
+  "organizations" : [ ],
+  "target_type" : null,
+  "info_messages" : [ ],
+  "prompt_message" : null,
+  "steps" : [ {
+    "name" : "Deploy App from Form",
+    "type" : "K8S_DEPLOY",
+    "condition" : null,
+    "data" : {
+      "KEY_CREATE_UPDATE" : "CREATE_OR_UPDATE",
+      "KEY_MANIFEST" : "#{target.settings.fileUpload['Manifest'].file[1].content}",
+      "KEY_NAMESPACE" : "#{target.settings.inputField['Namespace']}"
+    }
+  } ]
+}
