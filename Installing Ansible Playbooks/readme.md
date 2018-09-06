@@ -1,6 +1,6 @@
-# Installing Ansible Playbooks
+# Running Ansible Playbooks
 
-This scenario enables you to use Embotics vCommander to install an Ansible playbook on a target system using the ansible-playbook command.
+This scenario enables you to use Embotics vCommander to run an Ansible playbook on a target system using the ansible-playbook command.
 
 ## Changelog
 
@@ -19,34 +19,42 @@ _Amazon Linux_
 
 For Amazon Linux, Ansible can be installed using `pip`. You can use the following commands:
 
-`sudo easy_install pip`
-`sudo pip install ansible`
+```
+sudo easy_install pip
+sudo pip install ansible
+```
 
 _Ubuntu / Debian_
 
 For Ubuntu, you can install Ansible using the default package manager. Use this command:
 
-`sudo apt-get update && sudo apt-get install software-properties-common`
-`sudo apt-add-repository ppa:ansible/ansible`
-`sudo apt-get update && sudo apt-get install ansible -y`
+```
+sudo apt-get update && sudo apt-get install software-properties-common
+sudo apt-add-repository ppa:ansible/ansible -y
+sudo apt-get update && sudo apt-get install ansible -y
+```
 
-_RedHat 7 /CentOS 7_
+_RedHat 7 / CentOS 7_
 
 For RedHat 7, you can install Ansible by enabling the `epel` repo. Use the following commands:
 
-`sudo rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm`
-`sudo yum -y install ansible`
+```
+sudo rpm -Uvh https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+sudo yum -y install ansible
+```
 
 
-## Scenario Setup
 
-This section describes how to set up a blueprint in the service catalog that allows a user to select Ansible playbooks from a list and have them installed as part of service provisioning.
+
+## Scenario setup
+
+This section describes how to set up a blueprint in the service catalog that allows a user to select Ansible playbooks from a list and have them run as part of service provisioning.
 
 ### Step 1 - Create a custom attribute to hold the list of available Playbooks
 **Note: To update this list automatically see "Updating the list of playbooks automatically" below**.
 
 * Create a custom attribute with **Type** as **list** and **Applies to** as **form**.
-* Add values for each playbook that can be installed. 
+* Add values for each playbook that can be run. 
 
 ### Step 2 - Create the workflow
 * Create a completion workflow for VM components.
@@ -73,7 +81,12 @@ This section describes how to set up a blueprint in the service catalog that all
 
 * Create a command workflow with no inventory target with steps that accomplish the following:
   1. Obtain the list of playbooks by querying the remote repository.
+
   1. Format the list of playbooks as:
-  `<allowedValues>playbook1</allowedValues><allowedValues>playbook2</allowedValues><allowedValues>playbook3</allowedValues>`
+
+    ```
+    <allowedValues>playbook1</allowedValues><allowedValues>playbook2</allowedValues><allowedValues>playbook3</allowedValues>
+    ```
   1. Update the custom attribute using the vCommander REST API.
+
   1. Schedule the workflow at the desired time.
