@@ -29,7 +29,7 @@ _Ubuntu / Debian_
 For Ubuntu, you can install Ansible using the default package manager. Use this command:
 
 ```
-sudo apt-get update && sudo apt-get install software-properties-common
+sudo apt-get update && sudo apt-get install software-properties-common -y
 sudo apt-add-repository ppa:ansible/ansible -y
 sudo apt-get update && sudo apt-get install ansible -y
 ```
