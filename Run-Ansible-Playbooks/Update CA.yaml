@@ -18,7 +18,7 @@ steps:
   type: "TEXT_INPUT_OUTPUT"
   condition: null
   data:
-    OutputTemplate: "<allowedValues>foo1</allowedValues>\n<allowedValues>bar2</allowedValues>\
+    output_template: "<allowedValues>foo1</allowedValues>\n<allowedValues>bar2</allowedValues>\
       \    <allowedValues>baz3</allowedValues>"
 - name: "Get Attribute ID"
   type: "REST"

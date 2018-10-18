@@ -1,0 +1,27 @@
+---
+name: "Uploaded Terraform completion workflow"
+type: "CUSTOM_COMPLETION"
+change_description: null
+fulfillment_rule: null
+add_owner_as_admin: false
+auto_deploy: false
+users: []
+organizations: []
+target_type: null
+info_messages: []
+prompt_message: null
+system_version: "master (1007030005)"
+steps:
+- name: "Apply Plan"
+  type: "TERRAFORM_APPLY"
+  condition: null
+  data:
+    terraform_binary: "/usr/bin/terraform"
+    inject_metadata: true
+    terraform_host: "localhost"
+    variables: "access_key=ABC123\nsecret_key=DEF456\nname=\"#{target.settings.inputField['Name']}\""
+    configuration: "#{target.settings.inputField['Configuration']}"
+    sys_credentials: "terraform host"
+    directory: "/tmp/embotics-terraform"
+    timeout: "300"
+    plan_id: "#{request.id}"

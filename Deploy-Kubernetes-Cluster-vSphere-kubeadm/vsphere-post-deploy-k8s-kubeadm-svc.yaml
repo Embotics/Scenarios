@@ -34,7 +34,7 @@ steps:
     credentials: "kubeadm-template"
     failure_action: "FAIL_STEP"
     timeout: 300
-    command_line: "wget https://raw.githubusercontent.com/Embotics/Scripts/master/get_namespace_status.sh;\
+    command_line: "wget http://git.embotics.com/vCommander/scripts/raw/master/get_namespace_status.sh;\
       \ chmod +x get_namespace_status.sh; ./get_namespace_status.sh kube-system"
     capture_output: true
 - name: "Set up kubeconfig"

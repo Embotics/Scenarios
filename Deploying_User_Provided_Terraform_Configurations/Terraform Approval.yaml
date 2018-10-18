@@ -1,0 +1,36 @@
+---
+name: "Terraform Approval"
+type: "APPROVAL"
+change_description: null
+fulfillment_rule: "NONE"
+add_owner_as_admin: false
+auto_deploy: true
+users:
+- "superuser"
+organizations:
+- "Terraform Org"
+target_type: null
+info_messages: []
+prompt_message: null
+steps:
+- name: "Generate Terraform Plan"
+  type: "TERRAFORM_PLAN"
+  condition: "\"#{request.services[1].publishedName}\" -ne \"Terraform Decomission\""
+  data:
+    terraform_binary: "/usr/bin/terraform"
+    inject_metadata: true
+    terraform_host: "localhost"
+    variables: "access_key=ABC123\nsecret_key=DEF456\n\
+      name=\"#{request.services[1].components[1].settings.inputField['Name']}\""
+    configuration: "#{request.services[1].components[1].settings.uploadedFile['Configuration'].file[1].content}"
+    sys_credentials: "terraform host"
+    directory: "/tmp/embotics-terraform"
+    timeout: "300"
+    plan_id: "#{request.id}"
+- name: "Send Approval Email"
+  type: "APPROVER"
+  condition: "\"#{request.services[1].publishedName}\" -ne \"Terraform Decomission\""
+  data:
+    address_list: "admin@company.com"
+    email_body: "Please review the following Terraform Plan\n\n#{steps[1].output}"
+    email_subject: "Service request #{request.id}: Approval needed."

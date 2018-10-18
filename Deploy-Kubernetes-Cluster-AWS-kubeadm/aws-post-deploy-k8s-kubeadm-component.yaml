@@ -1,8 +1,9 @@
 ---
-id: 28
+id: 41
 guid: "3b4f1904-68ba-4788-be75-3778dcfcc8a9"
 name: "aws-post-deploy-k8s-kubeadm-component"
 type: "COMPONENT_COMPLETION"
+change_description: null
 fulfillment_rule: "NONE"
 add_owner_as_admin: false
 auto_deploy: false
@@ -11,6 +12,7 @@ organizations: []
 target_type: null
 info_messages: []
 prompt_message: null
+system_version: "trunk (1006050088)"
 steps:
 - name: "Wait For Event"
   type: "WAIT"
@@ -93,6 +95,23 @@ steps:
     timeout: 300
     command_line: "sudo yum -y update"
     capture_output: true
+- name: "Reboot"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{target.dnsName}"
+    credentials: "aws"
+    failure_action: "PROCEED_TO_NEXT_STEP"
+    timeout: 300
+    command_line: "reboot"
+    capture_output: true
+- name: "Wait for reboot"
+  type: "WAIT"
+  condition: null
+  data:
+    failure_action: "FAIL_STEP"
+    wait_for_type: "IP"
+    timeout: 300
 - name: "Install Docker"
   type: "SSH"
   condition: null

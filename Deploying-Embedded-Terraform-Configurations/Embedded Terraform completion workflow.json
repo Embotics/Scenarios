@@ -1,0 +1,36 @@
+{
+  "name" : "Embedded Terraform completion workflow",
+  "type" : "CUSTOM_COMPLETION",
+  "change_description" : null,
+  "fulfillment_rule" : null,
+  "add_owner_as_admin" : false,
+  "auto_deploy" : false,
+  "users" : [ ],
+  "organizations" : [ ],
+  "target_type" : null,
+  "info_messages" : [ ],
+  "prompt_message" : null,
+  "steps" : [ {
+    "name" : "EC2 Instance Configuration",
+    "type" : "TEXT_INPUT_OUTPUT",
+    "condition" : null,
+    "data" : {
+      "output_template" : "provider \"aws\" {\n  region     = \"us-west-2\"\n  access_key = \"ABC123\"\n  secret_key = \"DEF456\"\n}\n\nresource \"aws_instance\" \"example\" {\n  ami           = \"ami-7172b611\"\n  instance_type = \"t2.micro\"\n  subnet_id\t= \"subnet-5d6fbd04\"\n  tags {\n    Name = \"#{target.settings.inputField['Name']}\"\n  }\n}\n"
+    }
+  }, {
+    "name" : "Apply Plan",
+    "type" : "TERRAFORM_APPLY",
+    "condition" : null,
+    "data" : {
+      "terraform_binary" : "/usr/bin/terraform",
+      "inject_metadata" : true,
+      "terraform_host" : "localhost",
+      "variables" : "access_key=ABC123\nsecret_key=DEF456\nname=\"#{target.settings.inputField['Name']}\"",
+      "configuration" : "#{steps[1].output}",
+      "sys_credentials" : "terraform host",
+      "directory" : "/tmp/embotics-terraform",
+      "timeout" : "300",
+      "plan_id" : "#{request.id}"
+    }
+  } ]
+}

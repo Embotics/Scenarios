@@ -1,0 +1,27 @@
+{
+  "name" : "Terraform Destroy",
+  "type" : "CUSTOM_COMPLETION",
+  "change_description" : null,
+  "fulfillment_rule" : null,
+  "add_owner_as_admin" : false,
+  "auto_deploy" : false,
+  "users" : [ ],
+  "organizations" : [ ],
+  "target_type" : null,
+  "info_messages" : [ ],
+  "prompt_message" : null,
+  "steps" : [ {
+    "name" : "Decomission",
+    "type" : "TERRAFORM_DESTROY",
+    "condition" : null,
+    "data" : {
+      "terraform_binary" : "/usr/bin/terraform",
+      "terraform_host" : "localhost",
+      "variables" : "access_key=ABC123\nsecret_key=DEF456",
+      "sys_credentials" : "terraform host",
+      "directory" : "/tmp/embotics-terraform",
+      "timeout" : "300",
+      "plan_id" : "#{target.settings.inputField['Terraform Plan ID']}"
+    }
+  } ]
+}

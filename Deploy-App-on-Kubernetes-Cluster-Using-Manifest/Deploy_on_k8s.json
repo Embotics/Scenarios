@@ -16,9 +16,9 @@
     "type" : "K8S_DEPLOY",
     "condition" : null,
     "data" : {
-      "KEY_CREATE_UPDATE" : "CREATE_OR_UPDATE",
-      "KEY_MANIFEST" : "#{target.settings.fileUpload['Manifest'].file[1].content}",
-      "KEY_NAMESPACE" : "#{target.settings.inputField['Namespace']}"
+      "create_update" : "CREATE_OR_UPDATE",
+      "manifest" : "#{target.settings.fileUpload['Manifest'].file[1].content}",
+      "namespace" : "#{target.settings.inputField['Namespace']}"
     }
   } ]
 }

@@ -19,10 +19,10 @@ steps:
   condition: "\"#{target.settings.customAttribute['Ansible Playbooks']}\" -contains\
     \ \"apache\""
   data:
-    KEY_TIMEOUT: "300"
-    KEY_PLAYBOOK_URL: ""
-    KEY_EXTRA_VARS: ""
-    KEY_PLAYBOOK_YAML: "-\n  become: true\n  hosts: all\n  tasks:\n    -\n      action:\
+    timeout: "300"
+    playbook_url: ""
+    extra_vars: ""
+    playbook_yaml: "-\n  become: true\n  hosts: all\n  tasks:\n    -\n      action:\
       \ ec2_facts\n      name: \"gather ec2 facts\"\n    -\n      name: \"install\
       \ apache on redhat or centos instances\"\n      when: \"ansible_os_family ==\
       \ \\\"RedHat\\\"\"\n      yum: \"name=httpd state=present\"\n    -\n      name:\
@@ -39,8 +39,8 @@ steps:
   condition: "\"#{target.settings.customAttribute['Ansible Playbooks']}\" -contains\
     \ \"nginx\""
   data:
-    KEY_TIMEOUT: "300"
-    KEY_PLAYBOOK_URL: "http://server.example.com/playbooks/nginx"
-    KEY_EXTRA_VARS: ""
-    KEY_PLAYBOOK_YAML: ""
+    timeout: "300"
+    playbook_url: "http://server.example.com/playbooks/nginx"
+    extra_vars: ""
+    playbook_yaml: ""
     os_credentials: "admin"

@@ -1,8 +1,9 @@
 ---
-id: 29
+id: 42
 guid: "043cf6f0-9fad-4067-9e32-0a1e90961c8b"
 name: "aws-post-deploy-k8s-kubeadm-svc"
 type: "SERVICE_COMPLETION"
+change_description: null
 fulfillment_rule: "NONE"
 add_owner_as_admin: false
 auto_deploy: false
@@ -11,6 +12,7 @@ organizations: []
 target_type: null
 info_messages: []
 prompt_message: null
+system_version: "trunk (1006050088)"
 steps:
 - name: "Deploy k8s"
   type: "SSH"
@@ -32,7 +34,7 @@ steps:
     credentials: "aws"
     failure_action: "FAIL_STEP"
     timeout: 300
-    command_line: "\nwget https://raw.githubusercontent.com/Embotics/Scripts/master/get_namespace_status.sh;\
+    command_line: "curl -O http://git.embotics.com/vCommander/scripts/raw/master/get_namespace_status.sh;\
       \ sudo chmod +x get_namespace_status.sh; ./get_namespace_status.sh kube-system"
     capture_output: true
 - name: "Set up kubeconfig"
@@ -108,6 +110,22 @@ steps:
     timeout: 300
     command_line: "./get_namespace_status.sh kube-system"
     capture_output: true
+- name: "Execute SSH Command"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{request.service.components[1].target.dnsName}"
+    credentials: "aws"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "cat /home/centos/.kube/config"
+    capture_output: true
+- name: "Kubernetes Add to Inventory"
+  type: "K8S_ADD_TO_INV"
+  condition: null
+  data:
+    server: "#{request.service.components['kubernetes_name'].settings.customAttribute['kubernetes_name']}"
+    configuration: "#{steps[10].output}"
 - name: "Send Email"
   type: "EMAIL"
   condition: null

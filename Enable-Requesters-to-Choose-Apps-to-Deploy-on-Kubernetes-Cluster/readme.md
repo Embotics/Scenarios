@@ -1,34 +1,37 @@
-# Enabling requesters to choose  applications to deploy on a Kubernetes cluster with Embotics® vCommander®
+# Enabling requesters to choose applications to deploy on a Kubernetes cluster with Embotics® vCommander®
 
 Kubernetes is an open-source system for deploying and managing containerized applications within a hybrid or cloud environment. Using the Embotics vCommander cloud management platform, you can deploy applications into Kubernetes clusters.
 
-This guide shows you how to use vCommander 7.0+ to deploy a new application into an existing Kubernetes cluster. The requester chooses from a preconfigured list of applications (our example includes nginx, mongo and redis). The required manifest files are embedded in a completion workflow step. An optional approval workflow can be added to check the files before deploying, but an approval process is arguably less necessary, since requesters must choose from a fixed list of applications.
+This guide shows you how to use vCommander to deploy a new application into an existing Kubernetes cluster. The requester chooses from a preconfigured list of applications (our example includes nginx, mongo and redis). The required manifest files are embedded in a completion workflow step. An optional approval workflow can be added to check the files before deploying, but an approval process is arguably less necessary, since requesters must choose from a fixed list of applications.
 
 This guide is intended for systems administrators, engineers and IT professionals. Previous experience with Kubernetes is required.
 
 ## Prerequisites
+- vCommander release 7.0.2 or higher
 
 Before you begin, you must add a Kubernetes cluster as a managed system. You can do this in one of two ways:
 
-- Add an existing Kubernetes cluster as a vCommander managed system. See Adding a Kubernetes Managed System in the vCommander 7.0 User Guide.
-- Create a new Kubernetes cluster through vCommander and have it automatically added as a vCommander managed system. To learn how, see: [[LINKS TO KB ARTICLES FOR DEPLOYING K8S CLUSTER]]
+- Add an existing Kubernetes cluster as a vCommander managed system. See [Adding a Kubernetes managed system](http://docs.embotics.com/vCommander/adding_a_managed_system.htm#add_k8s) a Kubernetes Managed System in the vCommander User Guide.
+- Create a new Kubernetes cluster through vCommander and have it automatically added as a vCommander managed system. To learn how, see [Workflow Extension Scenarios](https://support.embotics.com/support/solutions/folders/8000085541).
 
 ## Install the plug-in step package
 
-Go to the Embotics GitHub repository located at https://github.com/Embotics/Plug-in-Workflow-Steps and download the Kubernetes workflow plug-in step package, **wfplugins-k8s.jar**.
+This scenario uses the Kubernetes plug-in workflow step package (`wfplugins-k8s.jar`), which provides a plug-in workflow step to add the deployed Kubernetes cluster to vCommander’s inventory as a managed system. The completion workflow in this scenario reference this plug-in step.
 
-Install the workflow plug-in step package. To learn how, see Adding Workflow Plug-In Steps in the vCommander 7.0 User Guide.
+Go to [Embotics GitHub / Plug-in Workflow-Steps](https://github.com/Embotics/Plug-in-Workflow-Steps) and clone or download the repository. Then in your local version of the repo, browse to the `k8s` directory, which contains the Kubernetes plug-in workflow step package. 
 
-## Import the completion workflows
+For information on how to download and install workflow plug-in steps, see [Adding plug-in workflow steps](http://docs.embotics.com/vCommander/Using-Plug-In-WF-Steps.htm#Adding).
 
-1. Go to the Embotics GitHub repository located at https://github.com/Embotics/Scenarios and download the Deploy_specific_apps_on_K8s completion workflow definition.
-   You can download either the .yaml file or the .json file.
-3. In vCommander, go to **Configuration > Completion Workflows** and click **Import**.
-4. Browse to the .yaml or .json file you downloaded and click **Open**.
-   vCommander automatically validates the workflow. 
-6. Click **Import**.
+## Import the completion workflow
 
-To learn more, see “Importing and Exporting Workflows” in the vCommander 7.0 User Guide.
+1. Go to [Embotics Git Hub / Scenarios](https://github.com/Embotics/Scenarios) and clone or download the repository.
+2. In vCommander, go to **Configuration > Service Request Configuration > Completion Workflows** and click **Import**.
+3. Go to the Scenarios repo that you cloned or downloaded, then from the `Enable-Requesters-to-Choose-Apps-to-Deploy-on-Kubernetes-Cluster` directory, select the `Deploy_specific_apps_on_K8s`  .yaml or .json file, and click **Open**.
+
+    vCommander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
+4. Enter a comment about the workflow in the **Description of Changes** field, and click **Import**.
+
+    To learn more, see [Importing and Exporting Workflows](http://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm) in the vCommander User Guide.
 
 ## Create a custom attribute
 
@@ -38,11 +41,11 @@ The completion workflow includes manifest files for nginx, mongo and redis. You 
 
 Create a list-type custom attribute named “Application to Install” with the following values:
 
-- nginx
-- mongo
-- redis
+- `nginx`
+- `mongo`
+- `redis`
 
-To learn more about custom attributes, see Using Custom Attributes to Add Infrastructure Metadata.
+To learn more about custom attributes, see [Using Custom Attributes to Add Infrastructure Metadata](http://docs.embotics.com/vCommander/configuring_custom_attributes.htm) in the vCommander User Guide.
 
 ## Configure the change request form
 
@@ -60,12 +63,12 @@ The completion workflow includes manifest files for nginx, mongo and redis. You 
 
 1. Select the new workflow in the Completion Workflows list and click **Edit**. 
 2. On the Steps page, click **Add > K8S_DEPLOY**. 
-3. For Step Name, enter a name that indicates the application to be deployed. 
-4. For Namespace, enter the namespace where the application will be deployed.
-5. In the K8s YAML manifest, paste the contents of a YAML manifest file for this application.
-6. For Deploy Type, change the default setting, **Create** or **Update**, if needed.
+3. For **Step Name**, enter a name that indicates the application to be deployed. 
+4. For **Namespace**, enter the namespace where the application will be deployed.
+5. In **K8s YAML manifest**, paste the contents of a YAML manifest file for this application.
+6. For **Deploy Type**, change the default setting, **Create** or **Update**, if needed.
 7. Add more K8s_DEPLOY steps for additional applications as required.
-8. Click **Next**, **Next** and **Finish**.
+8. Click **Next**, **Next**, then **Finish**.
 
 ## Submit a change request
 

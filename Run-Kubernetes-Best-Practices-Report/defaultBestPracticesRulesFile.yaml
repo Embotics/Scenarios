@@ -13,14 +13,14 @@ infrastructure_context: #Infrastructure related options for this configuration -
     max: 5000 #maximum nodes allowed in the cluster
   nodes: #Configuration that should apply to all versions
     container_runtime_version: #Container orchestrator version - requires at least one min or max value
-      max: docker://1.13.1 #Optional maximum docker runtime version
       min: docker://1.12.0 #Optional minimum docker runtime version
+      max: docker://18.06.1 #Optional maximum docker runtime version
     kube_proxy_version: #Proxy version - requires at least one min or max value
-      max: v1.8.7 #Optional maximum version of the proxy on the node
-      min: v1.7.3 #Optional minimum version of the proxy on the node
+      min: v1.9.0 #Optional minimum version of the proxy on the node
+      max: v1.12.1 #Optional maximum version of the proxy on the node
     kubelet_version: #Kubelet version -  - requires at least one min or max value
-      max: v1.10.3 #Optional maximum version of the kubelet on the node
-      min: v1.7.3 #Optional minimum version of the kubelet on the node
+      min: v1.9.0 #Optional minimum version of the kubelet on the node
+      max: v1.12.1 #Optional maximum version of the kubelet on the node
     node_allocatable: #Allocatable is the maximum number of resources available to schedule pods with on the node
       cpu: #Maximum cpu resources available on the node - requires at least one min or max value
         min: 1 #Optional minimum of 2 cpu per node
@@ -36,7 +36,7 @@ infrastructure_context: #Infrastructure related options for this configuration -
         min: 1 #Optional minimum of 2 cpu per node
         max: 4 #Optional maximum of 4 cpu per node
       memory: #Maximum memory resources available on the node - requires at least one min or max value
-        min: 2000000Ki #Optional maximum of 2GB per node
+        min: 2000000Ki #Optional minimum of 2GB per node
         max: 16000000Ki #Optional maximum of 16GB per node
       pods: #Maximum memory resources available on the node - requires at least one min or max value
         min: 110 #Optional minimum of 110 scheduable pods available per node
