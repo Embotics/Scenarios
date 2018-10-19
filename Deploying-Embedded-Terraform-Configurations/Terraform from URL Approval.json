@@ -6,7 +6,7 @@
   "add_owner_as_admin" : false,
   "auto_deploy" : true,
   "users" : [ ],
-  "organizations" : [ "Terraform" ],
+  "organizations" : [ "Terraform Org2" ],
   "target_type" : null,
   "info_messages" : [ ],
   "prompt_message" : null,
