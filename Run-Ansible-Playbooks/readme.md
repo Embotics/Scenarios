@@ -78,12 +78,12 @@ The completion workflow that will run the Ansible playbook can use the two types
    - Conditional steps with inline playbook YAML
    - Conditional steps with playbook URLs
 
-The `Ansible-vm-component-completion-wf` file contains examples of both styles. Perform the following steps to import this file.
+The `ansible-vm-component-completion-workflow` file contains examples of both styles. Perform the following steps to import this file.
 **Note:** This workflow definition has steps that contain credentials. Therefore credentials with the same name must exist on the vCommander installation where you're importing the file. For the workflow definition to successfully import, you can either add the appropriate credentials to vCommander or edit the workflow definition in a text editor to remove the credential names before you import it. 
 
 1. Go to [Embotics Git Hub / Scenarios](https://github.com/Embotics/Scenarios) and clone or download the repository.
 2. In vCommander, go to **Configuration > Service Request Configuration > Completion Workflows** and click **Import**.
-3. Go to the Scenarios repo that you cloned or downloaded, then from the Installing Ansible Playbooks directory, select the`Ansible-vm-component-completion-wf` .yaml or .json file, and click **Open**.
+3. Go to the Scenarios repo that you cloned or downloaded, then from the Installing Ansible Playbooks directory, select the`ansible-vm-component-completion-workflow` .yaml or .json file, and click **Open**.
     vCommander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
 4. Enter a comment about the workflow in the **Description of Changes** field, and click **Import**.
     To learn more, see [Importing and Exporting Workflow Definitions](http://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm) in the vCommander User Guide.

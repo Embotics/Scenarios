@@ -29,7 +29,7 @@ To learn how to download and install workflow plug-in steps, see [Adding plug-in
 
 1. Go to [Embotics Git Hub / Scenarios](https://github.com/Embotics/Scenarios) and clone or download the repository.
 2. In vCommander, go to **Configuration > Service Request Configuration > Completion Workflows** and click **Import**.
-3. Go to the Scenarios repo that you cloned or downloaded, then from the `Running a Kubernetes Best Practices Report` directory, select the the `K8s best practices.yaml` file, and click **Open**.
+3. Go to the Scenarios repo that you cloned or downloaded, then from the `Run-Kubernetes-Best-Practices-Report` directory, select the `k8s-best-practices.yaml` file, and click **Open**.
    vCommander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
 4. Enter a comment about the workflow in the **Description of Changes** field, and click **Import**.
 
@@ -39,7 +39,7 @@ To learn how to download and install workflow plug-in steps, see [Adding plug-in
 
 You can optionally customize the rules and their thresholds used by the K8s Best Practices and E-mail command workflow. These rules are defined in a separate configuration file that will be referenced by the **Kubernetes Best Practices** workflow step.
 
-1. Go to the Scenarios repository that you cloned or downloaded, then from the `Running a Kubernetes Best Practices Reports` directory, copy the `defaultBestPracticesRulesFile.yaml` configuration file to a known location on the vCommander server.
+1. Go to the Scenarios repository that you cloned or downloaded, then from the `Run-Kubernetes-Best-Practices-Reports` directory, copy the `default-best-practices-rules.yaml` configuration file to a known location on the vCommander server.
 2. Edit the rules and their thresholds as required, then save the file.
 3. Save the file to a known location on the vCommander server.
 

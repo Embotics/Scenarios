@@ -27,7 +27,7 @@ For information on how to download and install workflow plug-in steps, see [Addi
 
 1. Go to [Embotics Git Hub / Scenarios](https://github.com/Embotics/Scenarios) and clone or download the repository.
 2. In vCommander, go to **Configuration > Service Request Configuration > Completion Workflows** and click **Import**.
-3. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploy-App-on-Kubernetes-Cluster-Using-Manifest` directory, select the `Deploy_on_K8s`  .yaml or .json file, and click **Open**.
+3. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploy-App-on-Kubernetes-Cluster-Using-Manifest` directory, select the `deploy-on-k8s`  .yaml or .json file, and click **Open**.
    vCommander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
 4. Enter a comment about the workflow in the **Description of Changes** field, and click **Import**.
 

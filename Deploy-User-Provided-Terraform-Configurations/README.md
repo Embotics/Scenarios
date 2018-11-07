@@ -67,7 +67,7 @@ Next, you need to create the approval workflow to run the Terraform generate the
 
 1. Go to [Embotics Git Hub / Scenarios](https://github.com/Embotics/Scenarios) and clone or download the Scenarios repository.
 2. In vCommander, go to **Configuration > Service Request Configuration > Approval Workflows** and click **Import**.
-3. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploying_User_Provided_Terraform_Configurations` directory, select the `Terraform Approval ` .yaml or .json file, and click **Open**.
+3. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploying-User-Provided-Terraform-Configurations` directory, select the `terraform-approval ` .yaml or .json file, and click **Open**.
 
    vCommander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
 4. Enter a comment about the workflow in the **Description of Changes** field and click **Import**.
@@ -82,7 +82,7 @@ Next, you have to create the completion workflow to apply the Terraform plan. Yo
 
 1. In vCommander, go to **Configuration > Service Request Configuration > Completion Workflows** and click **Import**.
 
-1. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploying_User_Provided_Terraform_Configurations` directory, select the `Uploaded Terraform completion workflow ` .yaml or .json file, and click **Open**.
+1. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploying-User-Provided-Terraform-Configurations` directory, select the `uploaded-terraform-completion-workflow ` .yaml or .json file, and click **Open**.
 
    vCommander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
 1. Enter a comment about the workflow in the **Description of Changes** field, and click **Import**.

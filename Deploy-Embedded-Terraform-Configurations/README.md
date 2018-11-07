@@ -70,7 +70,7 @@ See [Importing and Exporting Workflow Definitions](http://docs.embotics.com/vCom
 
 1. Go to [Embotics Git Hub / Scenarios](https://github.com/Embotics/Scenarios) and clone or download the Scenarios repository.
 1. In vCommander, go to **Configuration > Service Request Configuration > Approval Workflows** and click **Import**.
-1. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploying-Embedded-Terraform-Configurations` directory, select the `Terraform-from-url-approval-workflow ` .yaml or .json file, and click **Open**.
+1. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploying-Embedded-Terraform-Configurations` directory, select the `terraform-from-url-approval-workflow ` .yaml or .json file, and click **Open**.
 
    vCommander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
 1. Enter a comment about the workflow in the **Description of Changes** field, and click **Import**.
@@ -86,7 +86,7 @@ Next, you have to create a completion workflow to apply the Terraform plan. For 
  You can import an existing workflow definition that is provided from the Scenarios repository.
 
 1. In vCommander, go to **Configuration > Service Request Configuration > Completion Workflows** and click **Import**.
-1. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploying-Embedded-Terraform-Configurations` directory, select the `Terraform-embedded-completion-workflow ` .yaml or .json file, and click **Open**.
+1. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploying-Embedded-Terraform-Configurations` directory, select the `terraform-embedded-completion-workflow ` .yaml or .json file, and click **Open**.
 
    vCommander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
 1. Enter a comment about the workflow in the **Description of Changes** field, and click **Import**.

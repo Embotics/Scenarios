@@ -46,7 +46,7 @@ You should confirm that the Approval Workflow is configured with an option to ge
 Next, you have to create the completion Workflow to destroy the Terraform managed infrastructure. You can import an existing workflow definition that is included with the Scenarios repository.
 
 1. In vCommander, go to **Configuration > Service Request Configuration > Completion Workflows** and click **Import**.
-1. Go to the Scenarios repo that you previously cloned or downloaded, then from the `Deleting-Terraform-Managed-Infrastructure` directory, select the `terraform-destroy-completion-workflow ` .yaml or .json file, and click **Open**.
+1. Go to the Scenarios repo that you previously cloned or downloaded, then from the `Delete-Terraform-Managed-Infrastructure` directory, select the `terraform-delete-completion-workflow ` .yaml or .json file, and click **Open**.
 
    vCommander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
 1. Enter a comment about the workflow in the **Description of Changes** field, and click **Import**. To learn more, see [Importing and Exporting Workflow Definitions](http://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm) in the vCommander User Guide.

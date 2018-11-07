@@ -29,7 +29,7 @@ Go to [Embotics GitHub / Scenarios](https://github.com/Embotics/Scenarios) and c
 Download the following files from this project:
 
 - `aks.template`: an ARM template that you will add to the service catalog
-- `Add AKS Cluster.yaml`: a vCommander completion workflow for Cloud Template components that you will import
+- `add-aks-cluster.yaml`: a vCommander completion workflow for Cloud Template components that you will import
 
 ## Import the completion workflow
 
@@ -37,7 +37,7 @@ Import a vCommander completion workflow to complete the provisioning and configu
 
 1. Go to [Embotics Git Hub / Scenarios](https://github.com/Embotics/Scenarios) and clone or download the repository.
 2. In vCommander, go to **Configuration > Service Request Configuration > Completion Workflows** and click **Import**.
-3. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploy-Kubernetes-Cluster-Azure-AKS` directory, select the `Add AKS Cluster.yaml` file, and click **Open**.
+3. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploy-Kubernetes-Cluster-Azure-AKS` directory, select the `add-aks-cluster.yaml` file, and click **Open**.
    vCommander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
 4. Enter a comment about the workflow in the **Description of Changes** field, and click **Import**.
 
