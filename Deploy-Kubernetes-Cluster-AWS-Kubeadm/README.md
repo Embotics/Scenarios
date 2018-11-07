@@ -98,7 +98,7 @@ Import the two following vCommander completion workflows to complete the provisi
 
 1. Go to [Embotics Git Hub / Scenarios](https://github.com/Embotics/Scenarios) and clone or download the repository.
 1. In vCommander, go to **Configuration > Service Request Configuration > Completion Workflow** and click **Import**.
-1. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploying-Kubernetes-Cluster-AWS-kubeadm` directory, select the `aws-post-deploy-k8s-kubeadm-component.yaml` file, and click **Open**.
+1. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploying-Kubernetes-Cluster-AWS-Kubeadm` directory, select the `aws-post-deploy-k8s-kubeadm-component.yaml` file, and click **Open**.
 
     vCommander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
 1. Enter a comment about the workflow in the **Description of Changes** field, and click **Import**.
