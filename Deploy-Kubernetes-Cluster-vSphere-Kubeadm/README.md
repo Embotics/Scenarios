@@ -17,7 +17,7 @@ This article is intended for systems administrators, engineers and IT profession
 Before you begin, you must:
 
 - Add a vCenter as a vCommander managed system. See [Adding a Managed System](http://docs.embotics.com/vCommander/adding_a_managed_system.htm#add_vcenter).
-- Create a vCommander deployment destination, targeting the location in  vCenter where the Kubernetes cluster will be deployed. See [Configuring Automated Deployment for Approved Service Requests](http://docs.embotics.com/index.html?config_auto_placement_depl_vms.htm). 
+- Create a vCommander deployment destination, targeting the location in vCenter where the Kubernetes cluster will be deployed. See [Configuring Automated Deployment for Approved Service Requests](http://docs.embotics.com/index.html?config_auto_placement_depl_vms.htm). 
 - Ensure that the user requesting the Kubernetes cluster has permission to deploy to the targeted location in vSphere.
 - Ensure that the root Linux user can log in through SSH, because Docker and Kubernetes require the configuration of system-level resources.
 
@@ -26,32 +26,32 @@ Before you begin, you must:
 To provision a Kubernetes cluster on vCenter with vCommander, the following steps are required. Further details for each step are provided after this overview.
 
 1. Configure a Centos 7 template in vSphere.
-2. Create guest OS credentials for the root user; these credentials are referenced by the workflows you will import.
-3. Install a workflow plug-in step that automatically adds the deployed cluster to vCommander’s inventory.
-4. Import completion workflows from the Embotics Git repository; these workflows will run once the cluster is deployed.
-5. Create a custom attribute for the Kubernetes version.
-6. Create a custom attribute for the managed system name.
-7. Create a service catalog entry for users to request a Kubernetes cluster.
-8. Submit a service request.
+1. Create guest OS credentials for the root user; these credentials are referenced by the workflows you will import.
+1. Install a workflow plug-in step that automatically adds the deployed cluster to vCommander’s inventory.
+1. Import completion workflows from the Embotics Git repository; these workflows will run once the cluster is deployed.
+1. Create a custom attribute for the Kubernetes version.
+1. Create a custom attribute for the managed system name.
+1. Create a service catalog entry for users to request a Kubernetes cluster.
+1. Submit a service request.
 
 ## Create a Centos 7 template in vSphere
 
 Create a generic VM template in vSphere to use as the base image for all nodes in the Kubernetes cluster.
 
-**Note:**  The sizing of your base VM depends on the expected workload. The  minimum recommended settings are 2 vCPU cores, 4 GB RAM and 25 GB  storage.
+**Note:**  The sizing of your base VM depends on the expected workload. The minimum recommended settings are 2 vCPU cores, 4 GB RAM and 25 GB storage.
 
 1. Download a Centos 7 64-bit minimal install ISO.
-2. In vSphere, create a new VM, attach and install the ISO.
-3. Boot up the VM and run the following command:
+1. In vSphere, create a new VM, attach and install the ISO.
+1. Boot up the VM and run the following command:
    `yum -y update`
-4. Install the base tools using the following command:
+1. Install the base tools using the following command:
    `yum -y install net-tools open-vm-tools ssh-server`
-5. Enable and then start SSH with the following command:
+1. Enable and then start SSH with the following command:
    `systemctl enable sshd && systemctl start sshd`
-6. Test an SSH login to the VM with the root user.
-7. In vSphere, shut down the VM and take a snapshot.
-   **Important**:  For this example, to minimize disk space usage and provisioning time,  we used the “Linked Clones” method of provisioning in vCommander. When deploying a linked clone, a VM snapshot must be available; otherwise, the deployment will fail.
-8. In vSphere, convert the VM to a template.
+1. Test an SSH login to the VM with the root user.
+1. In vSphere, shut down the VM and take a snapshot.
+   **Important**:  For this example, to minimize disk space usage and provisioning time, we used the “Linked Clones” method of provisioning in vCommander. When deploying a linked clone, a VM snapshot must be available; otherwise, the deployment will fail.
+1. In vSphere, convert the VM to a template.
 
 ## Install the plug-in workflow step package
 
@@ -61,11 +61,11 @@ To learn how to download and install workflow plug-in steps, see [Adding Workflo
 
 ## Create guest OS credentials for the root user
 
-The completion workflows use root user credentials to SSH into the deployed VM. Before importing the workflows, you must create a set of credentials for the  root user.
+The completion workflows use root user credentials to SSH into the deployed VM. Before importing the workflows, you must create a set of credentials for the root user.
 
 1. In vCommander, go to **Configuration > Credentials**.
-2. Click **Add**.
-3. In the Add Credentials dialog, do the following:
+1. Click **Add**.
+1. In the Add Credentials dialog, do the following:
 
    a. From **Credentials Type**, select **Username/Password**.
 
@@ -87,13 +87,13 @@ The completion workflows use root user credentials to SSH into the deployed VM. 
 
 Import the two following vCommander completion workflows to complete the provisioning and configuration of the cluster: 
 
-- `vsphere-post-deploy-k8s-kubeadm-component.yaml`: a  component-level completion workflow that runs on each provisioned node and provides common utilities (like Docker)
+- `vsphere-post-deploy-k8s-kubeadm-component.yaml`: a component-level completion workflow that runs on each provisioned node and provides common utilities (like Docker)
 - `vsphere-post-deploy-k8s-kubeadm-svc.yaml`: a service-level completion workflow that facilitates configuration of the Kubernetes cluster
 
 
 1. Go to [Embotics Git Hub / Scenarios](https://github.com/Embotics/Scenarios) and clone or download the repository.
 1. In vCommander, go to **Configuration > Service Request Configuration > Completion Workflow** and click **Import**.
-1. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploying-Kubernetes-Cluster-vSphere-Kubeadm ` directory, select the `vsphere-post-deploy-k8s-kubeadm-component.yaml` file, and click **Open**.
+1. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploy-Kubernetes-Cluster-vSphere-Kubeadm` directory, select the `vsphere-post-deploy-k8s-kubeadm-component.yaml` file, and click **Open**.
 
     vCommander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
 1. Enter a comment about the workflow in the **Description of Changes** field, and click **Import**.
@@ -104,22 +104,22 @@ Import the two following vCommander completion workflows to complete the provisi
 To enable requesters to select which version of Kubernetes to install, create a custom attribute.
 
 1. In vCommander, go to **Configuration > Custom Attributes**.
-2. Click **Add**.
-3. Name the attribute **kubernetes_version** and keep the default values for all other settings on this page.
+1. Click **Add**.
+1. Name the attribute **kubernetes_version** and keep the default values for all other settings on this page.
    This name is hard-coded in the completion workflows, so you must use this exact name.
-5. Click **Next**, add the appropriate Kubernetes versions, and click **Finish**.
+1. Click **Next**, add the appropriate Kubernetes versions, and click **Finish**.
 
 ## Create a custom attribute for the managed system name
 
 To store the name of the Kubernetes managed system, create another custom attribute.
 
 1. In vCommander, go to **Configuration > Custom Attributes**.
-2. Click **Add**.
-3. Name the attribute **kubernetes_name**.
+1. Click **Add**.
+1. Name the attribute **kubernetes_name**.
    This name is hard-coded in the completion workflows, so you must use this exact name.
-4. From the **Type** drop-down, select **Text**.
-5. Keep the default values for all other settings on this page.
-6. Click **Next**, choose **Free Form**, and click **Finish**.
+1. From the **Type** drop-down, select **Text**.
+1. Keep the default values for all other settings on this page.
+1. Click **Next**, choose **Free Form**, and click **Finish**.
 
 ## Create a service catalog entry
 
@@ -135,55 +135,55 @@ Next, create an entry in the service catalog that:
 
 1. In vCommander, go to **Configuration > Service Request Configuration > Service Catalog**, then click **Add Service**.
 
-2. Enter a name and description for the service, and optionally apply a custom icon and categories, then click **Next**.
+1. Enter a name and description for the service, and optionally apply a custom icon and categories, then click **Next**.
 
-3. Add the template for provisioning the base VMs for the cluster. Click **Add > VM Template, Image or AMI** and navigate to the template created earlier (centos7-base).
+1. Add the template for provisioning the base VMs for the cluster. Click **Add > VM Template, Image or AMI** and navigate to the template created earlier (centos7-base).
 
    The workflows support any number of nodes, but in this example, we’re creating a cluster of a master and two worker nodes, so you must click **Add to Service** three times. When you click **Close**, the three components are visible.
 
-4. Create a [custom component](http://docs.embotics.com/index.html?make_service_available.htm#manage_component_types) to store the value for the Kubernetes version custom attribute on the request form. On the Component Blueprints page, click **Add > New Component Type**. 
+1. Create a [custom component](http://docs.embotics.com/index.html?make_service_available.htm#manage_component_types) to store the value for the Kubernetes version custom attribute on the request form. On the Component Blueprints page, click **Add > New Component Type**. 
 
-5. Create a custom component to store the value for the Kubernetes version custom attribute. On the Component Blueprints page, click **Add > New Component Type**. In the Create New Component Type dialog, enter a name of **kubernetes_version**, an annual cost of 0, then click **Add to Service**.
-
-    This name is hard-coded in the completion workflows, so you must use this exact name.
-
-6. Create a second custom component to store the value for the name of the Kubernetes cluster when it’s added to vCommander as a managed system. On the Component Blueprints page, click **Add > New Component Type**. In the Create New Component Type dialog, enter a name of **kubernetes_name** and an annual cost of 0, then click **Add to Service**.
+1. In the Create New Component Type dialog, enter a name of **kubernetes_version**, an annual cost of 0, then click **Add to Service**.
 
     This name is hard-coded in the completion workflows, so you must use this exact name.
 
-7. Next, configure the blueprint for each of the components. Specify that deployed VMs will be **Linked Clones**, and select **vsphere-post-deploy-k8s-kubeadm-component** as the completion workflow.
+1. Create a second custom component to store the value for the name of the Kubernetes cluster when it’s added to vCommander as a managed system. On the Component Blueprints page, click **Add > New Component Type**. In the Create New Component Type dialog, enter a name of **kubernetes_name** and an annual cost of 0, then click **Add to Service**.
 
-  You  can customize the Deployed Name to match your enterprise naming  convention, using vCommander variables. In the image above, the variable  #{uniqueNumber[3]} is used to add a three-digit unique number to the VM  name.
+    This name is hard-coded in the completion workflows, so you must use this exact name.
 
-8. Once you have configured all three VM components, configure the first custom component. On the Component Blueprint page for kubernetes_version, go to the Attributes tab and do the following:
+1. Next, configure the blueprint for each of the components. Specify that deployed VMs will be **Linked Clones**, and select **vsphere-post-deploy-k8s-kubeadm-component** as the completion workflow.
+
+  You can customize the Deployed Name to match your enterprise naming convention, using vCommander variables. For example, the variable `#{uniqueNumber[3]}` can be used to add a three-digit unique number to the VM name.
+
+1. Once you have configured all three VM components, configure the first custom component. On the Component Blueprint page for kubernetes_version, go to the **Attributes** tab and do the following:
 
   - Click **Add Attributes**, then select **kubernetes_version** from the list and click **OK**.
   - Back on the Attributes tab, choose a default value for **kubernetes_version** from the drop-down list. 
 
-9. If you want to allow requesters to choose the Kubernetes version, add the custom attribute to the request form. On the Form tab, in the Toolbox on the right, click the **kubernetes_version** form element.
+1. If you want to allow requesters to choose the Kubernetes version, add the custom attribute to the request form. On the Form tab, in the Toolbox on the right, click the **kubernetes_version** form element.
 
-10. Click **Edit** to enable the **Required** flag if desired and click **OK**. 
+1. Click **Edit** to enable the **Required** flag if desired and click **OK**. 
 
-11. Configure the blueprint for the second custom component. On the Component Blueprint page for kubernetes_name, go to the Attributes tab, click **Add Attributes**, select **kubernetes_name** from the list and click **OK**.
+1. Configure the blueprint for the second custom component. On the Component Blueprint page for kubernetes_name, go to the **Attributes** tab, click **Add Attributes**, select **kubernetes_name** from the list and click **OK**.
 
-12. If you want to allow requesters to choose the name of the Kubernetes managed system, add the custom attribute to the request form. On the Form tab, in the Toolbox on the right, click the **kubernetes_name** form element.
+1. If you want to allow requesters to choose the name of the Kubernetes managed system, add the custom attribute to the request form. On the Form tab, in the Toolbox on the right, click the **kubernetes_name** form element.
 
-13. Click **Edit** to enable the **Required** flag and click **OK**.
+1. Click **Edit** to enable the **Required** flag and click **OK**.
 
-14. On the Deployment page, assign the completion workflow **vsphere-post-deploy-k8s-kubeadm-svc**, then click **Next**.
+1. On the Deployment page, assign the completion workflow **vsphere-post-deploy-k8s-kubeadm-svc**, then click **Next**.
 
-15. For the purposes of this walk-through, we’ll skip the Intelligent Placement page. Click **Next**. To learn more about Intelligent Placement, see [Intelligent Placement](http://docs.embotics.com/vCommander/intelligent-placement.htm) in the vCommander User Guide.  
+1. For the purposes of this walk-through, we’ll skip the Intelligent Placement page. Click **Next**. To learn more about Intelligent Placement, see [Intelligent Placement](http://docs.embotics.com/vCommander/intelligent-placement.htm).
 
-16. On the Visibility page, specify who can request this service, then click **Next**.
+1. On the Visibility page, specify who can request this service, then click **Next**.
 
-17. On Summary page, click **Finish**.
+1. On Summary page, click **Finish**.
 
     The service catalog entry is now published. 
 
 ## Submit a service request
 
-Our service is now configured and ready to test. In vCommander or the Service Portal, go to the Service  Catalog and request the Kubernetes service. Notice that you can specify  the cluster name and select the Kubernetes version on the request form.
+Our service is now configured and ready to test. In vCommander or the Service Portal, go to the Service Catalog and request the Kubernetes service. Notice that you can specify the cluster name and select the Kubernetes version on the request form.
 
 Once the service request has completed, the new cluster is added to vCommander’s inventory as a Kubernetes managed system.
 
-To learn more about vCommander's support for Kubernetes, see [Managing Kubernetes](http://docs.embotics.com/vCommander/managing-kubernetes.htm) in the vCommander User Guide.
+To learn more about vCommander's support for Kubernetes, see [Managing Kubernetes](http://docs.embotics.com/vCommander/managing-kubernetes.htm).

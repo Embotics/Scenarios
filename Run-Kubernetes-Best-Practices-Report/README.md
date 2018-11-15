@@ -10,7 +10,7 @@ This guide is intended for systems administrators, engineers and IT professional
 
 Before you begin, you must add a Kubernetes cluster as a managed system. You can do this in one of two ways:
 
-- Add an existing Kubernetes cluster as a vCommander managed system. See [Adding a Kubernetes Managed System](http://docs.embotics.com/vCommander/adding_a_managed_system.htm#add_k8s) in the vCommander User Guide.
+- Add an existing Kubernetes cluster as a vCommander managed system. See [Adding a Kubernetes Managed System](http://docs.embotics.com/vCommander/adding_a_managed_system.htm#add_k8s).
 - Create a new Kubernetes cluster through vCommander and have it automatically added as a vCommander managed system. To learn how, search for "Kubernetes" on our [Knowledge Base](https://support.embotics.com/support/solutions/8000051955) and choose the article for your preferred platform for deploying Kubernetes clusters.
 
 ## Install plug-in workflow step packages
@@ -33,7 +33,7 @@ To learn how to download and install workflow plug-in steps, see [Adding plug-in
    vCommander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
 4. Enter a comment about the workflow in the **Description of Changes** field, and click **Import**.
 
-​        To learn more, see [Importing and Exporting Workflow Definitions](http://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm) in the vCommander User Guide.
+​        To learn more, see [Importing and Exporting Workflow Definitions](http://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm).
 
 ## Optional: Customize the rules and their thresholds
 

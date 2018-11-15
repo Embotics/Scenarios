@@ -11,7 +11,7 @@ This guide is intended for systems administrators, engineers and IT professional
 
 Before you begin, you must add a Kubernetes cluster as a managed system. You can do this in one of two ways:
 
-- Add an existing Kubernetes cluster as a vCommander managed system. See [Adding a Kubernetes managed system](http://docs.embotics.com/vCommander/adding_a_managed_system.htm#add_k8s) a Kubernetes Managed System in the vCommander User Guide.
+- Add an existing Kubernetes cluster as a vCommander managed system. See [Adding a Kubernetes managed system](http://docs.embotics.com/vCommander/adding_a_managed_system.htm#add_k8s) a Kubernetes Managed System.
 - Create a new Kubernetes cluster through vCommander and have it automatically added as a vCommander managed system. To learn how, see [Workflow Extension Scenarios](https://support.embotics.com/support/solutions/folders/8000085541).
 
 ## Install the plug-in step package
@@ -31,7 +31,7 @@ For information on how to download and install workflow plug-in steps, see [Addi
     vCommander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
 4. Enter a comment about the workflow in the **Description of Changes** field, and click **Import**.
 
-    To learn more, see [Importing and Exporting Workflows](http://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm) in the vCommander User Guide.
+    To learn more, see [Importing and Exporting Workflows](http://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm).
 
 ## Create a custom attribute
 
@@ -45,7 +45,7 @@ Create a list-type custom attribute named “Application to Install” with the 
 - `mongo`
 - `redis`
 
-To learn more about custom attributes, see [Using Custom Attributes to Add Infrastructure Metadata](http://docs.embotics.com/vCommander/configuring_custom_attributes.htm) in the vCommander User Guide.
+To learn more about custom attributes, see [Using Custom Attributes to Add Infrastructure Metadata](http://docs.embotics.com/vCommander/configuring_custom_attributes.htm).
 
 ## Configure the change request form
 
@@ -62,18 +62,18 @@ To learn more about custom attributes, see [Using Custom Attributes to Add Infra
 The completion workflow includes manifest files for nginx, mongo and redis. You can customize the completion workflow with your own applications and manifest files; if you do so, you must add custom attribute values that match the application names.
 
 1. Select the new workflow in the Completion Workflows list and click **Edit**. 
-2. On the Steps page, click **Add > K8S_DEPLOY**. 
+2. On the Steps page, click **Add > Kubernetes > Kubernetes Deploy Resource**. 
 3. For **Step Name**, enter a name that indicates the application to be deployed. 
 4. For **Namespace**, enter the namespace where the application will be deployed.
 5. In **K8s YAML manifest**, paste the contents of a YAML manifest file for this application.
 6. For **Deploy Type**, change the default setting, **Create** or **Update**, if needed.
-7. Add more K8s_DEPLOY steps for additional applications as required.
+7. Add more Kubernetes Deploy Resource steps for additional applications as required.
 8. Click **Next**, **Next**, then **Finish**.
 
 ## Submit a change request
 
 1. In vCommander or the Service Portal, select a Kubernetes managed system and run the **Request Change** command.
-2. In the Select Change Request dialog, click either **Deploy K8s App** or **Install Apps**.
+2. In the Select Change Request dialog, click **Install Apps**.
 3. Complete the request form by selecting an application to install and click **OK**.
    The chosen application is installed on the selected Kubernetes cluster.
 

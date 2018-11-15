@@ -18,7 +18,7 @@ This scenario enables you to provision resources specified in a Terraform config
 
 Go to [Embotics GitHub / Plug-in Workflow-Steps](https://github.com/Embotics/Plug-in-Workflow-Steps) and clone or download the repository. Then install the `wfplugins-terraform` step package. The workflows in this scenario reference those Terraform plug-in workflow steps.
 
-To learn how to download and install workflow plug-in steps, see [Adding Workflow Plug-In Steps](http://docs.embotics.com/vCommander/Using-Plug-In-WF-Steps.htm#Adding) in the vCommander User Guide.
+To learn how to download and install workflow plug-in steps, see [Adding Workflow Plug-In Steps](http://docs.embotics.com/vCommander/Using-Plug-In-WF-Steps.htm#Adding).
 
 ## Set up the Service Catalog
 
@@ -37,7 +37,7 @@ The Terraform service request needs a form that can identify the owner of the de
 
 **Note**: The Terraform organization will already exist if you went through the *Deploying Embedded Terraform Configurations* scenario.
 
-1. Log into vCommander, go to **Configuration >  Organizations and Quotas**, then click the **Organizations** tab.
+1. Log into vCommander, go to **Configuration > Organizations and Quotas**, then click the **Organizations** tab.
 1. Click **Add**. 
 1. In the Configure Organization dialog, for **Organization Name**, enter "Terraform Org".
 1. Add groups or users to the organization.
@@ -61,13 +61,13 @@ After the organization has been created, you need to create a form to capture th
 6. Click **Save** to save the form.
 
 ### Create the Terraform deployment approval workflow
-Next, you need to create the approval workflow to run the Terraform generate the Terraform plan and have it approved. You can import an existing workflow definition that is provided from the Scenarios repository. See [Importing and Exporting Workflow Definitions](http://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm) in the vCommander User Guide for more information.
+Next, you need to create the approval workflow to run the Terraform generate the Terraform plan and have it approved. You can import an existing workflow definition that is provided from the Scenarios repository. See [Importing and Exporting Workflow Definitions](http://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm) for more information.
 
 **Note:** The workflow definition that you will import has steps that contain credentials. Therefore credentials with the same name must exist on the vCommander installation where you're importing the file. For the workflow definition to successfully import, you can either add the appropriate credentials to vCommander or edit the workflow definition in a text editor to remove the credential names before you import it. 
 
 1. Go to [Embotics Git Hub / Scenarios](https://github.com/Embotics/Scenarios) and clone or download the Scenarios repository.
-2. In vCommander, go to **Configuration > Service Request Configuration > Approval Workflows** and click **Import**.
-3. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploying-User-Provided-Terraform-Configurations` directory, select the `terraform-approval ` .yaml or .json file, and click **Open**.
+2. In vCommander, go to **Configuration > Service Request Configuration > Approval Workflow** and click **Import**.
+3. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploying-User-Provided-Terraform-Configurations` directory, select the `terraform-approval` .yaml or .json file, and click **Open**.
 
    vCommander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
 4. Enter a comment about the workflow in the **Description of Changes** field and click **Import**.
@@ -80,9 +80,9 @@ Next, you need to create the approval workflow to run the Terraform generate the
 ### Create the deploy Terraform template completion workflow
 Next, you have to create the completion workflow to apply the Terraform plan. You can import an existing workflow definition that is available from the Embotics Git Hub.
 
-1. In vCommander, go to **Configuration > Service Request Configuration > Completion Workflows** and click **Import**.
-
-1. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploying-User-Provided-Terraform-Configurations` directory, select the `uploaded-terraform-completion-workflow ` .yaml or .json file, and click **Open**.
+1. In vCommander, go to **Configuration > Service Request Configuration** and click the **Completion Workflow** tab.
+1. Click **Import**.
+1. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploying-User-Provided-Terraform-Configurations` directory, select the `uploaded-terraform-completion-workflow` .yaml or .json file, and click **Open**.
 
    vCommander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
 1. Enter a comment about the workflow in the **Description of Changes** field, and click **Import**.
@@ -98,22 +98,22 @@ Finally, create the Service Definition for the Terraform deployment service.
 1. Click the **Service Catalog** tab, then click **Add Service**.
 1. For **Name**, type "Uploaded Terraform Deployment" and click **Next**.
 1. On the Component Blueprints page, select **Add > New Component Type**. 
-1. In the Create New Component Type dialog, enter "Uploaded Terraform" for **Name**,  enter 0 for **Annual Cost**, then click **Add to Service**.
+1. In the Create New Component Type dialog, enter "Uploaded Terraform" for **Name**, enter 0 for **Annual Cost**, then click **Add to Service**.
 1. Select the new Uploaded Terraform component blueprint, click the **Infrastructure** tab, then from the **Completion Workflow** dropdown, select `Uploaded Terraform Completion Workflow`.
 1. Click the **Form** tab, then from the **Toolbox** at the right side of the window, do the following:
-   - Click **Input Text Field**. Then in the added Input Text Field form element, enter "Name" in the  **Display Label** box, ensure that the **Required** check box is enabled, and click **OK**. 
+   - Click **Input Text Field**. Then in the added Input Text Field form element, enter "Name" in the **Display Label** box, ensure that the **Required** check box is enabled, and click **OK**. 
    - Click **File Upload**. Then in the added File Upload form element, enter "Configuration" in the **Display Label** box, ensure that the **Required** check box is enabled, and click **OK**.
 1. Click **Next**.
 1. On the Deployment page, click **Next**. 
 1. For the purposes of this walk-through, we’ll skip the Intelligent Placement page. Click **Next**. 
-To learn more, see [Intelligent Placement](http://docs.embotics.com/vCommander/intelligent-placement.htm).
+  See [Intelligent Placement](http://docs.embotics.com/vCommander/intelligent-placement.htm) for information.
 1. On the Visibility page select **Publish - Specific organizations, users and groups** and add **Terraform Org**. Then click **Next**.
 1. On the Summary page, click **Finish**.
 
 ## Log in and test
 1. Log in to the Service Portal as a member of *Terraform Org.*
 1. Click **+ Service Catalog**, then for "Uploaded Terraform Deployment", click **+ Add** to request the service.
-1. On the Service page, complete the form that appears. You must complete all fields marked with an asterisk (&ast;). Click **Next** when you are done.   
+1. On the Service page, complete the form that appears. You must complete all fields marked with an asterisk (&ast;). Click **Next** when you are done.
 1. On the Component page, enter a name for the infrastructure that Terraform will deploy.
 1. Click **Choose**, browse a valid Terraform configuration file, and click **Open**.
 

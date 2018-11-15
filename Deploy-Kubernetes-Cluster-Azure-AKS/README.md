@@ -41,7 +41,7 @@ Import a vCommander completion workflow to complete the provisioning and configu
    vCommander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
 4. Enter a comment about the workflow in the **Description of Changes** field, and click **Import**.
 
-​        To learn more, see [Importing and Exporting Workflow Definitions](http://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm) in the vCommander User Guide.
+​        To learn more, see [Importing and Exporting Workflow Definitions](http://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm).
 
 ## Create the required Azure objects
 
@@ -102,7 +102,7 @@ $ az ad sp create-for-rbac --name AKS-SP
 3. Click **Create**. 
 4. Click **Settings > Keys**. Enter a **Description** and select a **Duration**. Click **Save**. 
 
-   **Important:** Copy and save the displayed key value!  You will not be able to access it later.
+   **Important:** Copy and save the displayed key value. You will not be able to access it later.
 
 5. Now give permission to the service principal to manage the resource group.
 6. Select the previously created resource group. Click **Access Control (IAM)**.
@@ -117,7 +117,7 @@ For general information on creating a deployment destination for Azure, see [Con
 **Notes:** 
 
 - On the Target page, select the resource group created earlier, for example `AKS-Resource-Group`.
-- On the Subnets page, select any subnet from Available Subnets and move it to Configured Subnets. If no subnets are available, you must create one in Azure. This subnet is not used by AKS, but selecting one is necessary to set up a deployment destination.
+- On the Subnets page, select any subnet from **Available Subnets** and move it to **Configured Subnets**. If no subnets are available, you must create one in Azure. This subnet is not used by AKS, but selecting one is necessary to set up a deployment destination.
 
 ## Create a service catalog entry for users to request
 
@@ -125,7 +125,7 @@ For general information on creating a deployment destination for Azure, see [Con
 2. Click **Add Service**.
 3. Enter a service name and description, then click **Next**. 
 4. On the Component Blueprints page, click **Add** > **ARM Template**.
-5. In the Add ARM Template dialog, click **File**, **Add**, browse to the Scenarios repo that you cloned or downloaded, then from the `Deploy-Kubernetes-Cluster-Azure-AKS` directory, select the `aks.template` file and click **OK**. 
+5. In the Add ARM Template dialog, click **File**, **Add**, and browse to the Scenarios repo that you cloned or downloaded. Then from the `Deploy-Kubernetes-Cluster-Azure-AKS` directory, select the `aks.template` file and click **OK**. 
 6. On the ArmTemplate component page, change the component name to something more descriptive, such as "AKS ARM Template". 
 7. Assign the downloaded completion workflow to the component.
 8. Now, set up the request form for this component. On the Form tab, under the Toolbox on the right, click **Input Text Field**. 
@@ -134,7 +134,7 @@ For general information on creating a deployment destination for Azure, see [Con
   * **dnsPrefix**: `#{form.inputField['Kubernetes Cluster Name']}`
   * **resourceName**: `#{form.inputField['Kubernetes Cluster Name']}`
   * **servicePrincipalClientId**: ID of service principal created above
-  * **servicePrincipalClientSecret**: Password/Key of service principal created above
+  * **servicePrincipalClientSecret**: Password/key of service principal created above
   * **sshRSAPublicKey**: Contents of `~/.ssh/id_rsa.pub`
 11. Modify the other parameters as needed. 
 12. On the Summary page, click **Finish**. 
@@ -144,7 +144,6 @@ For general information on creating a deployment destination for Azure, see [Con
 ## Submit a service request
 
 The service is now configured and ready to test. 
-
 1. In vCommander or the Service Portal, go to the Service Catalog and request the service you just created. 
 2. On the Component form, enter a cluster name and click **Submit**. 
 
