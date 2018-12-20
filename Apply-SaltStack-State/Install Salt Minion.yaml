@@ -1,0 +1,101 @@
+---
+id: 667206
+guid: "7bd6de68-113b-4ce6-bd00-cfbd6bcf3fe9"
+name: "Install Salt Minion"
+description: null
+type: "COMPONENT_COMPLETION"
+change_description: null
+target_type: null
+input_variables:
+- name: "Bootstrap Script"
+  variable: "bootstrap"
+  description: "URL to bootstrap script for salt"
+  required: true
+  default_value: "https://bootstrap.saltstack.com"
+- name: "Salt Master"
+  variable: "master"
+  description: "IP or Hostname of salt master server"
+  required: true
+  default_value: "salt"
+info_messages: []
+system_version: "7.0.2 (1007020076)"
+steps:
+- name: "Fail if Master not specified"
+  type: "RUN_PROGRAM_IN_GUEST"
+  condition: "\"#{inputVariable['master']}\" -eq \"\""
+  data:
+    credentials: "root-ssh"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "false"
+    capture_output: true
+- name: "Install Salt minion"
+  type: "RUN_PROGRAM_IN_GUEST"
+  condition: null
+  data:
+    credentials: "root-ssh"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "curl -L #{inputVariable['bootstrap']} -o install_salt.sh && sh\
+      \ install_salt.sh -P"
+    capture_output: true
+- name: "Retry Install Salt minion"
+  type: "RETRY"
+  condition: null
+  data:
+    retries: "3"
+    wait: "5"
+    wait_units: "SECONDS"
+- name: "Set salt master"
+  type: "RUN_PROGRAM_IN_GUEST"
+  condition: null
+  data:
+    credentials: "root-ssh"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "echo \"master: #{inputVariable['master']}\" >> /etc/salt/minion"
+    capture_output: true
+- name: "Set Minion ID"
+  type: "RUN_PROGRAM_IN_GUEST"
+  condition: null
+  data:
+    credentials: "root-ssh"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "echo $HOSTNAME > /etc/salt/minion_id"
+    capture_output: true
+- name: "Restart Salt"
+  type: "RUN_PROGRAM_IN_GUEST"
+  condition: null
+  data:
+    credentials: "root-ssh"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "systemctl enable salt-minion && systemctl restart salt-minion"
+    capture_output: true
+- name: "Get Minion Hostname"
+  type: "RUN_PROGRAM_IN_GUEST"
+  condition: null
+  data:
+    credentials: "root-ssh"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "echo -n $HOSTNAME"
+    capture_output: true
+- name: "Wait 30"
+  type: "WAIT"
+  condition: null
+  data:
+    failure_action: "PROCEED_TO_NEXT_STEP"
+    wait_for_type: "ELAPSED_TIME"
+    timeout: 30
+- name: "Accept on master"
+  type: "SSH"
+  condition: null
+  data:
+    hostname: "#{inputVariable['master']}"
+    credentials: "salt-ssh"
+    failure_action: "FAIL_STEP"
+    timeout: 300
+    command_line: "sudo salt-key -a #{steps[7].output} -y"
+    capture_output: true
