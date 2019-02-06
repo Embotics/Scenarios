@@ -1,0 +1,44 @@
+---
+id: 2268286
+guid: "c40e769f-043a-4ab6-818d-0da5950a4af0"
+name: "Salt State Example Workflow"
+type: "COMPONENT_COMPLETION"
+change_description: null
+fulfillment_rule: null
+add_owner_as_admin: false
+auto_deploy: false
+users: []
+organizations: []
+target_type: null
+info_messages: []
+prompt_message: null
+system_version: "7.0.2 (1007020076)"
+steps:
+- name: "Install Salt Minion"
+  type: "MODULE"
+  condition: null
+  data:
+    module_name: "Install Salt Minion"
+    bootstrap: "https://bootstrap.saltstack.com"
+    master: "svrsaltstack.embotics.com"
+- name: "Salt Test Ping"
+  type: "SALTSTACK_MODULE"
+  condition: null
+  data:
+    args: ""
+    auth: "PAM"
+    name: "test.ping"
+    os_credentials: "salt-api"
+    url: "http://svrsaltstack.embotics.com:8000"
+    target: "#{request.service.deployedName}"
+- name: "Apply State"
+  type: "SALTSTACK_STATE"
+  condition: null
+  data:
+    args: ""
+    pillar: ""
+    auth: "PAM"
+    name: "#{target.settings.customAttribute['Salt State']}"
+    os_credentials: "salt-api"
+    url: "http://svrsaltstack.embotics.com:8000"
+    target: "#{request.service.deployedName}"
