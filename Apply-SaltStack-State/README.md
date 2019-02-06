@@ -35,7 +35,7 @@ This section describes how to set up a component blueprint in the service catalo
 
 ### Install the plug-in workflow step package
 
-This scenario uses the SaltStack plug-in workflow step package (`wfplugins-saltstack.jar`), which provides a plug-in workflow step to enable vCommander to make calls to the Salt API.
+This scenario uses the SaltStack Community plug-in workflow step package (`wfplugins-saltstack.jar`), which provides a plug-in workflow step to enable vCommander to make calls to the Salt API.
 
 Go to [Embotics GitHub / Plug-in Workflow-Steps](https://github.com/Embotics/Plug-in-Workflow-Steps) and clone or download the repository. Then in your local version of the repo, browse to the `saltstack` directory, which contains the SaltStack plug-in workflow step package. 
 
