@@ -1,6 +1,6 @@
 # Deploying Embedded Terraform Configurations
 
-This scenario enables you to use deploy resources using Terraform configurations in the Embotics® vCommander® service catalog. It includes an optional approval workflow that uses the output of the Terraform plan command. 
+This scenario enables you to use deploy resources using Terraform configurations in the Embotics® vCommander® service catalog. It includes an optional approval workflow that uses the output of the Terraform plan command.
 
 ## Changelog
 
@@ -10,9 +10,9 @@ This scenario enables you to use deploy resources using Terraform configurations
 
 - vCommander release 7.0.2 or higher
 
-- A system with Terraform installed that is accessible through SSH. This system is referred to hereafter as the Terraform host. 
+- A system with Terraform installed that is accessible through SSH. This system is referred to hereafter as the Terraform host.
   The Terraform host will be used to keep state and must be configured to use the proper credentials to allow access the Terraform host.
-- Install the Terraform Workflow Plug-in Step Package
+- Install the Terraform workflow plug-in step package
 
 ## Install the Terraform plug-in workflow step package
 
@@ -25,7 +25,8 @@ To learn how to download and install workflow plug-in steps, see [Adding Workflo
 To set up the service catalog to allow Terraform configurations to be uploaded, you must do the following:
 
 1. Create the Terraform organization
-1. Create the deployment destination
+1. Create an automated deployment destination
+1. Configure a default ownership policy
 1. Create the Terraform deployment service request form
 1. Create the deploy Terraform approval workflow
 1. Create the deploy Terraform template completion workflow
@@ -35,30 +36,40 @@ To set up the service catalog to allow Terraform configurations to be uploaded, 
 
 The Terraform service request requires a form that can identify the owner of the deployed resources. That form must be assigned to an organization.
 
-**Note**: The Terraform organization will already exist if you have already gone through the *Deploying User-Provided Terraform Configurations* scenario.
-
-1. Log into vCommander, go to **Configuration >  Organizations and Quotas**, then click the **Organizations** tab.
+1. Log into vCommander, go to **Configuration > Organizations and Quotas**, then click the **Organizations** tab.
 1. Click **Add**. 
 1. In the Configure Organization dialog, for **Organization Name**, enter "Terraform Org2".
 1. Add groups or users to the organization.
 1. If you need to configure additional organization details, click **Next** and configure the organization as required.
 1. Click **Finish** when you're done.
 
-### Create the deployment destination
+### Create an automated deployment destination
 
-For the Terraform configuration to provision resources, you must configure an automated deployment destination and assign the destination to Terraform Org2.
+For the Terraform configuration to be able to provision resources, you must configure an automated deployment destination and assign the destination to Terraform Org2.
 
-For information on how to configure deployment destinations, see [Configuring Automated Deployment for Approved Service Requests](http://docs.embotics.com/vCommander/config_auto_placement_depl_vms.htm). This topic provides information for vCenter, AWS, Azure, and SCVMM managed systems.
+The specific steps that are required depend on whether you are using vCenter, AWS, Azure, and SCVMM managed systems.  For information, see [Configuring Automated Deployment for Approved Service Requests](http://docs.embotics.com/vCommander/config_auto_placement_depl_vms.htm). 
+
+### Configure a default ownership policy
+
+To ensure that new VMs are visible to organization members, configure a default ownership policy that automatically assigns ownership of new VMs to Terraform Org2. 
+
+1. In vCommander, go to **Configuration > Policies**.
+1. On the Policies tab, click **Add**.
+1. On the Choose a Policy page of the Policy Configuration wizard, select **Default Ownership** from the list of policies, then click **Next**.
+1. On the Policy Name/Description page, enter a name and a description, then click **Next**.
+1. On the Choose a Target page, from the **Target View Type** list, choose **Operational** to view a hierarchy of the entire compute infrastructure, then in the tree on the right of the page, select the target infrastructure elements for the policy, and click **Next**.
+1. On the Configure the Policy page, select **Enable Policy** for the policy to come into effect immediately after you finish configuring it.
+1. From the **Take Action** drop-down, select **Notify Only**, then click **Next**. When this option is selected, when the policy is triggered, a notification alert is created, but no action is taken for the service. 
+1. In the **Default Owners** area, for Organization, select **Terraform Org2**. 
+1. On the Summary page, review the summary and click **Finish**.
 
 ### Create the Terraform deployment service request form
 
-After the organization has been created, you need to create a form to capture the user that will be set as the owner of the deployed VM created by the Terraform template.
+After the organization has been created, you need to create a request form for the service.
 
 1. In vCommander go to **Configuration > Service Request Configuration**, then click the **Form Designer** tab.
 1. Click **Add**. 
 1. In the Add Request Form dialog, type "Terraform Deployment" for the **Form Name**, and in the **Organizations** section, select **Terraform Org2** and click **Add**. Then click **OK**.
-1. If the **Primary Owner** field isn't already present in the Service Form section of the Form Designer page, click the **Primary Owner** link on the right-hand side to add it. 
-1. For the **Primary Owner** element, click **Edit**. Clear the **Display Only** checkbox, enable the **Required** checkbox, and click **OK**.
 1. Click **Save** to save the form.
 
 ### Create the deploy Terraform approval workflow
@@ -104,9 +115,9 @@ Finally, create the Service Definition for the Terraform deployment service.
 1. On the Component Blueprints page, select **Add > New Component Type**. 
 1. In the Create New Component Type dialog, enter "EC2 Instance via Terraform" for **Name**, enter 0 for **Annual Cost**, then click **Add to Service**.
 1. For the new EC2 Instance via Terraform component blueprint, click the **Infrastructure** tab, then from the **Completion Workflow** dropdown, select `Embedded Terraform completion workflow`.
-1. Click the **Form** tab, and from the **Toolbox** at the right side of the window, click **Input Text Field**. Then in the added Input Text Field form element, enter "Name" in the **Display Label** box, ensure that the **Required** check box is enabled, and click **OK**. 
+1. Click the **Form** tab, and from the **Toolbox** at the right side of the window, click **Input Text Field**. Then in the added Input Text Field form element, enter "Name" in the **Display Label** box, ensure that the **Required** check box is enabled, and click **OK**.
 1. Click **Next**.
-1. On the Deployment page, click **Next**. 
+1. On the Deployment page, click **Next**.
 1. For the purposes of this walk-through, we’ll skip the Intelligent Placement page. Click **Next**. 
    To learn more, see [Intelligent Placement](http://docs.embotics.com/vCommander/intelligent-placement.htm).
 1. On the Visibility page select **Publish - Specific organizations, users and groups** and add **Terraform Org2**. Then click **Next**.
@@ -118,3 +129,4 @@ Finally, create the Service Definition for the Terraform deployment service.
 1. On the Service page, complete the form that appears. You must complete all fields marked with an asterisk (&ast;). Click **Next** when you're done.
 1. On the Component page, in the **Terraform Plan ID** field, enter the ID of the service request that you want to delete. 
 1. Click **Submit** to submit the request.
+
