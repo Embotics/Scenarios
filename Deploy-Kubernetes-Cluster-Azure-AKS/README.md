@@ -9,7 +9,7 @@ This project enables you to use an ARM template to deploy an Azure Container Ser
 ## Prerequisites
 
 * vCommander release 7.0.2 or greater
-* Add an Azure subscription as a vCommander managed system. See [Adding a Managed System](http://docs.embotics.com/index.html?adding_a_managed_system.htm) to learn how.
+* Add an Azure subscription as a vCommander managed system. See [Adding Azure Managed Systems](https://docs.embotics.com/vCommander/adding-azure-managed-systems.htm) to learn how.
 
 ## Install plug-in workflow step packages
 
@@ -20,7 +20,7 @@ This scenario uses the following plug-in workflow steps:
 
 Go to [Embotics GitHub / Plug-in Workflow-Steps](https://github.com/Embotics/Plug-in-Workflow-Steps) and clone or download the repository. Then in your local version of the repo, browse to the `k8s` and `azure` directories, which contain the Kubernetes and Azure plug-in workflow step packages. 
 
-To learn how to download and install workflow plug-in steps, see [Adding plug-in workflow steps](http://docs.embotics.com/vCommander/Using-Plug-In-WF-Steps.htm#Adding).
+To learn how to download and install workflow plug-in steps, see [Adding plug-in workflow steps](https://docs.embotics.com/vCommander/Using-Plug-In-WF-Steps.htm#Addingpluginworkflowsteps).
 
 ## Download scenario files
 
@@ -36,12 +36,18 @@ Download the following files from this project:
 Import a vCommander completion workflow to complete the provisioning and configuration of the cluster. 
 
 1. Go to [Embotics Git Hub / Scenarios](https://github.com/Embotics/Scenarios) and clone or download the repository.
-2. In vCommander, go to **Configuration > Service Request Configuration > Completion Workflows** and click **Import**.
-3. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploy-Kubernetes-Cluster-Azure-AKS` directory, select the `add-aks-cluster.yaml` file, and click **Open**.
+1. In vCommander, go to **Configuration > Service Request Configuration > Completion Workflows** and click **Import**.
+1. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploy-Kubernetes-Cluster-Azure-AKS` directory, select the `add-aks-cluster.yaml` file, and click **Open**.
    vCommander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
-4. Enter a comment about the workflow in the **Description of Changes** field, and click **Import**.
+1. Enter a comment about the workflow in the **Description of Changes** field, and click **Import**.
 
-​        To learn more, see [Importing and Exporting Workflow Definitions](http://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm).
+​        To learn more, see [Exporting and Importing Workflow Definitions](https://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm).
+
+## Generate an SSH public key
+
+You must have a valid SSH public key that vCommander can use to connect with the Azure portal. You should generate the key on the same machine on which vCommander has been installed. 
+
+You can use a tools such as PuTTYgen or ssh-keygen depending on your environment. 
 
 ## Create the required Azure objects
 
@@ -74,7 +80,7 @@ $ az group create --name AKS-Resource-Group --location eastus
 #### From Portal
 
 1. In the Azure portal, select **Resource Groups** and click **+ Add**. Enter a name and select a subscription and location. 
-2. Click **Create**.
+1. Click **Create**.
 
 
 ### Create a service principal
@@ -98,21 +104,15 @@ $ az ad sp create-for-rbac --name AKS-SP
 #### From Portal
 
 1. In the Azure portal, select **Azure Active Directory** > **App registrations** > **New application registration**.
-2. Enter the service principal name and a sign-on URL. You may enter any valid URL.
-3. Click **Create**. 
-4. Click **Settings > Keys**. Enter a **Description** and select a **Duration**. Click **Save**. 
-
-   **Important:** Copy and save the displayed key value. You will not be able to access it later.
-
-5. Now give permission to the service principal to manage the resource group.
-6. Select the previously created resource group. Click **Access Control (IAM)**.
-7. Click **+ Add** to add the service principal.
-8. Select **Contributor** for the Role. Under **Select**, enter the service principal name. 
-9. Click **Save**.
+1. For information on how to create a service principal, see https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal and perform the following procedures:
+  - **Create an Azure Active Directory application**
+  - **Assign the application to a role**
+  - **Get values for signing in**
+1. The appropriate permissions for assigning roles are required to create the Application Registration.  Refer to the  **Required permissions** section in the Microsoft page for more information. 
 
 ## Create a vCommander deployment destination
 
-For general information on creating a deployment destination for Azure, see [Configuring Automated Deployment for Approved Service Requests](http://docs.embotics.com/index.html?config_auto_placement_depl_vms.htm#config_dest_arm). 
+For general information on creating a deployment destination for Azure, see [Configuring Automated Deployment for Approved Service Requests](https://docs.embotics.com/vCommander/config_auto_placement_depl_vms.htm). 
 
 **Notes:** 
 
@@ -122,29 +122,30 @@ For general information on creating a deployment destination for Azure, see [Con
 ## Create a service catalog entry for users to request
 
 1. In vCommander, go to **Configuration > Service Request Configuration > Service Catalog**.
-2. Click **Add Service**.
-3. Enter a service name and description, then click **Next**. 
-4. On the Component Blueprints page, click **Add** > **ARM Template**.
-5. In the Add ARM Template dialog, click **File**, **Add**, and browse to the Scenarios repo that you cloned or downloaded. Then from the `Deploy-Kubernetes-Cluster-Azure-AKS` directory, select the `aks.template` file and click **OK**. 
-6. On the ArmTemplate component page, change the component name to something more descriptive, such as "AKS ARM Template". 
-7. Assign the downloaded completion workflow to the component.
-8. Now, set up the request form for this component. On the Form tab, under the Toolbox on the right, click **Input Text Field**. 
-9. For the Input Text Field component that is added to the form, enter "Kubernetes Cluster Name" for the **Display Label** and click **OK**. 
-10. Now we configure parameters required by the ARM template. On the Parameters tab, enter the following parameter values:
+1. Click **Add Service**.
+1. Enter a service name and description, then click **Next**. 
+1. On the Component Blueprints page, click **Add** > **ARM Template**.
+1. In the Add ARM Template dialog, click **File**, **Add**, and browse to the Scenarios repo that you cloned or downloaded. Then from the `Deploy-Kubernetes-Cluster-Azure-AKS` directory, select the `aks.template` file and click **OK**. 
+1. On the ArmTemplate component page, change the component name to something more descriptive, such as "AKS ARM Template". 
+1. Assign the downloaded completion workflow to the component.
+1. Now, set up the request form for this component. On the Form tab, under the Toolbox on the right, click **Input Text Field**. 
+1. For the Input Text Field component that is added to the form, enter "Kubernetes Cluster Name" for the **Display Label** and click **OK**. 
+1. Now we configure parameters required by the ARM template. On the Parameters tab, enter the following parameter values:
   * **dnsPrefix**: `#{form.inputField['Kubernetes Cluster Name']}`
   * **resourceName**: `#{form.inputField['Kubernetes Cluster Name']}`
+  * **kubernetesVersion**: Required Kubernetes version: [List of supported Kubernetes versions](https://docs.microsoft.com/en-us/azure/aks/supported-kubernetes-versions)
   * **servicePrincipalClientId**: ID of service principal created above
   * **servicePrincipalClientSecret**: Password/key of service principal created above
   * **sshRSAPublicKey**: Contents of `~/.ssh/id_rsa.pub`
-11. Modify the other parameters as needed. 
-12. On the Summary page, click **Finish**. 
-13. Click **Finish** again to create the service.
+1. Modify the other parameters as needed. 
+1. On the Summary page, click **Finish**. 
+1. Click **Finish** again to create the service.
 
 
 ## Submit a service request
 
 The service is now configured and ready to test. 
 1. In vCommander or the Service Portal, go to the Service Catalog and request the service you just created. 
-2. On the Component form, enter a cluster name and click **Submit**. 
+1. On the Component form, enter a cluster name and click **Submit**. 
 
     The deployed cluster will automatically be added to vCommander as a managed system.
