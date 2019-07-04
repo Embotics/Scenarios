@@ -1,0 +1,92 @@
+---
+id: 2
+guid: "77bf19c7-08e8-44b4-875b-2b286b48e477"
+name: "Infoblox - Release Reserved IP"
+description: null
+type: "CHANGE_COMPLETION"
+change_description: null
+target_type: null
+input_variables:
+- name: "Infoblox WAPI Version"
+  variable: "infoblox_wapi_version"
+  description: null
+  required: true
+  default_value: "v2.6.1"
+- name: "Infoblox URL"
+  variable: "infoblox_url"
+  description: null
+  required: true
+  default_value: null
+- name: "Infoblox Credentials File Path"
+  variable: "infobloxs_cred"
+  description: null
+  required: true
+  default_value: null
+- name: "vCommander Credentials File Path"
+  variable: "vCommander_cred"
+  description: null
+  required: true
+  default_value: null
+info_messages: []
+system_version: "7.1.6 (1007030241)"
+steps:
+- name: "Release IP"
+  type: "EMBEDDED_SCRIPT"
+  condition: null
+  data:
+    credentials: null
+    failure_action: "FAIL_STEP"
+    script_contents: "<#\nDescription: Script that Calls out to IPAM to release address\
+      \ for the VM in the decommissioning request\nRequirements: \n-VComamnder 6.1.4\
+      \ or higher\n-Powershell V4 or greater\n-InfoBlox 8.1.2 or greater\n\nNote:\n\
+      Your Environment may require additional or diffrent logic depending on how InfoBlox\
+      \ has been configured. This Example assumes there is no overlapping subnets\
+      \ in IPAM\n#>\n\n########################################################################################################################\n\
+      # Configure the variables below using the Production vCommander\n########################################################################################################################\n\
+      \    #infoblox Info\n    $infobloxURL = \"#{inputVariable['infoblox_url']}\"\
+      \   #infoblox Base URL\n    $infoBloxCred = \"#{inputVariable['infobloxs_cred']}\"\
+      \     # Encrypted Credfile for Infoblox    \n    #vCommander Info\n    $vCredFile\
+      \ = \"#{inputVariable['vCommander_cred']}\"           #Encrypted Credfile for\
+      \ vCommander\n    $vCommanderURL = \"https://localhost\"                   \
+      \ #VCommander URL          \n\n    #Get the latest WAPI version for calls to\
+      \ Infoblox API\n    $WAPIVersion = \"#{inputVariable['infoblox_wapi_version']}\"\
+      \n\n    $IPAddress = \"#{target.ipv4Addresses}\"\n\n\n########################################################################################################################\n\
+      # Nothing to configure below this line - Starting the main function of the script\n\
+      ########################################################################################################################\n\
+      #Load vCommander Modules\n########################################################################################################################\n\
+      \        Write-Host \"Loading Modules\"\n        $moduleName = \"VCommander\"\
+      \n        If (-not (Get-Module -name $moduleName)) {Import-Module -Name $moduleName\
+      \ \n        } else {Remove-Module $moduleName\n                        Import-Module\
+      \ -Name $moduleName }\n\n########################################################################################################################\n\
+      # Setting Cert Policy - required for successful auth with the infoblox API if\
+      \ infoblox is unsigned\n########################################################################################################################\n\
+      add-type @\"\n    using System.Net;\n    using System.Security.Cryptography.X509Certificates;\n\
+      \    public class TrustAllCertsPolicy : ICertificatePolicy {\n        public\
+      \ bool CheckValidationResult(\n            ServicePoint srvPoint, X509Certificate\
+      \ certificate,\n            WebRequest request, int certificateProblem) {\n\
+      \            return true;\n        }\n    }\n\"@\n[System.Net.ServicePointManager]::CertificatePolicy\
+      \ = New-Object TrustAllCertsPolicy\n[System.Net.ServicePointManager]::SecurityProtocol\
+      \ = [System.Net.SecurityProtocolType]::Tls12;\n########################################################################################################################\n\
+      # Building InfoBlox API string and invoking API\n########################################################################################################################\n\
+      \n    #Setup Auth to Infoblox\n    $iCred = New-DecryptCredential $infoBloxCred\n\
+      \    $authInfo = (\"{0}:{1}\" -f $iCred.GetNetworkCredential().userName,$iCred.GetNetworkCredential().Password)\n\
+      \    $authInfo = [System.Text.Encoding]::UTF8.GetBytes($authInfo)\n    $authInfo\
+      \ = [System.Convert]::ToBase64String($authInfo)\n    $InfoBloxsessionHeader\
+      \ = @{Authorization=(\"Basic {0}\" -f $authInfo)}\n\n    $getIPDetailsURL =\
+      \ $infobloxURL +\"/wapi/$WAPIVersion/record:host?ipv4addr=$IPAddress\"\n   \
+      \ Try\n    {\n        $getIPDetails = Invoke-WebRequest -Uri $getIPDetailsURL\
+      \ -Headers $InfoBloxsessionHeader -Method GET\n        $result = ($getIPDetails.Content\
+      \ | ConvertFrom-Json)\n    }\n    Catch\n    {\n        Write-Host \"Failed\
+      \ to get Address details for $IPAddress from IPAM\" -ForegroundColor Red\n \
+      \       exit 1\n    }\n\n\t$ReclaimIPURL =  $infobloxURL + \"/wapi/$WAPIVersion/\"\
+      \ +$result._ref\n\n#perform Remove \n    Try\n    {\n        $Delete = Invoke-WebRequest\
+      \ -Uri $ReclaimIPURL -Headers $InfoBloxsessionHeader -Method DELETE        \n\
+      \    }\n    Catch\n    {\n        Write-Host \"Failed to Delete Address $IPAddress\
+      \ from IPAM\" -ForegroundColor Red\n        $error[0] | Format-List -Force\n\
+      \        Exit 1\n    }\n\n    \n    Write-host $Delete.StatusDescription\n \
+      \   \n    if($Delete.StatusCode -eq 200){\n       \n        Exit;0\n    }\n\
+      \    else\n    {\n        Exit;1\n    }\n"
+    script_arguments: ""
+    timeout: 300
+    executable: "powershell.exe"
+    capture_output: true
