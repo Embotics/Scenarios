@@ -18,7 +18,7 @@ This scenario enables you to use deploy resources using Terraform configurations
 
 Go to [Embotics GitHub / Plug-in Workflow-Steps](https://github.com/Embotics/Plug-in-Workflow-Steps) and clone or download the repository. Then install the `wfplugins-terraform` step package. The workflows in this scenario reference those Terraform plug-in workflow steps.
 
-To learn how to download and install workflow plug-in steps, see [Adding Workflow Plug-In Steps](http://docs.embotics.com/vCommander/Using-Plug-In-WF-Steps.htm#Adding).
+To learn how to download and install workflow plug-in steps, see [Adding Workflow Plug-In Steps](https://docs.embotics.com/vCommander/Using-Plug-In-WF-Steps.htm#Adding).
 
 ## Set up the Service Catalog
 
@@ -47,7 +47,7 @@ The Terraform service request requires a form that can identify the owner of the
 
 For the Terraform configuration to be able to provision resources, you must configure an automated deployment destination and assign the destination to Terraform Org2.
 
-The specific steps that are required depend on whether you are using vCenter, AWS, Azure, and SCVMM managed systems.  For information, see [Configuring Automated Deployment for Approved Service Requests](http://docs.embotics.com/vCommander/config_auto_placement_depl_vms.htm). 
+The specific steps that are required depend on whether you are using vCenter, AWS, Azure, and SCVMM managed systems.  For information, see [Configuring Automated Deployment for Approved Service Requests](https://docs.embotics.com/vCommander/config_auto_placement_depl_vms.htm). 
 
 ### Configure a default ownership policy
 
@@ -75,9 +75,9 @@ After the organization has been created, you need to create a request form for t
 ### Create the deploy Terraform approval workflow
 You can use an approval workflow to generate the Terraform plan and have it approved. The approval workflow definition provided with this scenario will download the Terraform configuration through http from version control or an s3 bucket. 
 
-See [Importing and Exporting Workflow Definitions](http://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm) for more information about how to import workflow definitions.
+See [Exporting and Importing Workflow Definitions](https://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm) for more information about how to import workflow definitions.
 
-**Note:** The provided approval workflow definition has steps that require credentials. After you import this workflow definition, you must edit the workflow definition in a text editor to use the appropriate credentials that have been added to vCommander. For information on how to add credentials to vCommander, see [Adding Username/password credentials](http://docs.embotics.com/vCommander/credentials.htm#Adding).
+**Note:** The provided approval workflow definition has steps that require credentials. After you import this workflow definition, you must edit the workflow definition in a text editor to use the appropriate credentials that have been added to vCommander. For information on how to add credentials to vCommander, see [Adding Username/password credentials](https://docs.embotics.com/vCommander/credentials.htm#Adding).
 
 1. Go to [Embotics Git Hub / Scenarios](https://github.com/Embotics/Scenarios) and clone or download the Scenarios repository.
 1. In vCommander, go to **Configuration > Service Request Configuration > Approval Workflows** and click **Import**.
@@ -119,7 +119,7 @@ Finally, create the Service Definition for the Terraform deployment service.
 1. Click **Next**.
 1. On the Deployment page, click **Next**.
 1. For the purposes of this walk-through, we’ll skip the Intelligent Placement page. Click **Next**. 
-   To learn more, see [Intelligent Placement](http://docs.embotics.com/vCommander/intelligent-placement.htm).
+   To learn more, see [Intelligent Placement](https://docs.embotics.com/vCommander/intelligent-placement.htm).
 1. On the Visibility page select **Publish - Specific organizations, users and groups** and add **Terraform Org2**. Then click **Next**.
 1. On the Summary page, click **Finish**.
 

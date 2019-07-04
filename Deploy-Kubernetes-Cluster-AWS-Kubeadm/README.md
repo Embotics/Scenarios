@@ -16,8 +16,8 @@ This article is intended for systems administrators, engineers and IT profession
 
 Before you begin, you must:
 
-- Add an AWS account as a vCommander managed system. See [Adding an AWS Managed System](http://docs.embotics.com/vCommander/adding_a_managed_system.htm#add_aws).
-- Create a vCommander deployment destination, targeting the location in AWS where the Kubernetes cluster will be deployed. See [Configuring Automated Deployment for Approved Service Requests](http://docs.embotics.com/index.html?config_auto_placement_depl_vms.htm). 
+- Add an AWS account as a vCommander managed system. See [Adding AWS managed systems](https://docs.embotics.com/vCommander/adding-aws-managed-systems.htm).
+- Create a vCommander deployment destination, targeting the location in AWS where the Kubernetes cluster will be deployed. See [Configuring Automated Deployment for Approved Service Requests](https://docs.embotics.com/vCommander/config_auto_placement_depl_vms.htm). 
 - Ensure that the user requesting the Kubernetes cluster has permission to deploy to the targeted location in AWS.
 - Ensure that the root Linux user can log in through SSH, because Docker and Kubernetes require the configuration of system-level resources.
 
@@ -26,36 +26,36 @@ Before you begin, you must:
 To provision a Kubernetes cluster on AWS with vCommander, the following steps are required. Further details for each step are provided after this overview.
 
 1. Create a CentOS 7 AMI in AWS.
-2. Test an SSH connection to the deployed instance.
-3. Create guest OS credentials for the “centos” user; these credentials are referenced by the workflows you will import.
-4. Install a workflow plug-in step that automatically adds the deployed cluster to vCommander’s inventory.
-5. Import completion workflows from the Embotics GitHub repository; these workflows will run once the cluster is deployed.
-6. Create a custom attribute for the Kubernetes version.
-7. Create a custom attribute for the managed system name.
-8. Synchronize the inventory for your AWS managed system.
-9. Create a service catalog entry for users to request a Kubernetes cluster.
-10. Submit a service request.
+1. Test an SSH connection to the deployed instance.
+1. Create guest OS credentials for the “centos” user; these credentials are referenced by the workflows you will import.
+1. Install a workflow plug-in step that automatically adds the deployed cluster to vCommander’s inventory.
+1. Import completion workflows from the Embotics GitHub repository; these workflows will run once the cluster is deployed.
+1. Create a custom attribute for the Kubernetes version.
+1. Create a custom attribute for the managed system name.
+1. Synchronize the inventory for your AWS managed system.
+1. Create a service catalog entry for users to request a Kubernetes cluster.
+1. Submit a service request.
 
 ## Create a CentOS 7 AMI in AWS
 
 Create a generic AMI in AWS to use as the base image for all nodes in the Kubernetes cluster.
 
 1. Log into the AWS console, navigate to EC2, and click **Launch Instance**.
-2. Choose an Amazon Machine Image (AMI): Go to the AWS Marketplace tab, search for “centos”, and select **CentOS 7 (x86_64) - with Updates HVM**. This image has no software cost, but will incur AWS usage fees.
-3. Review the AMI details and click **Continue**.
-4. On the Instance Type page, select “t2.medium”. T2.Medium is a good starting point for Kubernetes deployments. You may want to choose a larger instance type, depending on your application workloads. Click **Next: Configure Instance Details**.
-5. On the Configure Instance Details page, configure options appropriate for your organization. Click **Next: Add Storage**.
-6. On the Add Storage page, keep the default size of 8 GiB. (Kubernetes can run on any storage class or volume type.) Click **Next: Add Tags**.
-7. On the Add Tags page, add tags as required. Click **Next: Configure Security Group**.
-8. On the Configure Security Group page, configure the following firewall rules:
+1. Choose an Amazon Machine Image (AMI): Go to the AWS Marketplace tab, search for “centos”, and select **CentOS 7 (x86_64) - with Updates HVM**. This image has no software cost, but will incur AWS usage fees.
+1. Review the AMI details and click **Continue**.
+1. On the Instance Type page, select “t2.medium”. T2.Medium is a good starting point for Kubernetes deployments. You may want to choose a larger instance type, depending on your application workloads. Click **Next: Configure Instance Details**.
+1. On the Configure Instance Details page, configure options appropriate for your organization. Click **Next: Add Storage**.
+1. On the Add Storage page, keep the default size of 8 GiB. (Kubernetes can run on any storage class or volume type.) Click **Next: Add Tags**.
+1. On the Add Tags page, add tags as required. Click **Next: Configure Security Group**.
+1. On the Configure Security Group page, configure the following firewall rules:
   - **SSH**: `TCP port 22`
   - **Custom TCP**: `TCP port 6443`
-9. Click **Review and Launch**.
-10. A dialog appears, prompting you to select an existing key pair or create a new one. If you already have an AWS key pair, select it in the list. If not, select **Create a new key pair**. Enter a key pair name, such as kubernetes-aws-vcommander, and click **Download Key Pair**. See [Managing Key Pairs](http://docs.embotics.com/vCommander/managing-key-pairs.htm) to learn more.
-11. Save the .pem file to a known location.
+1. Click **Review and Launch**.
+1. A dialog appears, prompting you to select an existing key pair or create a new one. If you already have an AWS key pair, select it in the list. If not, select **Create a new key pair**. Enter a key pair name, such as kubernetes-aws-vcommander, and click **Download Key Pair**. See [Managing Key Pairs](https://docs.embotics.com/vCommander/managing-key-pairs.htm) to learn more.
+1. Save the .pem file to a known location.
    **Important**: Do not lose your SSH private key file. This PEM-encoded file is required to connect the vCommander workflow to the deployed EC2 instances.
-12. Click **Launch Instances**.
-13. Under Instances, right-click the instance and select **Image > Create Image**.
+1. Click **Launch Instances**.
+1. Under Instances, right-click the instance and select **Image > Create Image**.
 
 Once AWS has created the image, which may take up to five minutes, your AMI is available for use.
 
@@ -72,15 +72,15 @@ To learn more, see [Connect to Your Container Instance](https://docs.aws.amazon.
 The completion workflows use “centos” user credentials to open an SSH connection to the deployed instances. Before importing the workflows, you must create a set of credentials for the centos user, using the PEM-encoded key from the instance you just created.
 
 1. In vCommander, go to **Configuration > Credentials**.
-2. Click **Add**.
-3. In the Add Credentials dialog, for the **Credentials Type**, select **RSA Key**.
-4. For **Name**, enter **aws**.
+1. Click **Add**.
+1. In the Add Credentials dialog, for the **Credentials Type**, select **RSA Key**.
+1. For **Name**, enter **aws**.
     This name is hard-coded in the completion workflows, so you must use this exact name.
-5. For **Username**, enter **centos**.
-6. Open the key.pem file from the instance in a text editor, copy the entire contents, and paste the contents into the RSA Key field.
-7. For **Description**, enter **Kubernetes-AWS**.
-8. For **Category**, keep the default setting, **Guest OS Credentials**.
-9. Click **OK**.
+1. For **Username**, enter **centos**.
+1. Open the key.pem file from the instance in a text editor, copy the entire contents, and paste the contents into the RSA Key field.
+1. For **Description**, enter **Kubernetes-AWS**.
+1. For **Category**, keep the default setting, **Guest OS Credentials**.
+1. Click **OK**.
 
 ## Install the plug-in workflow step package
 
@@ -88,7 +88,7 @@ This scenario uses the Kubernetes plug-in workflow step package (`wfplugins-k8s.
 
 Go to [Embotics GitHub / Plug-in Workflow-Steps](https://github.com/Embotics/Plug-in-Workflow-Steps) and clone or download the repository. Then in your local version of the repo, browse to the `k8s` directory, which contains the Kubernetes plug-in workflow step package.
 
-To learn how to download and install workflow plug-in steps, see [Adding Workflow Plug-In Steps](http://docs.embotics.com/vCommander/Using-Plug-In-WF-Steps.htm#Adding). 
+To learn how to download and install workflow plug-in steps, see [Adding Workflow Plug-In Steps](https://docs.embotics.com/vCommander/Using-Plug-In-WF-Steps.htm#Adding). 
 
 ## Import the completion workflows
 
@@ -110,10 +110,10 @@ Import the two following vCommander completion workflows to complete the provisi
 
 To enable requesters to select which version of Kubernetes to install, create a custom attribute.
 1. In vCommander, go to **Configuration > Custom Attributes**.
-2. Click **Add**.
-3. Name the attribute **kubernetes_version** and keep the default values for all other settings on this page.
+1. Click **Add**.
+1. Name the attribute **kubernetes_version** and keep the default values for all other settings on this page.
     This name is hard-coded in the completion workflows, so you must use this exact name.
-4. Click **Next**, add the appropriate Kubernetes versions, and click **OK**.
+1. Click **Next**, add the appropriate Kubernetes versions, and click **OK**.
 
 
 ## Create a custom attribute for the managed system name
@@ -121,19 +121,19 @@ To enable requesters to select which version of Kubernetes to install, create a 
 To store the name of the Kubernetes managed system, create another custom attribute.
 
 1. In vCommander, go to **Configuration > Custom Attributes**.
-2. Click **Add**.
-3. Name the attribute **kubernetes_name**.
+1. Click **Add**.
+1. Name the attribute **kubernetes_name**.
    This name is hard-coded in the completion workflows, so you must use this exact name.
-4. From the **Type** list, select **Text**.
-5. Keep the default values for all other settings on this page.
-6. Click **Next**, choose **Free Form**, and click **Finish**.
+1. From the **Type** list, select **Text**.
+1. Keep the default values for all other settings on this page.
+1. Click **Next**, choose **Free Form**, and click **Finish**.
 
 ## Synchronize the inventory for your AWS managed system
 
 To  ensure that your newly created AMI is available to add to the service  catalog, synchronize the inventory for your AWS managed system.
 
 1. In vCommander, go to **Views > Operational**.
-2. Right-click your AWS managed system and select **Synchronize Inventory**.
+1. Right-click your AWS managed system and select **Synchronize Inventory**.
 
 ## Create a service catalog entry
 
@@ -147,34 +147,34 @@ Next, create an entry in the service catalog that:
 
 
 1. In vCommander, go to **Configuration > Service Request Configuration > Service Catalog**, then click **Add Service**.
-2. Enter a name and description for the service, and optionally apply a custom icon and categories, then click **Next**.
-3. Add the AMI for provisioning the base instances for the cluster. Click **Add > VM Template, Image or AMI** and navigate to the AMI you created earlier.
+1. Enter a name and description for the service, and optionally apply a custom icon and categories, then click **Next**.
+1. Add the AMI for provisioning the base instances for the cluster. Click **Add > VM Template, Image or AMI** and navigate to the AMI you created earlier.
 
     The workflows support any number of nodes, but in this example, we’re creating a cluster of a master and two worker nodes, so you must click **Add to Service** three times. When you click **Close**, the three components are visible.
-4. Create a custom component to store the value for the Kubernetes version custom attribute. On the Component Blueprints page, click **Add > New Component Type**. In the Create New Component Type dialog, enter a name of **kubernetes_version**, an annual cost of 0, then click **Add to Service**. **Note:** This name is hard-coded in the completion workflows, so you must use this exact name.
-5. Create a second custom component to store the value for the name of the Kubernetes cluster when it’s added to vCommander as a managed system. On the Component Blueprints page, click **Add > New Component Type**. In the Create New Component Type dialog, enter a name of **kubernetes_name** and an annual cost of 0, then click **Add to Service**.
+1. Create a custom component to store the value for the Kubernetes version custom attribute. On the Component Blueprints page, click **Add > New Component Type**. In the Create New Component Type dialog, enter a name of **kubernetes_version**, an annual cost of 0, then click **Add to Service**. **Note:** This name is hard-coded in the completion workflows, so you must use this exact name.
+1. Create a second custom component to store the value for the name of the Kubernetes cluster when it’s added to vCommander as a managed system. On the Component Blueprints page, click **Add > New Component Type**. In the Create New Component Type dialog, enter a name of **kubernetes_name** and an annual cost of 0, then click **Add to Service**.
 
     This name is hard-coded in the completion workflows, so you must use this exact name.
-6. Next, configure the blueprint for each of the VM components. On the Infrastructure tab:
+1. Next, configure the blueprint for each of the VM components. On the Infrastructure tab:
    * For **Completion Workflow**, select **aws-post-deploy-k8s-kubeadm-component**.
    * Customize the **Deployed Name** to match your enterprise naming convention, using vCommander variables.
-7. On the Resources tab:
+1. On the Resources tab:
   * Set the Instance Type to t2.medium (at minimum).
     **Note:** Increase the resources to support more concurrent pods/containers per host, if required.
   * From the **Key Pair** list, select the key pair created in AWS earlier.  
-8. Perform this configuration for the remaining two VM components.
-9. Once you have configured all three VM components, configure the first custom component. On the Component Blueprint page for kubernetes_version, click the **Attributes** tab, then click **Add Attributes**. In the Add Attributes dialog, select **kubernetes_version** in the list and click **OK**.
-10. Back on the Attributes tab, choose a default value for kubernetes_version from the drop-down list.
-11. If you want to allow requesters to choose the Kubernetes version, add the custom attribute to the request form. On the Form tab, in the Toolbox on the right, click the **kubernetes_version** form element.
-12. Click **Edit** to enable the **Required** flag if desired and click **OK**.
-13. Configure the blueprint for the second custom component. On the Component Blueprint page for kubernetes_name, click the **Attributes** tab, then click **Add Attributes**. In the Add Attributes dialog, select **kubernetes_name** in the list and click **OK**.
-14. If you want to allow requesters to choose the name of the Kubernetes managed system, add the custom attribute to the request form. On the Form tab, in the Toolbox on the right, click the **kubernetes_name** form element.
-15. Click **Edit** to enable the **Required** flag and click **OK**.
-16. On the Deployment page, for Completion Workflow, select **aws-post-deploy-k8s-kubeadm-svc**, then click **Next**.
-17. For the purposes of this walk-through, we’ll skip the Intelligent Placement page. Click **Next**. 
-   To learn more, see [Intelligent Placement](http://docs.embotics.com/vCommander/intelligent-placement.htm).
-18. On the Visibility page, specify who can request this service, then click **Next**.
-19. On Summary page, click **Finish**.
+1. Perform this configuration for the remaining two VM components.
+1. Once you have configured all three VM components, configure the first custom component. On the Component Blueprint page for kubernetes_version, click the **Attributes** tab, then click **Add Attributes**. In the Add Attributes dialog, select **kubernetes_version** in the list and click **OK**.
+1. Back on the Attributes tab, choose a default value for kubernetes_version from the drop-down list.
+1. If you want to allow requesters to choose the Kubernetes version, add the custom attribute to the request form. On the Form tab, in the Toolbox on the right, click the **kubernetes_version** form element.
+1. Click **Edit** to enable the **Required** flag if desired and click **OK**.
+1. Configure the blueprint for the second custom component. On the Component Blueprint page for kubernetes_name, click the **Attributes** tab, then click **Add Attributes**. In the Add Attributes dialog, select **kubernetes_name** in the list and click **OK**.
+1. If you want to allow requesters to choose the name of the Kubernetes managed system, add the custom attribute to the request form. On the Form tab, in the Toolbox on the right, click the **kubernetes_name** form element.
+1. Click **Edit** to enable the **Required** flag and click **OK**.
+1. On the Deployment page, for Completion Workflow, select **aws-post-deploy-k8s-kubeadm-svc**, then click **Next**.
+1. For the purposes of this walk-through, we’ll skip the Intelligent Placement page. Click **Next**. 
+   To learn more, see [Intelligent Placement](https://docs.embotics.com/vCommander/intelligent-placement.htm).
+1. On the Visibility page, specify who can request this service, then click **Next**.
+1. On Summary page, click **Finish**.
 
 The service catalog entry is now published.
 

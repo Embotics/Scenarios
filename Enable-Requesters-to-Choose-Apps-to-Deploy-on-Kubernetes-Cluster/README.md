@@ -11,7 +11,7 @@ This guide is intended for systems administrators, engineers and IT professional
 
 Before you begin, you must add a Kubernetes cluster as a managed system. You can do this in one of two ways:
 
-- Add an existing Kubernetes cluster as a vCommander managed system. See [Adding a Kubernetes managed system](http://docs.embotics.com/vCommander/adding_a_managed_system.htm#add_k8s) a Kubernetes Managed System.
+- Add an existing Kubernetes cluster as a vCommander managed system. See [Adding a Kubernetes managed system](https://docs.embotics.com/vCommander/adding-kubernetes-managed-systems.htm) a Kubernetes Managed System.
 - Create a new Kubernetes cluster through vCommander and have it automatically added as a vCommander managed system. To learn how, see [Workflow Extension Scenarios](https://support.embotics.com/support/solutions/folders/8000085541).
 
 ## Install the plug-in step package
@@ -20,7 +20,7 @@ This scenario uses the Kubernetes plug-in workflow step package (`wfplugins-k8s.
 
 Go to [Embotics GitHub / Plug-in Workflow-Steps](https://github.com/Embotics/Plug-in-Workflow-Steps) and clone or download the repository. Then in your local version of the repo, browse to the `k8s` directory, which contains the Kubernetes plug-in workflow step package. 
 
-For information on how to download and install workflow plug-in steps, see [Adding plug-in workflow steps](http://docs.embotics.com/vCommander/Using-Plug-In-WF-Steps.htm#Adding).
+For information on how to download and install workflow plug-in steps, see [Adding plug-in workflow steps](https://docs.embotics.com/vCommander/Using-Plug-In-WF-Steps.htm#Adding).
 
 ## Import the completion workflow
 
@@ -31,7 +31,7 @@ For information on how to download and install workflow plug-in steps, see [Addi
     vCommander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
 4. Enter a comment about the workflow in the **Description of Changes** field, and click **Import**.
 
-    To learn more, see [Importing and Exporting Workflows](http://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm).
+    To learn more, see [Exporting and Importing Workflows](https://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm).
 
 ## Create a custom attribute
 
@@ -45,7 +45,7 @@ Create a list-type custom attribute named “Application to Install” with the 
 - `mongo`
 - `redis`
 
-To learn more about custom attributes, see [Using Custom Attributes to Add Infrastructure Metadata](http://docs.embotics.com/vCommander/configuring_custom_attributes.htm).
+To learn more about custom attributes, see [Using Custom Attributes to Add Infrastructure Metadata](https://docs.embotics.com/vCommander/configuring_custom_attributes.htm).
 
 ## Configure the change request form
 

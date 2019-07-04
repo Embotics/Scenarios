@@ -16,8 +16,8 @@ This article is intended for systems administrators, engineers and IT profession
 
 Before you begin, you must:
 
-- Add a vCenter as a vCommander managed system. See [Adding a Managed System](http://docs.embotics.com/vCommander/adding_a_managed_system.htm#add_vcenter).
-- Create a vCommander deployment destination, targeting the location in vCenter where the Kubernetes cluster will be deployed. See [Configuring Automated Deployment for Approved Service Requests](http://docs.embotics.com/index.html?config_auto_placement_depl_vms.htm). 
+- Add a vCenter as a vCommander managed system. See [Adding vCenter managed systems](https://docs.embotics.com/vCommander/adding_a_managed_system.htm#AddingvCentermanagedsystems).
+- Create a vCommander deployment destination, targeting the location in vCenter where the Kubernetes cluster will be deployed. See [Configuring Automated Deployment for Approved Service Requests](<https://docs.embotics.com/vCommander/config_auto_placement_depl_vms.htm>). 
 - Ensure that the user requesting the Kubernetes cluster has permission to deploy to the targeted location in vSphere.
 - Ensure that the root Linux user can log in through SSH, because Docker and Kubernetes require the configuration of system-level resources.
 
@@ -57,7 +57,7 @@ Create a generic VM template in vSphere to use as the base image for all nodes i
 
 Go to [Embotics GitHub / Plug-in Workflow-Steps](https://github.com/Embotics/Plug-in-Workflow-Steps) and clone or download the repository. Then using your local version of the repo, install the Kubernetes plug-in workflow step package (located in the `k8s` directory), which contains a plug-in workflow step to add the deployed Kubernetes cluster to vCommander’s inventory as a managed system. The completion workflows in this scenario reference this plug-in step.
 
-To learn how to download and install workflow plug-in steps, see [Adding Workflow Plug-In Steps](http://docs.embotics.com/vCommander/Using-Plug-In-WF-Steps.htm#Adding). 
+To learn how to download and install workflow plug-in steps, see [Adding Workflow Plug-In Steps](https://docs.embotics.com/vCommander/Using-Plug-In-WF-Steps.htm#Adding). 
 
 ## Create guest OS credentials for the root user
 
@@ -141,7 +141,7 @@ Next, create an entry in the service catalog that:
 
    The workflows support any number of nodes, but in this example, we’re creating a cluster of a master and two worker nodes, so you must click **Add to Service** three times. When you click **Close**, the three components are visible.
 
-1. Create a [custom component](http://docs.embotics.com/index.html?make_service_available.htm#manage_component_types) to store the value for the Kubernetes version custom attribute on the request form. On the Component Blueprints page, click **Add > New Component Type**. 
+1. Create a [custom component](https://docs.embotics.com/vCommander/make_service_available.htm#manage_component_types) to store the value for the Kubernetes version custom attribute on the request form. On the Component Blueprints page, click **Add > New Component Type**. 
 
 1. In the Create New Component Type dialog, enter a name of **kubernetes_version**, an annual cost of 0, then click **Add to Service**.
 
@@ -172,7 +172,7 @@ Next, create an entry in the service catalog that:
 
 1. On the Deployment page, assign the completion workflow **vsphere-post-deploy-k8s-kubeadm-svc**, then click **Next**.
 
-1. For the purposes of this walk-through, we’ll skip the Intelligent Placement page. Click **Next**. To learn more about Intelligent Placement, see [Intelligent Placement](http://docs.embotics.com/vCommander/intelligent-placement.htm).
+1. For the purposes of this walk-through, we’ll skip the Intelligent Placement page. Click **Next**. To learn more about Intelligent Placement, see [Intelligent Placement](https://docs.embotics.com/vCommander/intelligent-placement.htm).
 
 1. On the Visibility page, specify who can request this service, then click **Next**.
 
@@ -186,4 +186,4 @@ Our service is now configured and ready to test. In vCommander or the Service Po
 
 Once the service request has completed, the new cluster is added to vCommander’s inventory as a Kubernetes managed system.
 
-To learn more about vCommander's support for Kubernetes, see [Managing Kubernetes](http://docs.embotics.com/vCommander/managing-kubernetes.htm).
+To learn more about vCommander's support for Kubernetes, see [Managing Kubernetes](https://docs.embotics.com/vCommander/managing-kubernetes.htm).

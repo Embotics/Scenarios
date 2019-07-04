@@ -17,7 +17,7 @@ This scenario enables you to provision resources specified in a Terraform config
 
 Go to [Embotics GitHub / Plug-in Workflow-Steps](https://github.com/Embotics/Plug-in-Workflow-Steps) and clone or download the repository. Then install the `wfplugins-terraform` step package. The workflows in this scenario reference those Terraform plug-in workflow steps.
 
-To learn how to download and install workflow plug-in steps, see [Adding Workflow Plug-In Steps](http://docs.embotics.com/vCommander/Using-Plug-In-WF-Steps.htm#Adding).
+To learn how to download and install workflow plug-in steps, see [Adding Workflow Plug-In Steps](https://docs.embotics.com/vCommander/Using-Plug-In-WF-Steps.htm#Adding).
 
 ## Set up the Service Catalog
 
@@ -46,7 +46,7 @@ The Terraform service request needs a form that can identify the owner of the de
 
 For the Terraform configuration to be able to provision resources, configure an automated deployment destination and assign the destination to Terraform Org.
 
-The specific steps that are required depend on whether you are using vCenter, AWS, Azure, and SCVMM managed systems. For more information, see [Configuring Automated Deployment for Approved Service Requests](http://docs.embotics.com/vCommander/config_auto_placement_depl_vms.htm).
+The specific steps that are required depend on whether you are using vCenter, AWS, Azure, and SCVMM managed systems. For more information, see [Configuring Automated Deployment for Approved Service Requests](https://docs.embotics.com/vCommander/config_auto_placement_depl_vms.htm).
 
 ### Configure a default ownership policy
 
@@ -71,7 +71,7 @@ After the organization has been created, you must create a request form for the 
 1. Click **Save** to save the form.
 
 ### Create the Terraform deployment approval workflow
-Next, you must create the approval workflow to run the Terraform generate the Terraform plan and have it approved. You can import an existing workflow definition that is provided from the Scenarios repository. See [Importing and Exporting Workflow Definitions](http://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm) for more information.
+Next, you must create the approval workflow to run the Terraform generate the Terraform plan and have it approved. You can import an existing workflow definition that is provided from the Scenarios repository. See [Exporting and Importing Workflow Definitions](https://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm) for more information.
 
 **Note:** The workflow definition that you will import has steps that contain credentials. Therefore credentials with the same name must exist on the vCommander installation where you're importing the file. For the workflow definition to successfully import, you can either add the appropriate credentials to vCommander or edit the workflow definition in a text editor to remove the credential names before you import it.
 

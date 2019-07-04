@@ -18,7 +18,7 @@ This scenario enables you to destroy resources provisioned through Terraform and
 
 Go to [Embotics GitHub / Plug-in Workflow-Steps](https://github.com/Embotics/Plug-in-Workflow-Steps) and clone or download the repository. Then install the `wfplugins-terraform` plug-in workflow package. The workflows in this scenario reference those Terraform plug-in workflow steps.
 
-To learn how to download and install workflow plug-in steps, see [Adding Workflow Plug-In Steps](http://docs.embotics.com/vCommander/Using-Plug-In-WF-Steps.htm#Adding).
+To learn how to download and install workflow plug-in steps, see [Adding Workflow Plug-In Steps](https://docs.embotics.com/vCommander/Using-Plug-In-WF-Steps.htm#Adding).
 
 ## Set up the Service Catalog
 
@@ -49,7 +49,7 @@ Next, you have to create the completion Workflow to destroy the Terraform manage
 1. Go to the Scenarios repo that you previously cloned or downloaded, then from the `Delete-Terraform-Managed-Infrastructure` directory, select the `terraform-delete-completion-workflow ` .yaml or .json file, and click **Open**.
 
    vCommander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
-1. Enter a comment about the workflow in the **Description of Changes** field, and click **Import**. To learn more, see [Importing and Exporting Workflow Definitions](http://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm).
+1. Enter a comment about the workflow in the **Description of Changes** field, and click **Import**. To learn more, see [Exporting and Importing Workflow Definitions](https://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm).
 1. After the Terraform Destroy completion workflow is imported, select it from the list, and click **Edit**.
 1. In the Completion Workflow Configuration dialog, go to the **Assigned Components** page, and ensure the **Do not apply this workflow to any custom component** option is enabled. 
 1. Click **Next**, then **Finish**.
@@ -59,15 +59,15 @@ Next, you have to create the completion Workflow to destroy the Terraform manage
 Finally, create the Service Definition for the Terraform deployment service.
 
 1. In vCommander, click the **Service Catalog** tab, then click **Add Service**.
-1. For **Name**, type "Destroy Terraform Managed Infrastructure" and click **Next**.
+1. For **Name**, type "Terraform Decomission" and click **Next**.
 1. On the Component Blueprints page, select **Add > New Component Type**. 
 1. In the Create New Component Type dialog, enter "EC2 Instance via Terraform" for **Name**,  enter 0 for **Annual Cost**, then click **Add to Service**.
-1. For the new EC2 Instance via Terraform component blueprint, click the **Infrastructure** tab, then from the **Completion Workflow** dropdown, select the`Terraform Destroy` workflow.
+1. For the new EC2 Instance via Terraform component blueprint, click the **Infrastructure** tab, then from the **Completion Workflow** dropdown, select the `Terraform Destroy` workflow.
 1. Click the **Form** tab, and from the Toolbox at the right side of the window, click the **Input Text Field** form element. Then in the **Text** box, enter "Terraform Plan ID" and click **OK**. 
 1. Click **Next**.
 1. On the Deployment page, click **Next**. 
 1. For the purposes of this walk-through, we’ll skip the Intelligent Placement page. Click **Next**. 
-   To learn more, see [Intelligent Placement](http://docs.embotics.com/vCommander/intelligent-placement.htm).
+   To learn more, see [Intelligent Placement](https://docs.embotics.com/vCommander/intelligent-placement.htm).
 1. On the Visibility page, select **Publish - Specific organizations, users and groups** and add the Terraform organization. Then click **Next**.
 1. On the Summary page, click **Finish**.
 
