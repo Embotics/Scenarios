@@ -1,0 +1,85 @@
+change_description: null
+description: Obtain the details from a deployment destination
+guid: 3e127684-8247-45f1-a998-17d56b3dcdd8
+id: 4
+info_messages: []
+input_variables:
+- {default_value: null, description: Name of the destination to lookup, name: Destination
+    Name, required: true, variable: destination}
+name: Get RiverMeadow Target
+steps:
+- condition: null
+  data: {body: '', capture_output: true, credentials: vCommander API user, failure_action: FAIL_STEP,
+    format: XML, header: '', rest_action: GET, result_filter: '', success_codes: '200',
+    url: 'https://#{system.address}:#{system.port}/webservices/services/rest/v2/deploymentdestinations/name/#{inputVariable[''destination'']}'}
+  name: Get Destination
+  type: REST
+- condition: null
+  data: {expression: //AWSDeploymentDestination/subnets/id/text(), source: '#{steps[''Get
+      Destination''].output}'}
+  name: Get Subnet ID
+  type: TEXT_XPATH
+- condition: null
+  data: {expression: //AWSDeploymentDestination/subnets/displayName/text(), source: '#{steps[''Get
+      Destination''].output}'}
+  name: Get Subnet Remote ID
+  type: TEXT_XPATH
+- condition: null
+  data: {body: '', capture_output: true, credentials: vCommander API user, failure_action: FAIL_STEP,
+    format: JSON, header: '', rest_action: GET, result_filter: $.data.availabilityZone.displayName,
+    success_codes: '200', url: 'https://#{system.address}:#{system.port}/rest/v3/internal/resources/SUBNET/#{steps[''Get
+      Subnet ID''].output}?properties=availabilityZone'}
+  name: Get Availability Zone
+  type: REST
+- condition: null
+  data: {expression: //AWSDeploymentDestination/target/id/text(), source: '#{steps[''Get
+      Destination''].output}'}
+  name: Get VPC ID
+  type: TEXT_XPATH
+- condition: null
+  data: {body: '', capture_output: true, credentials: vCommander API user, failure_action: FAIL_STEP,
+    format: JSON, header: '', rest_action: GET, result_filter: '', success_codes: '200',
+    url: 'https://#{system.address}:#{system.port}/rest/v3/internal/resources/VIRTUAL_CLOUD/#{steps[''Get
+      VPC ID''].output}?properties=remoteId,parent'}
+  name: Get VPC
+  type: REST
+- condition: null
+  data: {expression: $.data.remoteId, source: '#{steps[''Get VPC''].output}'}
+  name: Get VPC Remote ID
+  type: TEXT_JSONPATH
+- condition: null
+  data: {expression: $.data.parent.displayName, source: '#{steps[''Get VPC''].output}'}
+  name: Get Region
+  type: TEXT_JSONPATH
+- condition: null
+  data: {expression: //AWSDeploymentDestination/SecurityGroups/id/text(), source: '#{steps[''Get
+      Destination''].output}'}
+  name: Get Security Group ID
+  type: TEXT_XPATH
+- condition: null
+  data: {body: '', capture_output: true, credentials: vCommander API user, failure_action: FAIL_STEP,
+    format: JSON, header: '', rest_action: GET, result_filter: $.data.groupId, success_codes: '200',
+    url: 'https://#{system.address}:#{system.port}/rest/v3/internal/resources/SECURITY_GROUP/#{steps[''Get
+      Security Group ID''].output}?properties=groupId'}
+  name: Get Security Group Remote ID
+  type: REST
+- condition: null
+  data: {output_template: '{
+
+      "region" : "#{steps[''Get Region''].output}",
+
+      "az" : "#{steps[''Get Availability Zone''].output}",
+
+      "subnet" : "#{steps[''Get Subnet Remote ID''].output}",
+
+      "sg" : "#{steps[''Get Security Group Remote ID''].output}",
+
+      "vpc" : "#{steps[''Get VPC Remote ID''].output}"
+
+      }'}
+  name: Output JSON
+  type: TEXT_INPUT_OUTPUT
+system_version: 7.1.6 (1007030241)
+target_type: null
+type: CHANGE_COMPLETION
+

@@ -1,0 +1,59 @@
+GET workflow-module-definitions/2
+got 200
+change_description: null
+description: null
+guid: 205031d6-eee1-40f8-99c2-d803a40185f7
+id: 2
+info_messages: []
+input_variables:
+- {default_value: null, description: Name for the resultant VM, name: Target Name,
+  required: true, variable: name}
+- {default_value: null, description: JSON with destination information, name: Destination
+    JSON, required: true, variable: destination}
+- {default_value: null, description: 'API migration entitlement key. If not specified,
+    we''ll try to use the first key visible to the user.', name: Entitlement, required: false,
+  variable: entitlement}
+- {default_value: null, description: AWS instance type ("flavor"), name: Target Instance
+    Flavor, required: true, variable: flavor}
+- {default_value: null, description: Name of the target cloud account as displayed
+    in RiverMeadow, name: Cloud Account, required: true, variable: cloud}
+- {default_value: null, description: IP address of the source machine, name: Source
+    Address, required: true, variable: address}
+name: RiverMeadow - Run Migration
+steps:
+- condition: null
+  data: {capture_output: true, credentials: RiverMeadow, executable: 'c:\python3\python.exe',
+    failure_action: FAIL_STEP, script_arguments: '', script_contents: "import rivermeadow\n\
+      import json\nimport os\nimport uuid\n\nAPI_USER      = os.environ['SELECTED_CREDENTIALS_USERNAME']\n\
+      API_PASS      = os.environ['SELECTED_CREDENTIALS_PASSWORD']\nENTITLEMENT   =\
+      \ \"#{inputVariable['entitlement']}\"\nCLOUD_ACCOUNT = \"#{inputVariable['cloud']}\"\
+      \nSOURCE_ADDR   = \"#{inputVariable['address']}\"\nTARGET_NAME   = \"#{inputVariable['name']}_\"\
+      \ + str(uuid.uuid4())[:8]\nTARGET_FLAVOR = \"#{inputVariable['flavor']}\"\n\
+      DEST          = json.loads(\"\"\"#{inputVariable['destination']}\"\"\")\n\n\
+      TARGET_REGION = DEST['region']\nTARGET_AZ     = DEST['az']\nTARGET_SG     =\
+      \ DEST['sg']\nTARGET_VPC    = DEST['vpc']\nTARGET_SUBNET = DEST['subnet']\n\n\
+      rm = rivermeadow.RiverMeadow(API_USER, API_PASS)\n\ndef get_source_id():\n \
+      \   for source in rm.get_sources():\n        if SOURCE_ADDR == source['host']:\n\
+      \            return source['id']\n    raise KeyError()\n\nsource_id = get_source_id()\n\
+      print(f\"Found source_id {source_id} for host {SOURCE_ADDR}\")\n\ncloud_account_id\
+      \ = rm.get_cloud_id(CLOUD_ACCOUNT)\nprint(f\"Found cloud account id {cloud_account_id}\
+      \ for '{CLOUD_ACCOUNT}'\")\n\nif not ENTITLEMENT:\n    ENTITLEMENT = next(rm.get_my_entitlements(only_active=True))['id']\n\
+      \    print(f\"Using first available entitlement: {ENTITLEMENT}\")\nelse:\n \
+      \   print(f\"Using provided entitlement: {ENTITLEMENT}\")\n\nmigration_source\
+      \ = rivermeadow.AWSMigrationSource(source_id, TARGET_NAME,\n               \
+      \                             TARGET_FLAVOR, TARGET_VPC,\n                 \
+      \                           TARGET_SG, TARGET_SUBNET,\n                    \
+      \                        TARGET_REGION, TARGET_AZ)\n\nmigration_profile = rivermeadow.MigrationProfile(TARGET_NAME,\
+      \ ENTITLEMENT,\n                                                    cloud_account_id,\
+      \ migration_source)\n\n\nprofile_id = rm.create_migration_profile(migration_profile)\n\
+      print(f\"Created migration profile {profile_id}\")\n\nrm.start_migration(profile_id)\n\
+      print(f\"Migration started. Waiting...\")\nmigrations = rm.get_profile_migrations(profile_id)\n\
+      print(\"Migrations asociated with this profile: \")\nfor m in migrations['content']:\n\
+      \    print(f\"* {m['id']}\")\n\nresult = rm.wait_profile_migrations(profile_id)\n\
+      \nprint(\"Result: \")\nprint(result)\n", timeout: 3000}
+  name: Call migration API
+  type: EMBEDDED_SCRIPT
+system_version: 7.1.6 (1007030241)
+target_type: null
+type: CHANGE_COMPLETION
+

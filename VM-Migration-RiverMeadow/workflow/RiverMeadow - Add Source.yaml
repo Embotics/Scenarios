@@ -1,0 +1,36 @@
+change_description: null
+description: null
+guid: a7841194-f8a6-41a2-90f9-b7f14bb038e6
+id: 1
+info_messages: []
+input_variables:
+- {default_value: null, description: Username for accessing source, name: Username,
+  required: true, variable: username}
+- {default_value: null, description: Name of the cloud account to link this source
+    to, name: Cloud Account, required: true, variable: cloud}
+- {default_value: null, description: Password for accessing source, name: Password,
+  required: true, variable: password}
+- {default_value: null, description: IP address of the source, name: Address, required: true,
+  variable: address}
+- {default_value: null, description: Friendly name for this source, name: Name, required: true,
+  variable: name}
+name: RiverMeadow - Add Source
+steps:
+- condition: null
+  data: {capture_output: true, credentials: RiverMeadow, executable: 'c:\python3\python.exe',
+    failure_action: FAIL_STEP, script_arguments: '', script_contents: "import os\n\
+      import rivermeadow\n\nAPI_USER = os.environ['SELECTED_CREDENTIALS_USERNAME']\n\
+      API_PASS = os.environ['SELECTED_CREDENTIALS_PASSWORD']\nSOURCE_ADDR = \"#{inputVariable['address']}\"\
+      \nSOURCE_NAME = \"#{inputVariable['name']}\"\nSOURCE_USER = \"#{inputVariable['username']}\"\
+      \nSOURCE_PASS = \"#{inputVariable['password']}\"\nCLOUD_ACCT = \"#{inputVariable['cloud']}\"\
+      \n\n\nrm = rivermeadow.RiverMeadow(API_USER, API_PASS)\n\nsource = rivermeadow.Source(SOURCE_NAME,\n\
+      \                            SOURCE_ADDR,\n                            SOURCE_USER,\n\
+      \                            SOURCE_PASS)\n\nsource_id = rm.create_source(source)\n\
+      appliance_id = rm.get_appliance_id(CLOUD_ACCT)\n\nrm.link_source(source_id,\
+      \ appliance_id)\n\n", timeout: 300}
+  name: Execute Embedded Script
+  type: EMBEDDED_SCRIPT
+system_version: 7.1.6 (1007030241)
+target_type: null
+type: CHANGE_COMPLETION
+
