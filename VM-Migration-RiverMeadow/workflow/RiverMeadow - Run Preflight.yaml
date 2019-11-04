@@ -1,0 +1,56 @@
+change_description: null
+description: null
+guid: bee3a63c-018c-4f88-bcb9-75127117f8ba
+id: 3
+info_messages: []
+input_variables:
+- {default_value: null, description: IP address of the source to run the preflight
+    on, name: Source Address, required: true, variable: address}
+name: RiverMeadow - Run Preflight
+steps:
+- condition: null
+  data: {capture_output: true, credentials: RiverMeadow, executable: 'c:\python3\python.exe',
+    failure_action: FAIL_STEP, script_arguments: '', script_contents: "import rivermeadow\n\
+      import os\n\nAPI_USER = os.environ['SELECTED_CREDENTIALS_USERNAME']\nAPI_PASS\
+      \ = os.environ['SELECTED_CREDENTIALS_PASSWORD']\nSOURCE_ADDR = \"#{inputVariable['address']}\"\
+      \n\n\nrm = rivermeadow.RiverMeadow(API_USER, API_PASS)\n\ndef get_source_id():\n\
+      \    for source in rm.get_sources():\n        if SOURCE_ADDR == source['host']:\n\
+      \            return source['id']\n    raise KeyError()\n\nsource_id = get_source_id()\n\
+      print(f\"Found source_id {source_id} for host {SOURCE_ADDR}\")\n\npreflight\
+      \ = rm.start_source_preflight(source_id)\npreflight_id = preflight['preflights'][0]['id']\n\
+      print(f\"started preflight {preflight_id}. waiting...\")\n\nresult = rm.wait_preflight(preflight_id)\n\
+      \nprint(\"got result\")\n\nn_errors = 0\nif result['state'] == 'error':\n  \
+      \  for check in result['content']:\n        if check['state'] not in ('success',\
+      \ 'pending'):\n            print(f\"* {check['label']}:\")\n            print(f\"\
+      \\t{check['description']}\")\n            print(f\"\\tState: {check['state']}\"\
+      )\n            n_errors += 1\n            for error in check['errors']:\n  \
+      \              print(f\"\\t* {error['message']}\")\n\nif n_errors:\n    print(f\"\
+      Preflight returned {n_errors} errors\")\nelse:\n    print(\"No errors detected!\"\
+      )\n", timeout: 1000}
+  name: Run pre-flight check
+  type: EMBEDDED_SCRIPT
+- condition: null
+  data: {address_list: rmartens@embotics.com, email_body: 'Please review the following
+      request details.
+
+
+      RIVER MEADOW MIGRATION
+
+      Source: #{target.deployedName}
+
+      Target: #{target.settings.inputField[''Target'']}
+
+      Username: #{target.settings.inputField[''Username'']}
+
+      Password: ****
+
+
+      Preflight Result:
+
+      #{steps[1].output}', email_subject: Service request acknowledgement needed}
+  name: Send Acknowledgement Email
+  type: APPROVER
+system_version: 7.1.6 (1007030241)
+target_type: null
+type: CHANGE_COMPLETION
+
