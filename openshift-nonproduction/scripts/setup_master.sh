@@ -29,15 +29,15 @@ tar -zxvf openshift-origin-server-v3.6.0-c4dd4cf-linux-64bit.tar.gz
 sleep 30
 
 # Let's copy the oc and kubectl utils to /usr/local/bin/
-cp -f /root/openshift-nonproduction/openshift-origin-server-v3.6.0-c4dd4cf-linux-64bit/oc /usr/local/bin/
-cp -f /root/openshift-nonproduction/openshift-origin-server-v3.6.0-c4dd4cf-linux-64bit/kubectl /usr/local/bin/
+cp -f /home/centos/openshift-nonproduction/openshift-origin-server-v3.6.0-c4dd4cf-linux-64bit/oc /usr/local/bin/
+cp -f /home/centos/openshift-nonproduction/openshift-origin-server-v3.6.0-c4dd4cf-linux-64bit/kubectl /usr/local/bin/
 
 # set openshift to startup on boot
-mv /root/openshift-nonproduction/templates/rc.local /etc/rc.d/rc.local
+mv /home/centos/openshift-nonproduction/templates/rc.local /etc/rc.d/rc.local
 chmod +x /etc/rc.d/rc.local
 
 # setup kubeconfig
-echo "export KUBECONFIG=/openshift.local.config/master/admin.kubeconfig" >> /root/.bash_profile
+echo "export KUBECONFIG=/openshift.local.config/master/admin.kubeconfig" >> /centos/.bash_profile
 
 echo "setup done."
 reboot
