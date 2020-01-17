@@ -39,5 +39,3 @@ chmod +x /etc/rc.d/rc.local
 
 # setup kubeconfig
 echo "export KUBECONFIG=/openshift.local.config/master/admin.kubeconfig" >> /home/centos/.bash_profile
-
-reboot
