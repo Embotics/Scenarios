@@ -1,0 +1,54 @@
+---
+id: 6
+guid: "693ab188-97f6-442d-9197-95f9cdf9401f"
+name: "AWS - Get t series equivalent"
+description: null
+type: "CHANGE_COMPLETION"
+change_description: null
+target_type: null
+input_variables:
+- name: "Memory (GB)"
+  variable: "memory"
+  description: null
+  required: true
+  default_value: "4"
+- name: "CPU cores"
+  variable: "cpu"
+  description: null
+  required: true
+  default_value: "2"
+info_messages: []
+system_version: "7.1.6 (1007030241)"
+steps:
+- name: "Execute Embedded Script"
+  type: "EMBEDDED_SCRIPT"
+  condition: null
+  data:
+    credentials: null
+    failure_action: "FAIL_STEP"
+    script_contents: "# import json\n# import re\n\nMY_CPU = float(#{inputVariable['cpu']})\n\
+      MY_RAM = float(#{inputVariable['memory']})\n\nclass AWSInstance:\n  def __init__(self,\
+      \ vCPU, memory, name=\"custom\"):\n    self.name = name\n    self.vcpu = vCPU\n\
+      \    self.memory = memory\n\n  def __lt__(self, value):\n    return self.vcpu\
+      \ < value.vcpu or self.memory < value.memory\n\n  def __gt__(self, value):\n\
+      \    return (self.vcpu >= value.vcpu and self.memory > value.memory) or \\\n\
+      \            (self.vcpu > value.vcpu and self.memory >= value.memory)\n\n  def\
+      \ __le__(self, value):\n    return self.equivalent(value) or self < value\n\n\
+      \  def __ge__(self, value):\n    return self.equivalent(value) or self > value\n\
+      \  \n  def equivalent(self, value):\n    return self.vcpu == value.vcpu and\
+      \ self.memory == value.memory\n\n  def __repr__(self):\n    return f\"<{self.name}\
+      \ ({self.vcpu}, {self.memory})>\"\n\n\n# with open('instances.json') as fh:\n\
+      #     inst = list(map(lambda i: AWSInstance(**i), json.load(fh)))\n\ninstance_list\
+      \ = [\n  { \"name\": \"t3.medium\", \"vCPU\": 2, \"memory\": 4.0 },\n  { \"\
+      name\": \"t3.xlarge\", \"vCPU\": 4, \"memory\": 16.0 },\n  { \"name\": \"t3.2xlarge\"\
+      , \"vCPU\": 8, \"memory\": 32.0 },\n  { \"name\": \"t3.small\", \"vCPU\": 2,\
+      \ \"memory\": 2.0 },\n  { \"name\": \"t3.micro\", \"vCPU\": 2, \"memory\": 1.0\
+      \ },\n  { \"name\": \"t3.large\", \"vCPU\": 2, \"memory\": 8.0 },\n  { \"name\"\
+      : \"t3.nano\", \"vCPU\": 2, \"memory\": 0.5 }\n]\ninst = list(map(lambda i:\
+      \ AWSInstance(**i), instance_list))\n\ndef get_sufficient(myCPU, myRAM):\n \
+      \   return min(x for x in inst if x >= AWSInstance(myCPU, myRAM))\n\nprint(get_sufficient(MY_CPU,\
+      \ MY_RAM).name)\n\n"
+    script_arguments: ""
+    timeout: 300
+    executable: "c:\\python3\\python.exe"
+    capture_output: true

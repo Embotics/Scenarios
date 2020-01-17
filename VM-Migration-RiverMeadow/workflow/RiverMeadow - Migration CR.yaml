@@ -1,0 +1,56 @@
+---
+id: 10
+guid: "d4b2e79e-fa57-495c-b77b-bcfc886d8e84"
+name: "RiverMeadow - Migration CR"
+type: "CHANGE_COMPLETION"
+change_description: null
+fulfillment_rule: "NONE"
+add_owner_as_admin: false
+auto_deploy: false
+users: []
+organizations: []
+target_type: null
+info_messages: []
+prompt_message: null
+system_version: "7.1.6 (1007030241)"
+steps:
+- name: "Add as source to RiverMeadow"
+  type: "MODULE"
+  condition: null
+  data:
+    cloud: "#{target.customAttribute['RiverMeadow Destination']}"
+    password: "#{target.settings.inputField['Password']}"
+    address: "#{target.ipAddress}"
+    name: "#{target.deployedName}"
+    module_name: "RiverMeadow - Add Source"
+    username: "#{target.settings.inputField['Username']}"
+- name: "Run preflight check"
+  type: "MODULE"
+  condition: null
+  data:
+    address: "#{target.ipAddress}"
+    module_name: "RiverMeadow - Run Preflight"
+- name: "Get destination"
+  type: "MODULE"
+  condition: null
+  data:
+    destination: "#{target.customAttribute['RiverMeadow Destination']}"
+    module_name: "Get RiverMeadow Target"
+- name: "Get flavor"
+  type: "MODULE"
+  condition: null
+  data:
+    memory: "#{request.memory.gb}"
+    cpu: "#{request.cpuCount}"
+    module_name: "AWS - Get t series equivalent"
+- name: "Run Migration"
+  type: "MODULE"
+  condition: null
+  data:
+    cloud: "#{target.customAttribute['RiverMeadow Destination']}"
+    flavor: "#{steps['Get flavor'].output}"
+    address: "#{target.ipAddress}"
+    destination: "#{steps['Get destination'].output}"
+    name: "#{target.deployedName}"
+    entitlement: "b1a018b5-5a55-480f-8c3c-f62311ca018e"
+    module_name: "RiverMeadow - Run Migration"
