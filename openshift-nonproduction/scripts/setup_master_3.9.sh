@@ -29,12 +29,12 @@ tar -zxvf openshift-origin-server-v3.9.0-191fece-linux-64bit.tar.gz
 sleep 30
 
 # Let's copy the oc, oadm and kubectl utils to /usr/local/bin/
-cp -f /root/openshift-nonproduction/openshift-origin-server-v3.9.0-191fece-linux-64bit/oc /usr/local/bin/
-cp -f /root/openshift-nonproduction/openshift-origin-server-v3.9.0-191fece-linux-64bit/kubectl /usr/local/bin/
-cp -f /root/openshift-nonproduction/openshift-origin-server-v3.9.0-191fece-linux-64bit/oadm /usr/local/bin/
+cp -f /home/centos/openshift-nonproduction/openshift-origin-server-v3.9.0-191fece-linux-64bit/oc /usr/local/bin/
+cp -f /home/centos/openshift-nonproduction/openshift-origin-server-v3.9.0-191fece-linux-64bit/kubectl /usr/local/bin/
+cp -f /home/centos/openshift-nonproduction/openshift-origin-server-v3.9.0-191fece-linux-64bit/oadm /usr/local/bin/
 
 # set openshift to startup on boot
-mv /root/openshift-nonproduction/templates/rc.local.39 /etc/rc.d/rc.local
+mv /home/centos/openshift-nonproduction/templates/rc.local.39 /etc/rc.d/rc.local
 chmod +x /etc/rc.d/rc.local
 
 # setup kubeconfig
