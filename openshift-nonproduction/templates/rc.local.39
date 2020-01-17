@@ -11,4 +11,4 @@
 # that this script will be executed during boot.
 
 touch /var/lock/subsys/local
-/home/centos/openshift-nonproduction/openshift-origin-server-v3.9.0-191fece-linux-64bit/openshift start
+/home/centos/openshift-origin-server-v3.9.0-191fece-linux-64bit/openshift start
