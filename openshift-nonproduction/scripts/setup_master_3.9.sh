@@ -38,6 +38,6 @@ mv /home/centos/openshift-nonproduction/templates/rc.local.39 /etc/rc.d/rc.local
 chmod +x /etc/rc.d/rc.local
 
 # setup kubeconfig
-echo "export KUBECONFIG=/openshift.local.config/master/admin.kubeconfig" >> /root/.bash_profile
+echo "export KUBECONFIG=/openshift.local.config/master/admin.kubeconfig" >> /home/centos/.bash_profile
 
 reboot
