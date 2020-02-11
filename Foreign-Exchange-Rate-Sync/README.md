@@ -1,6 +1,7 @@
 # Automatically Syncing Foreign Exchange Rate to Commander
 
 This scenario explores using a Scheduled Workflow in Commander to automatically update the exchange rate associated with a Commander Cost Model.
+This scenario uses the Exchange Rate API, available here http://exchangeratesapi.io/, and is backed by exchange data from the European Central Bank. Currencies available for conversion depend on the data available from this API.
 
 ## Change Log
 
