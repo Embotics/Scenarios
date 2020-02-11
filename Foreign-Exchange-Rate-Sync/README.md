@@ -43,19 +43,19 @@ This section describes how to set up a scheduled workflow in Commander to automa
   
    c. Add an **Execute Embedded Script** step.
   
-      c1. Enter **Sync Forex** for the Name.
+   d. Enter **Sync Forex** for the Name.
    
-      c2. Enter **powershell.exe** for the Executable.
+   e. Enter **powershell.exe** for the Executable.
    
-      c3. Copy and paste the contents of the **commander_forex_sync.ps1** file into the Script Contents.
+   f. Copy and paste the contents of the **commander_forex_sync.ps1** file into the Script Contents.
    
-      c4. Edit the Script Contents and set the **$baseCurrency** to the 3-digit currency code for the currency your billing data is received in. 
+   g. Edit the Script Contents and set the **$baseCurrency** to the 3-digit currency code for the currency your billing data is received in. 
    
-      c5. Set the **$convertToCurrency** to the 3-digit currency code for the currency you want to convert your billing data to.
+   h. Set the **$convertToCurrency** to the 3-digit currency code for the currency you want to convert your billing data to.
    
-      c6. Set the **$targetCostModel** to the name of the Commander Cost Model related to the costs you wish to convert.
+   i. Set the **$targetCostModel** to the name of the Commander Cost Model related to the costs you wish to convert.
    
-   d. Click Next and save the workflow.
+   j. Click Next and save the workflow.
   
  4. On the Command Workflow list, select the **Commander Forex Sync** workflow and select **Schedule > Schedule** at the bottom.
  5. Set the Frequency to **Daily** and select a Time. Click Next and save the schedule.
