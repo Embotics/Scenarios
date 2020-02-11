@@ -19,11 +19,17 @@ This section describes how to set up a scheduled workflow in Commander to automa
 1. In Commander, select **Configuration > Credentials**.
 2. Click **Add**.
 3. In the Add Credentials dialog:
+
    a. Select **Username/Password** for the Credentials Type.
+   
    b. Enter **Commander REST API** for the Name.
+   
    c. Enter the required username (for example "apiuser") and password.
+   
    ​    It is recommended to create a superuser account in Commander that is used for API actions such as this workflow so you cand easily identify actions taken by workflows or other automated systems.
+   
    f. For Category, select **Guest OS Credentials**.
+   
    g. Click **OK**.
 
 ### Create the Scheduled Workflow
