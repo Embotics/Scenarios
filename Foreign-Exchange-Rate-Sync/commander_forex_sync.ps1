@@ -23,7 +23,6 @@ $targetCostModel = "Amazon Web Services"
 $Global:SERVICE_HOST = $CommanderServerURL
 $Global:REQUEST_HEADERS =@{}
 $Global:BASE_SERVICE_URI = $Global:BASE_SERVICE_URI_PATTERN.Replace("{service_host}",$Global:SERVICE_HOST)   
-$cred = (New-DecryptCredential -keyFilePath $CredFile) 	
 $Global:CREDENTIAL = $commanderCredential
 VCommander\Set-IgnoreSslErrors
 $connected = Connect-Client
