@@ -17,6 +17,7 @@ This scenario uses the Exchange Rate API, available here http://exchangeratesapi
 This section describes how to set up a scheduled workflow in Commander to automatically update the exchange rate associated with a Commander Cost Model.
 
 ### Create the Commander REST API Credential
+   ​    If you have already created a credential for use with the Commander REST API you can skip this section and use that credential instead.
 1. In Commander, select **Configuration > Credentials**.
 2. Click **Add**.
 3. In the Add Credentials dialog:
