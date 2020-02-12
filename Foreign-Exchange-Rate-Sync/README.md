@@ -9,8 +9,8 @@ This scenario uses the Exchange Rate API, available here http://exchangeratesapi
 
 ## Prerequisites
 
-* This scenario requires Commander release 7.0.2 or higher
-* Commander REST API v2 Powershell Module
+* This scenario requires Commander release 8.0.X or higher
+* Commander REST API v2 Powershell Module v2.9.1
 
 ## Scenario setup
 
