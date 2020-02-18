@@ -2,6 +2,7 @@
 
 This scenario explores using a Scheduled Workflow in Commander to automatically update the exchange rate associated with a Commander Cost Model.
 This scenario uses the Exchange Rate API, available here http://exchangeratesapi.io/, and is backed by exchange data from the European Central Bank. Currencies available for conversion depend on the data available from this API.
+The end result will be that self-service portal users will see all costs in the foreign currency. Note that the Admin UI will only see a subset of costs in the foreign currency. Please reach out to support@embotics.com for any questions.
 
 ## Change Log
 
@@ -63,3 +64,9 @@ This section describes how to set up a scheduled workflow in Commander to automa
   
  4. On the Command Workflow list, select the **Commander Forex Sync** workflow and select **Schedule > Schedule** at the bottom.
  5. Set the Frequency to **Daily** and select a Time. Click Next and save the schedule.
+ 
+ ### Configure the displayed Currency Symbol
+ 1. In Commander, select **Configuration > Costs**. Select **Cost Configuration**.
+ 2. Select the currency symbol you want to display from the **Currency Symbol dropdown**.
+ 3. Click **Save Settings** to save your changes.
+ 
