@@ -1,0 +1,45 @@
+add_owner_as_admin: false
+auto_deploy: false
+change_description: null
+fulfillment_rule: null
+guid: 69f3c28a-cc00-4a3a-accc-2a1c535575c7
+id: 12081692
+info_messages: []
+name: NSX - Ubuntu Webserver - In Security Group
+organizations: []
+prompt_message: null
+steps:
+- condition: null
+  data:
+    failure_action: PROCEED_TO_NEXT_STEP
+    timeout: 400
+    wait_for_type: ELAPSED_TIME
+  name: Wait For IP address
+  type: WAIT
+- condition: null
+  data:
+    module_name: NSX - Add Security Group
+    port: '80'
+    protocol: TCP
+    sgname: '#{target.deployedName}'
+  name: Create Security Group
+  type: MODULE
+- condition: null
+  data:
+    module_name: NSX - Add Firewall Rule
+    port: '443'
+    protocol: TCP
+    sgname: '#{target.deployedName}'
+  name: Firewall - Port 443
+  type: MODULE
+- condition: null
+  data:
+    module_name: NSX - Add VM to Security Group
+    sgName: '#{target.deployedName}'
+    vmID: '#{target.remoteId}'
+  name: Add vm to security group
+  type: MODULE
+system_version: 8.0.0 (1007050105)
+target_type: null
+type: COMPONENT_COMPLETION
+users: []

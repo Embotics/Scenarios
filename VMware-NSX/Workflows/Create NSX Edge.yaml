@@ -1,0 +1,49 @@
+add_owner_as_admin: false
+auto_deploy: false
+change_description: null
+fulfillment_rule: null
+guid: cf960d44-173e-45bc-9c39-a613efbb77a2
+id: 12656676
+info_messages: []
+name: Create NSX Edge
+organizations: []
+prompt_message: null
+steps:
+- condition: null
+  data:
+    capture_output: true
+    credentials: NSX API
+    executable: powershell.exe
+    failure_action: FAIL_STEP
+    script_arguments: ''
+    script_contents: "# preamble\nSet-StrictMode -Version Latest\n$ErrorActionPreference\
+      \ = \"Stop\"\n$PSDefaultParameterValues['*:ErrorAction']='Stop'\nImport-Module\
+      \ PowerNSX\n\n# configuration\n$VIServer = \"172.16.10.30\"\n$nsxServer = \"\
+      172.16.10.32\"\n$user = \"$Env:SELECTED_CREDENTIALS_USERNAME\"\n$password =\
+      \ \"$Env:SELECTED_CREDENTIALS_PASSWORD\"\n$rpoolName = \"Edge Devices\"\n$dstoreName\
+      \ = \"Datastore2tb\"\n\n$defaultGW = \"172.16.10.1\"\n$availableIps = @(200..250\
+      \ | %{\"172.16.10.$_\"})\n\n# Connect to vcenter\nConnect-VIServer -Server $viserver\
+      \ -User $user -Password $password\nConnect-NsxServer -NsxServer $nsxServer -Username\
+      \ $user -Password $password\n\n# get dependencies\n$rpool = Get-ResourcePool\
+      \ -Name $rpoolName\n$dstore = Get-Datastore -Name $dstoreName\n$network = Get-VDPortGroup\
+      \ -Name \"DPortGroup\"\n$genPass = 'aY@z8yp3ihFdAJP$Om3K'\n\n# get name\n$edgeName\
+      \ = \"AutoEdge-\" + ((get-nsxedge | where {$_.name -like \"autoedge*\"} | foreach\
+      \ {$_.name.split('-')[-1] -as [int]} | measure -max).maximum + 1)\n\n# get next\
+      \ IP\n$usedIps = Get-NsxEdge | Get-NsxEdgeInterface | \n    Get-NsxEdgeInterfaceAddress\
+      \ | Select-Object primaryAddress | ForEach-Object {$_.primaryAddress}\n$nextIp\
+      \ = @($availableIps | Where-Object {$usedIps -notcontains $_})[0]\nif ($null\
+      \ -eq $nextIp) {\n    Write-Host \"No more IP's left in the pool!\"\n    Exit\
+      \ 1\n}\n\n# create the interface spec and the edge device!\n$vnic0 = New-NsxEdgeInterfaceSpec\
+      \ -Index 0 -Name Uplink -Type uplink -ConnectedTo $network -PrimaryAddress $nextIp\
+      \ -SubnetPrefixLength 24\n\nNew-NsxEdge -Name $edgeName -Interface $vnic0 -ResourcePool\
+      \ $rpool -Datastore $dstore -Password $genPass\nGet-NsxEdge -Name $edgeName\
+      \ | Get-NsxEdgeRouting | Set-NsxEdgeRouting -DefaultGatewayAddress $defaultGW\
+      \ -Confirm:$false\nGet-NsxEdge -name $edgeName | Get-NsxLoadBalancer | Set-NsxLoadBalancer\
+      \ -Enabled"
+    timeout: 300
+  name: Execute Embedded Script
+  type: EMBEDDED_SCRIPT
+system_version: 8.0.0 (1007050105)
+target_type: null
+type: CUSTOM_COMPLETION
+users: []

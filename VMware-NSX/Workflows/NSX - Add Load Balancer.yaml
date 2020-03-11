@@ -1,0 +1,55 @@
+change_description: null
+description: null
+guid: 948d0db1-f1f4-41b8-a123-e942735cf492
+id: 12252621
+info_messages: []
+input_variables:
+- default_value: null
+  description: null
+  name: Port
+  required: true
+  variable: port
+name: NSX - Add Load Balancer
+steps:
+- condition: null
+  data:
+    capture_output: true
+    credentials: NSX API
+    executable: powershell.exe
+    failure_action: FAIL_STEP
+    script_arguments: ''
+    script_contents: "# preamble\nSet-StrictMode -Version Latest\n$ErrorActionPreference\
+      \ = \"Stop\"\n$PSDefaultParameterValues['*:ErrorAction']='Stop'\n\n# configuration\n\
+      $VIServer = \"172.16.10.30\"\n$nsxServer = \"172.16.10.32\"\n$user = \"$Env:SELECTED_CREDENTIALS_USERNAME\"\
+      \n$password = \"$Env:SELECTED_CREDENTIALS_PASSWORD\"\n\n$vappName = \"#{request.service.deployedName}\"\
+      \n$port = \"#{inputVariable['port']}\"\n$monitorName = \"default_tcp_monitor\"\
+      \n$alg = \"round-robin\"\n\n# Init\nImport-Module PowerNSX\n\n# Connect to vcenter\n\
+      Connect-VIServer -Server $viserver -User $user -Password $password\nConnect-NsxServer\
+      \ -NsxServer $nsxServer -Username $user -Password $password\n\n# find an edge\
+      \ device with available IPs\n$allocated = Get-NsxEdge | Get-NsxEdgeInterface\
+      \ | \nGet-NsxEdgeInterfaceAddress | Select-Object primaryAddress | ForEach-Object\
+      \ {$_.primaryAddress}\n$used = Get-NsxEdge | Get-NsxLoadBalancer | Get-NsxLoadBalancerVip\
+      \ | Select-Object ipAddress | ForEach-Object {$_.ipAddress}\n\n$extIp = @($allocated\
+      \ | Where-Object {$used -notcontains $_})[0]\n\nif ($null -eq $extIp) {\n  \
+      \  Write-Host \"No available IPs. Add a new edge device or an address to and\
+      \ existing edge device\"\n    Exit 1\n}\n# get edge with that IP\n$edgeId =\
+      \ get-nsxedge | Get-NsxEdgeInterface | Get-NsxEdgeInterfaceAddress | where {$_.primaryAddress\
+      \ -eq $extIp} | select edgeId\nfunction mylb {\n    return Get-NsxEdge -objectId\
+      \ $edgeId.edgeId | Get-NsxLoadBalancer\n}\n\n# Enable load balancer\nif (-not\
+      \ (mylb).enabled) {\n    mylb | Set-NsxLoadBalancer -Enabled\n}\n\n# Pool\n\
+      $spec = New-NsxLoadBalancerMemberSpec -Name \"$vappName-$port\" -Member (Get-VApp\
+      \ -Name $vappName) -Port $port\n\n# work around for bad api\n$spec | Add-Member\
+      \ -MemberType NoteProperty -Name \"ipAddress\" -Value \"\" \n\n$monitor = mylb\
+      \ | Get-NsxLoadBalancerMonitor -Name $monitorName\n$pool = mylb | New-NsxLoadBalancerPool\
+      \ -description \"auto\" -Algorithm $alg -name \"$vappName-Pool80\" -MemberSpec\
+      \ $spec -Monitor $monitor -Transparent:$false\n\n# Application Profile\n$profile\
+      \ = mylb | New-NsxLoadBalancerApplicationProfile -Name \"$vappName-Profile\"\
+      \ -Type TCP\n\n# Virtual Server VIP\nmylb | Add-NsxLoadBalancerVip -IpAddress\
+      \ $extIP -Port $port -Name \"$vappName-vip-$port\" -DefaultPool $pool -Protocol\
+      \ \"TCP\" -ApplicationProfile $profile\n\n\n"
+    timeout: 300
+  name: Execute Embedded Script
+  type: EMBEDDED_SCRIPT
+system_version: 8.0.0 (1007050105)
+target_type: null
+type: SERVICE_COMPLETION

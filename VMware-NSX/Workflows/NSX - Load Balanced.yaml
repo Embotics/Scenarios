@@ -1,0 +1,28 @@
+add_owner_as_admin: false
+auto_deploy: false
+change_description: null
+fulfillment_rule: null
+guid: 88c46685-4f5d-450c-ae69-0583325f59e6
+id: 12252661
+info_messages: []
+name: NSX - Load Balanced
+organizations: []
+prompt_message: null
+steps:
+- condition: null
+  data:
+    failure_action: PROCEED_TO_NEXT_STEP
+    timeout: 300
+    wait_for_type: ELAPSED_TIME
+  name: Wait For Event
+  type: WAIT
+- condition: null
+  data:
+    module_name: NSX - Add Load Balancer
+    port: '80'
+  name: Run Module
+  type: MODULE
+system_version: 8.0.0 (1007050105)
+target_type: null
+type: SERVICE_COMPLETION
+users: []

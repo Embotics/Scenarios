@@ -1,0 +1,84 @@
+change_description: null
+description: null
+guid: 124d332f-ec5d-4847-821e-63092c856573
+id: 12081885
+info_messages: []
+input_variables:
+- default_value: TCP
+  description: null
+  name: Protocol
+  required: true
+  variable: protocol
+- default_value: null
+  description: null
+  name: Security Group Name
+  required: true
+  variable: sgname
+- default_value: '80'
+  description: null
+  name: Port
+  required: true
+  variable: port
+name: NSX - Add Firewall Rule
+steps:
+- condition: null
+  data:
+    capture_output: true
+    credentials: NSX API
+    executable: powershell.exe
+    failure_action: FAIL_STEP
+    script_arguments: ''
+    script_contents: '# preamble
+
+      Set-StrictMode -Version Latest
+
+      $ErrorActionPreference = "Stop"
+
+      $PSDefaultParameterValues[''*:ErrorAction'']=''Stop''
+
+
+
+      # configuration
+
+      $VIServer = "172.16.10.30"
+
+      $nsxServer = "172.16.10.32"
+
+      $user = "$Env:SELECTED_CREDENTIALS_USERNAME"
+
+      $password = "$Env:SELECTED_CREDENTIALS_PASSWORD"
+
+
+      $sgName = "#{inputVariable[''sgname'']}"
+
+      $port = "#{inputVariable[''port'']}"
+
+      $protocol = "#{inputVariable[''protocol'']}"
+
+
+      Import-Module PowerNSX
+
+
+      Connect-VIServer -Server $VIServer -User $user -Password $password
+
+      Connect-NsxServer -NsxServer $nsxServer -Username $user -Password $password
+
+
+      $sg = Get-NsxSecurityGroup -name $sgName
+
+      $fw = Get-NsxFirewallSection -Name $sgName
+
+      $service = New-NsxService -Name "$sgName-$protocol-$port" -Protocol $protocol
+      -port $port
+
+      $fw | New-NsxFirewallRule -Name "$sgName-$protocol-$port" -Destination $sg -Service
+      $service -Action "allow"
+
+
+      '
+    timeout: 300
+  name: Execute Embedded Script
+  type: EMBEDDED_SCRIPT
+system_version: 8.0.0 (1007050105)
+target_type: null
+type: COMPONENT_COMPLETION
