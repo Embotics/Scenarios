@@ -1,0 +1,57 @@
+change_description: null
+description: null
+guid: 53599098-1d86-4b20-8796-9cd4a473a531
+id: 12251501
+info_messages: []
+input_variables:
+- default_value: null
+  description: null
+  name: vApp Name
+  required: true
+  variable: vappName
+- default_value: '80'
+  description: null
+  name: Port
+  required: true
+  variable: port
+name: NSX - Create Load Balancer
+steps:
+- condition: null
+  data:
+    capture_output: true
+    credentials: NSX API
+    executable: powershell.exe
+    failure_action: FAIL_STEP
+    script_arguments: ''
+    script_contents: "# preamble\nSet-StrictMode -Version Latest\n$ErrorActionPreference\
+      \ = \"Stop\"\n$PSDefaultParameterValues['*:ErrorAction']='Stop'\n\n# configuration\n\
+      $VIServer = \"172.16.10.30\"\n$nsxServer = \"172.16.10.32\"\n$user = \"$Env:SELECTED_CREDENTIALS_USERNAME\"\
+      \n$password = \"$Env:SELECTED_CREDENTIALS_PASSWORD\"\n\n$edgeName = \"EdgeLB\"\
+      \n$interfaceName = \"uplink\"\n\n$vappName = \"#{inputVariable['vappName']}\"\
+      \n$port = \"#{inputVariable['port']}\"\n$monitorName = \"default_tcp_monitor\"\
+      \n$alg = \"round-robin\"\n\n# Init\nImport-Module PowerNSX\n\n# Connect to vcenter\n\
+      Connect-VIServer -Server $viserver -User $user -Password $password\nConnect-NsxServer\
+      \ -NsxServer $nsxServer -Username $user -Password $password\n\nfunction mylb\
+      \ {\n    Get-NsxEdge $edgeName | Get-NsxLoadBalancer\n}\n\n# get next IP\n$available\
+      \ = Get-NsxEdgeInterface -Edge (Get-NsxEdge -Name $edgeName) -name $interfaceName\
+      \ | \n    Get-NsxEdgeInterfaceAddress | Select-Object primaryAddress | ForEach-Object\
+      \ {$_.primaryAddress}\n$used = Get-NsxLoadBalancerVip -LoadBalancer (mylb) |\
+      \ Select-Object ipAddress | ForEach-Object {$_.ipAddress}\n$extIp = @($available\
+      \ | Where-Object {$used -notcontains $_})[0]\n\nif ($null -eq $extIp) {\n  \
+      \  Write-Host \"No more IP's left in the pool!\"\n    Exit 1\n}\n\n# Enable\
+      \ load balancer\nmylb | Set-NsxLoadBalancer -Enabled\n\n# Pool\n$spec = New-NsxLoadBalancerMemberSpec\
+      \ -Name \"main80\" -Member (Get-VApp -Name $vappName) -Port $port \n\n# work\
+      \ around for bad api\n$spec | Add-Member -MemberType NoteProperty -Name \"ipAddress\"\
+      \ -Value $null\n\n$monitor = mylb | Get-NsxLoadBalancerMonitor -Name $monitorName\n\
+      $pool = mylb | New-NsxLoadBalancerPool -Algorithm $alg -name \"$vappName-Pool80\"\
+      \ -MemberSpec $spec -Monitor $monitor\n\n# Application Profile\n$profile = mylb\
+      \ | New-NsxLoadBalancerApplicationProfile -Name \"$vappName-Profile\" -Type\
+      \ TCP\n\n# Virtual Server VIP\nmylb | Add-NsxLoadBalancerVip -IpAddress $extIP\
+      \ -Port $port -Name \"$vappName-vip2\" -DefaultPool $pool -Protocol \"TCP\"\
+      \ -ApplicationProfile $profile\n"
+    timeout: 300
+  name: Execute Embedded Script
+  type: EMBEDDED_SCRIPT
+system_version: 8.0.0 (1007050105)
+target_type: null
+type: COMPONENT_COMPLETION
