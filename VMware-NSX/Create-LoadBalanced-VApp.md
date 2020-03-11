@@ -9,7 +9,7 @@ Follow the instructions to set up these requirements in the [Readme](README.md)
 
 ## Scenario Setup
 ### Completion workflow
-Import the required workflow module `NSX - Add Load Balancer.yml` and the completion workflow `NSX - Load Balanced.yml`
+Import the required workflow module `NSX - Add Load Balancer.yaml` and the completion workflow `NSX - Load Balanced.yaml`
 
 The Add Load Balancer module has an embedded script that will find an available IP address amongst Edge devices and create a load balancer configuration on that edge - adding the vApp as a member to the pool.
 

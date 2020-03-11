@@ -10,11 +10,11 @@ Follow the instructions to set up these requirements in the [Readme](README.md)
 ## Scenario Setup
 ### Completion workflow
 Import the provided completion workflow modules
-* `NSX - Add Security Group.yml`
-* `NSX - Add Firewall Rule.yml`
-* `NSX - Add VM to Security Group.yml`
+* `NSX - Add Security Group.yaml`
+* `NSX - Add Firewall Rule.yaml`
+* `NSX - Add VM to Security Group.yaml`
 
-These will are used in the completion workflow which you can import from `NSX - Ubuntu Webserver - In Security Group.yml`
+These will are used in the completion workflow which you can import from `NSX - Ubuntu Webserver - In Security Group.yaml`
 
 ### Service Catalog entry
 Create a new Service Catalog entry in Commander with a VMware template component. In the example, we are using a Ubuntu server image with NGINX pre installed but you can use any VMware template you wish

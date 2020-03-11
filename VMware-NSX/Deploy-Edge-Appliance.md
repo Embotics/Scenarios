@@ -10,7 +10,7 @@ This scenario explores using Commander to deploy a new VMware NSX Edge Services 
 You'll need the PowerNSX module installed on the Commander server as well as access to the API. The provided workflow YAML uses a Commander Credential. See the main NSX Scenarios README file for instructions on how to add the credential.
 
 ### Create the completion workflow
-Create the completion workflow either by importing the provided YAML file `Create NSX Edge.yml` or by adding the script yourself to a new workflow.
+Create the completion workflow either by importing the provided YAML file `Create NSX Edge.yaml` or by adding the script yourself to a new workflow.
 
 If creating a new workflow, the target type should be "After a custom component." You can use the `NSX_CreateEdge.ps1` script in an embedded script workflow step directly or use it as a starting place for further modifications.
 
