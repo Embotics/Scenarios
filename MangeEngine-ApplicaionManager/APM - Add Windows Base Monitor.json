@@ -1,0 +1,64 @@
+{
+  "id": "",
+  "guid": "",
+  "name": "APM - Add Windows Base Monitor",
+  "description": null,
+  "type": "COMPONENT_COMPLETION",
+  "change_description": null,
+  "target_type": null,
+  "input_variables": [
+    {
+      "name": "Application Manager Key",
+      "variable": "apmkey",
+      "description": "API Key from Manage Engine, Application Manager",
+      "required": true,
+      "default_value": "XXXXXXXXXXXXXXXXXXXXXXXXXX"
+    },
+    {
+      "name": "APM OS Type",
+      "variable": "apmostype",
+      "description": "Values can be Windows 2000, Windows 2003, Windows 2008, Windows 2012, Windows 7, Windows 8, Windows XP, WindowsNT or Windows Vista",
+      "required": true,
+      "default_value": "Windows 2012"
+    },
+    {
+      "name": "APM Credential type",
+      "variable": "apmcredtype",
+      "description": "Value should be either SNMP or WMI",
+      "required": true,
+      "default_value": "WMI"
+    },
+    {
+      "name": "Application Manager URL",
+      "variable": "apmurl",
+      "description": null,
+      "required": true,
+      "default_value": "http://XXX.XXX.XXX.XXX:9090"
+    },
+    {
+      "name": "APM credential name ",
+      "variable": "apmcredname",
+      "description": "Credential name in APM",
+      "required": true,
+      "default_value": "CredentialNameinAPM"
+    }
+  ],
+  "info_messages": [],
+  "system_version": "8.4.0 (1007090074)",
+  "steps": [
+    {
+      "name": "Add Base Windows Monitor",
+      "type": "EMBEDDED_SCRIPT",
+      "condition": null,
+      "data": {
+        "credentials": null,
+        "failure_action": "FAIL_STEP",
+        "script_contents": "#Created on Commander 8.4\n$DisplayName = \"#{target.deployedName}\" \n$Hostname = \"#{target.dnsName}\" \n$apmcredname  = \"#{inputVariable['apmcredname']}\"\n$apmcredtype = \"#{inputVariable['apmcredtype']}\"\n$apmkey = \"#{inputVariable['apmkey']}\"\n$apmurl = \"#{inputVariable['apmurl']}\"\n$apmostype = \"#{inputVariable['apmostype']}\"\n\n#Check All Variables Present\nif(!($DisplayName) -or !($Hostname) -or !($apmcredname) -or !($apmcredtype) -or !($apmkey) -or !($apmurl) -or !($apmostype)){\n        Write-error \"Please provide all required input variables to execute this workflow\"\n        Exit 1} \n        \n #Get Credential ID from APM\n    Try{$CredlistURL = $apmurl+\"/AppManager/json/credential/list?apikey=$apmkey\"\n        $CLResp = Invoke-WebRequest -Uri $CredlistURL -Method GET\n        $responseContent = (ConvertFrom-Json $CLResp.Content).response.result\n        $CredID = $responseContent  | Where-Object {$_.\"credentialname\" -match $apmcredname -and $_.\"credentialType\" -match $apmcredtype} | Select-Object -ExpandProperty \"credentialID\"\n        if(!$CredID){\n            Write-Error \"Caught an exception:No credential found\" -ForegroundColor Red\n            Write-Error \"Exception Type: No credential match for $Credname or $Credtype\" -ForegroundColor Red\n            Exit 1\n            }\n        }   \n        Catch{write-host \"Caught an exception:\" -ForegroundColor Red\n                  write-host \"Exception Type: $($_.Exception.GetType().FullName)\" -ForegroundColor Red\n                  write-host \"Exception Message: $($_.Exception.Message)\" -ForegroundColor Red\n                  $error[0] | Format-List -Force\n                  \n                  Exit 1\n                  } \n\n #Post Data to APM Windows\n    Try{\n        $baseURL = $apmurl+\"/AppManager/json/AddMonitor?apikey=$apmkey&\"+\"type=Servers&displayname=$Displayname&host=$Hostname&os=$apmostype&mode=$apmcredtype&snmptelnetport=161&snmpCommunityString=public&timeout=30&credentialID=$CredID\"\n        $response = Invoke-WebRequest -Uri $baseURL -Method POST\n        $responseContent = $response.Content\n        $StatusCode = $response.StatusCode\n        if($StatusCode = \"200\"){\n            Write-host \"Monitor added successfully\" -ForegroundColor Green\n            }\n        if($StatusCode -ne \"200\"){\n            Write-Error \"Something went Wrong\"\n            Exit 1\n            }\n        }\n        Catch{\n                write-host \"Caught an exception:\" -ForegroundColor Red\n                write-host \"Exception Type: $($_.Exception.GetType().FullName)\" -ForegroundColor Red\n                write-host \"Exception Message: $($_.Exception.Message)\" -ForegroundColor Red\n                $error[0] | Format-List -Force\n                Exit 1\n                }  \n       ",
+        "script_arguments": "",
+        "timeout": 300,
+        "executable": "powershell.exe",
+        "capture_output": true
+      }
+    }
+  ]
+}
