@@ -1,0 +1,50 @@
+{
+  "id": "",
+  "guid": "",
+  "name": "Delete Snapshots on VM's with specific Attribute",
+  "description": "Description: Script to delete the selected snapshots on under 1000 VM's with a Specific Attribute set\nRequirements: \n- Commander 8.4 or higher\n- Powershell V4 or greater\n- Comander v2 REST API Module v2.9+",
+  "type": "COMMAND",
+  "change_description": null,
+  "target_type": "NO_INVENTORY_TARGET",
+  "input_variables": [
+    {
+      "name": "Snapshot Attribute to Check",
+      "variable": "snapshotpolicyattrib",
+      "description": "Attribute Value that gets checked before removing any snapshots from the VM. \n\nFormat: \"AttributeName:Value\"",
+      "required": true,
+      "default_value": "SnapshotPolicy:Yes"
+    },
+    {
+      "name": "Task Timeout Max",
+      "variable": "tasktimeoutmax ",
+      "description": "Max number of milliseconds the script will wait when doing long running tasks such as deleting a snapshot. \n\nDefault: 600000",
+      "required": true,
+      "default_value": "600000"
+    },
+    {
+      "name": "Snapshot Age in Days. ",
+      "variable": "snapshotage",
+      "description": "The Age of the snapshots to cleanup, Any snapshot over this age will be deleted. \n",
+      "required": true,
+      "default_value": "3"
+    }
+  ],
+  "info_messages": [],
+  "system_version": "8.4.0 (1007090074)",
+  "steps": [
+    {
+      "name": "Remove Snapshots older than X - VMware",
+      "type": "EMBEDDED_SCRIPT",
+      "condition": null,
+      "data": {
+        "credentials": null,
+        "failure_action": "FAIL_STEP",
+        "script_contents": "$taskTimeoutMax = \"#{inputVariable['tasktimeoutmax ']}\"\n$Snapshotage = \"#{inputVariable['snapshotage']}\"\n$vCommanderServer = \"#{system.address}\"\n$user = (Get-Item Env:COMMANDER_CREDENTIALS_USERNAME).value;\n$pass = (Get-Item Env:COMMANDER_CREDENTIALS_PASSWORD).value;\n$Attrib = \"#{inputVariable['snapshotpolicyattrib']}\" \n \n#Check All Variables Present\nif(!($taskTimeoutMax) -or !($Snapshotage) -or !($vCommanderServer) -or !($user) -or !($pass) -or !($Attrib)){\n        Write-error \"Please provide all required input variables to execute this workflow\"\n        Exit 1} \n\n#Import v2Modules\n    $Modules = @(\"VCommanderRestClient\",\"VCommander\")\n        ForEach($Modulename in $Modules){\n            If (-not (Get-Module -name $moduleName)) {Import-Module -Name $moduleName } \n            else {Remove-Module $moduleName\n                Import-Module -Name $moduleName }\n        }\n\n#Setup Credential\n        $Credential= New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList \"$User\",(\"$Pass\" | ConvertTo-SecureString -AsPlainText -Force)  \n\n#Connect to Commander v2\n    $Global:SERVICE_HOST = $vCommanderServer\n    $Global:REQUEST_HEADERS =@{}\n    $Global:BASE_SERVICE_URI = $Global:BASE_SERVICE_URI_PATTERN.Replace(\"{service_host}\",$Global:SERVICE_HOST)   \n    $Global:CREDENTIAL = $Credential\n    VCommander\\Set-IgnoreSslErrors\n    $connected = Connect-Client\n\n#Check and see if Attribute exists\n    $Attribname = $Attrib.Split(\":\")[0]\n    $AttribValue = $Attrib.Split(\":\")[1]\n    $CheckAttrib = ($Attrib = Get-CustomAttributes).CustomAttributeCollection.CustomAttributes | Where-Object{$_.Name -EQ $Attribname}\n        If ($CheckAttrib.displayName -eq $Attribname){\n        }\n    If ($CheckAttrib.displayName -ne $Attribname)\n    {$caObject = New-DTOTemplateObject -DTOTagName \"CustomAttribute\"\n    #Specify attribute value\n    $caObject.CustomAttribute.name=\"$Attribname\"\n    $caObject.CustomAttribute.description=\"\"\n    $caObject.CustomAttribute.targetManagedObjectTypes = @(\"ALL\")\n    $caObject.CustomAttribute.id = -1\n    $caObject.CustomAttribute.portalEditable = $false\n    $caObject.CustomAttribute.allowedValues = @(\"Yes\",\"No\")\n    $createdCa = New-CustomAttribute -customAttributeDTo $caObject\n    }\n\n#Get VMs with Attrib set\n    $VMendpoint = \"https://$vCommanderServer\"+\"/rest/v3/virtual-machines?page_size=1000&page_number=1&filter=(attribute:$Attribname -eq $AttribValue) -and (cloud_account_type -eq VMWARE_VCENTER)\"\n    $VMresults = Invoke-RestMethod -Method GET $VMendpoint -Credential $credential\n\n#loop through VM's by ID\n    $VMIDs = $VMresults.items.id | Sort-Object | Get-Unique\n    $date = Get-date\n        ForEach($VMid in $VMIDs){\n                # Return the list of VM snapshots\n                $VMSnapshots = (Get-VMSnapshots -vmid $VMid)\n                foreach ($snapshot in $vmsnapshots.VirtualMachineSnapshotCollection.items){\n                    $snapName = $snapshot.name\n                    $snapDate = (new-object DateTime 1970,1,1,0,0,0,([DateTimeKind]::Utc)).AddSeconds([math]::Round($snapshot.createTime/1000))\n                    $snapID = $snapshot.id\n                    Write-host \"Removing Snapshot $SnapName with ID $snapid\"\n                    if($snapDate -lt (Get-Date).AddDays(-$Snapshotage)){\n                        Try{\n                        $RemoveSnapTask = Remove-VMsnapshot -vmId $VMid -snapshotId $snapID\n                        #A task is returned from the new snapshot call, we need to wait for it to finish\n                        $taskResult = Wait-ForTaskFinalState -taskId $RemoveSnapTask.TaskInfo.id -waitTimeInMillis $taskTimeoutMax\n                        #Check the task result, error on any state that is not COMPLETE\n                            if($taskResult.TaskInfo.state -ne \"COMPLETE\"){\n                                Throw \"Task failed with state: \"+$taskResult.TaskInfo.state\n                            }\n                            Write-Host \"Snapshot $snapName removed sucessfully\"\n                            }\n                            catch\n                            {\n                                Write-error \"Unable to remove Snapshot $snapName on VMid $VMid\"\n                                $Disconnect = Disconnect-Client\n                                Exit 1\n                            }   \n                      }\n                }\n        }      \n \n $Disconnect = Disconnect-Client \n",
+        "script_arguments": "",
+        "timeout": 0,
+        "executable": "powershell.exe",
+        "capture_output": true
+      }
+    }
+  ]
+}
