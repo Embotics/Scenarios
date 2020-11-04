@@ -1,0 +1,36 @@
+{
+  "id": "",
+  "guid": "",
+  "name": "Mount/Unmount Vmware tools",
+  "description": "Module for Mounting And Un-mounting VMware tools based on input Variable.\nRequires:\n-Vmware powerCli be installed on the Commander Server\n- Advanced system property \"embotics.workflow.script.credentials\" set to \"True\"\nMounts the tools based on the ESXi host version. ",
+  "type": "COMMAND",
+  "change_description": null,
+  "target_type": "VIRTUAL_MACHINE",
+  "input_variables": [
+    {
+      "name": "Action",
+      "variable": "toolsaction",
+      "description": "Variable for mounting or unmounting VMware tools\n\nAllowed values: \"mount\" or \"unmount\"",
+      "required": true,
+      "default_value": "mount"
+    }
+  ],
+  "info_messages": [],
+  "system_version": "8.4.0 (1007090074)",
+  "steps": [
+    {
+      "name": "Mount/Unmount VMware tools",
+      "type": "EMBEDDED_SCRIPT",
+      "condition": "#{target.cloudAccount.type} -eq \"vc\"",
+      "data": {
+        "credentials": null,
+        "failure_action": "FAIL_STEP",
+        "script_contents": "$action = \"#{inputVariable['toolsaction']}\"\n$Username = (Get-Item Env:VMWARE_USERNAME).value\n$Password= (Get-Item Env:VMWARE_PASSWORD).value\n$VIServer = '#{target.cloudAccount.address}'\n$RemoteID = \"#{target.remoteId}\"\n\n#Check for all values\nif(!($action) -or !($Username) -or !($viServer) -or !($password) -or !($RemoteID)){\n        Write-error \"Please provide all required input variables to execute this workflow\"\n        Exit 1}  \n\n#Connect to vCenter with PowerCli\nImport-module VMware.VimAutomation.Core\nSet-PowerCLIConfiguration -InvalidCertificateAction ignore -Scope User -ParticipateInCEIP $false -confirm:$false\n$Status = Connect-VIServer -Server $VIServer -User $Username -Password $Password -Force\nWrite-Host \"Connecting to $VIServer\" \nif($status -eq 'true'){\n    Write-host \"vCenter - $VIServer connected sucessfully\"\n} \n\n#Setup vCenter VM identifier\n$VMid = \"VirtualMachine-\"+$RemoteID\n\n#Check target state - must be powered on. \n$VM = get-vm -id $VMid\n$powerState = $VM.PowerState\nif($powerState -ne \"PoweredOn\"){\n    Write-error \"VM must be in a powered on state to mount tools\"\n    Exit 1\n    } \n\n#Run based on Values\nif($action -eq \"mount\"){\n    $Status = $VM | Mount-Tools \n    if($Status){\n        Write-host \"$Status\"\n        Disconnect-VIServer \n    }\n}\nelseif($action -eq \"unmount\"){\n    $Status = $VM | Dismount-Tools\n    if($Status){\n        Write-host \"$Status\"\n        Disconnect-VIServer \n    }\n}\nelse{\n     Disconnect-VIServer\n     Write-error \"The Action value didn't match an action so nothing to do\" \n     Exit 1\n}",
+        "script_arguments": "",
+        "timeout": 600,
+        "executable": "powershell.exe",
+        "capture_output": true
+      }
+    }
+  ]
+}
