@@ -1,0 +1,28 @@
+{
+  "id": "",
+  "guid": "",
+  "name": "Schedule Upgrade VMware Hw Version",
+  "description": null,
+  "type": "COMMAND",
+  "change_description": null,
+  "target_type": "VIRTUAL_MACHINE",
+  "input_variables": [],
+  "info_messages": [],
+  "system_version": "8.4.1 (1007090078)",
+  "steps": [
+    {
+      "name": "Upgrade VM Hardware Version",
+      "type": "EMBEDDED_SCRIPT",
+      "condition": null,
+      "data": {
+        "credentials": null,
+        "failure_action": "FAIL_STEP",
+        "script_contents": "<#Script to Upgrade VM Hardware Version on the target VM.\n****We Strongly Suggest having a VM backup before upgrading VM HW****\n1. It will check the current host of the vm to match VM Hw Version to Host\n2. Schedules new HW Version on the Target VM to upgrade on next reboot\n\nRequirements:\nVmware PowerCLi\nPowershell V3 or higher\n\nTested on:\nVmware PowerCLi 12\nPowershell 4\n\n\n#>\n#Input Parameters should not need to be changed\n \n    $Username = (Get-Item Env:VMWARE_USERNAME).value\n    $Password = (Get-Item Env:VMWARE_PASSWORD).value\n    $VIServer = '#{target.cloudAccount.address}'\n    $RemoteID = \"#{target.remoteId}\"\n\n#Check for all values\nif(!($Username) -or !($viServer) -or !($password) -or !($RemoteID)){\n        Write-error \"Please provide all required input variables to execute this workflow\"\n        Exit 1}  \n\n#Connect to vCenter with PowerCli\nImport-module VMware.VimAutomation.Core\nSet-PowerCLIConfiguration -InvalidCertificateAction ignore -Scope User -ParticipateInCEIP $false -confirm:$false\n$Status = Connect-VIServer -Server $VIServer -User $Username -Password $Password -Force\nWrite-Host \"Connecting to $VIServer\" \nif($status -eq 'true'){\n    Write-host \"vCenter - $VIServer connected sucessfully\"\n} \n\n#Setup vCenter VM identifier\n$VMid = \"VirtualMachine-\"+$RemoteID\n\n\n\n## GetHost Version to Determine Virtual Hardware Verson Supported\n    $VM = get-vm -id $VMid\n    $CurrentHWVersion = $VM.HardwareVersion\n    $CurrentHost = $VM.VMhost.name\n    $VmHostVersion = (Get-vmhost -name $CurrentHost).version\n\n#Table Mapping Version to VMHwVersion\n#Ref. http://kb.vmware.com/selfservice/microsites/search.do?language=en_US&cmd=displayKC&externalId=1003746\n        If  ($vmhostVersion -like \"4.*\")\n            {$vmHWVersion = \"vmx-07\"}\n        elseif ($vmhostVersion -like \"5.0*\")\n            {$vmHWVersion = \"vmx-08\"}\n        elseif ($VmHostVersion -like \"5.1*\")\n            {$vmHWVersion = \"vmx-09\"}\n        elseif ($VmHostVersion -like \"5.5*\")\n            {$vmHWVersion = \"vmx-10\"}\n        elseif ($VmHostVersion -like \"6.0*\")\n            {$vmHWVersion = \"vmx-11\"}\n        elseif ($VmHostVersion -like \"6.5*\")\n            {$vmHWVersion = \"vmx-13\"}\n        elseif ($VmHostVersion -like \"6.7*\")\n            {$vmHWVersion = \"vmx-14\"}\n        elseif ($VmHostVersion -like \"7.0*\")\n            {$vmHWVersion = \"vmx-17\"}\n         Else\n            {Write-Host \"Exiting with error: Could not match Hardware Version that Equals $VmHostVersion\"\n            Exit 1\n            }\n\n#Set the VM Version on the Machine\n        $VMConfig = Get-View -VIObject $VM.Name\n        $vmConfigSpec = New-Object VMware.Vim.VirtualMachineConfigSpec\n        $vmConfigSpec.ScheduledHardwareUpgradeInfo = New-Object -TypeName VMware.Vim.ScheduledHardwareUpgradeInfo\n        $vmConfigSpec.ScheduledHardwareUpgradeInfo.upgradePolicy = \"always\"\n        $vmConfigSpec.ScheduledHardwareUpgradeInfo.versionKey = $vmHWVersion\n        $VMConfig.ReconfigVM($vmConfigSpec)\n\n        Write-host \"VM Hardware Version is scheduled to upgrade from $CurrentHWVersion to $vmHWVersion\"\n        Write-Host \"Update Virtual Machine Hardware Script Completed\"",
+        "script_arguments": "",
+        "timeout": 300,
+        "executable": "powershell.exe",
+        "capture_output": true
+      }
+    }
+  ]
+}
