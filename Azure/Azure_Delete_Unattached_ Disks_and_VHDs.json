@@ -1,0 +1,36 @@
+
+  "id": "",
+  "guid": "",
+  "name": "Azure Delete Unattached managed disks and VHDs",
+  "description": "***Use at your own Risk, this is not reversible.***\nRequires PS module AZ on the Commander server. Tested on Commander 8.4.0\n\nScripts from: https://docs.microsoft.com/en-us/azure/virtual-machines/windows/find-unattached-disks\n",
+  "type": "COMMAND",
+  "change_description": null,
+  "target_type": "MANAGEMENTSERVER",
+  "input_variables": [
+    {
+      "name": "deleteUnattached",
+      "variable": "deleteUnattached",
+      "description": "Input variable \"deleteUnattached\" Allowed Values: {$True:$False}\nWhen running in $false it will output the IDs that would have been deleted(Dry Run) to the commander logfile. ",
+      "required": true,
+      "default_value": "$True"
+    }
+  ],
+  "info_messages": [],
+  "system_version": "8.4.0 (1007090074)",
+  "steps": [
+    {
+      "name": "Execute Embedded Script",
+      "type": "EMBEDDED_SCRIPT",
+      "condition": null,
+      "data": {
+        "credentials": null,
+        "failure_action": "FAIL_STEP",
+        "script_contents": "$subscriptionId = (Get-Item Env:AZURE_SUBSCRIPTION_ID).value\n$tenantId = (Get-Item Env:AZURE_TENANT_ID).value\n$apiKey = (Get-Item Env:AZURE_API_KEY).value\n$ApplicationId = (Get-Item Env:AZURE_APPLICATION_ID).value\n$deleteUnattached = #{inputVariable['deleteUnattached']}\nif(!($subscriptionId) -or !($tenantId) -or !($apiKey) -or !($ApplicationId)){\n        Write-error \"Please provide Azure Login inforrmation\"\n        Exit 1\n        }\nImport-Module AZ\n\n#Credential Object\n[pscredential]$Credential= New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList \"$ApplicationId\",(\"$apiKey\" | ConvertTo-SecureString -AsPlainText -Force) \n\n#Connect to Azure\n$Connect = Connect-AzAccount -Credential $Credential -Subscription $subscriptionId -Tenant $tenantId -ServicePrincipal\nif($Connect){\n    Write-host \"Connected to $($Connect[0].Context.Environment.name)\"\n}\n    \n#Delete Unattached Managed Disks\n$managedDisks = Get-AzDisk\nforeach ($md in $managedDisks) {\n    # ManagedBy property stores the Id of the VM to which Managed Disk is attached to\n    # If ManagedBy property is $null then it means that the Managed Disk is not attached to a VM\n    if($md.ManagedBy -eq $null){\n        if($deleteUnattached){\n            Write-Host \"Deleting unattached Managed Disk with Id: $($md.Id)\"\n            $md | Remove-AzDisk -Force\n            Write-Host \"Deleted unattached Managed Disk with Id: $($md.Id) \"\n        }else{\n            $md.Id\n        }\n    }\n } \n\n#Delete unattached VHDs\n$storageAccounts = Get-AzStorageAccount\nforeach($storageAccount in $storageAccounts){\n    $storageKey = (Get-AzStorageAccountKey -ResourceGroupName $storageAccount.ResourceGroupName -Name $storageAccount.StorageAccountName)[0].Value\n    $context = New-AzStorageContext -StorageAccountName $storageAccount.StorageAccountName -StorageAccountKey $storageKey\n    $containers = Get-AzStorageContainer -Context $context\n    foreach($container in $containers){\n        $blobs = Get-AzStorageBlob -Container $container.Name -Context $context\n        #Fetch all the Page blobs with extension .vhd as only Page blobs can be attached as disk to Azure VMs\n        $blobs | Where-Object {$_.BlobType -eq 'PageBlob' -and $_.Name.EndsWith('.vhd')} | ForEach-Object { \n            #If a Page blob is not attached as disk then LeaseStatus will be unlocked\n            if($_.ICloudBlob.Properties.LeaseStatus -eq 'Unlocked'){\n                    if($deleteUnattached){\n                        Write-Host \"Deleting unattached VHD with Uri: $($_.ICloudBlob.Uri.AbsoluteUri)\"\n                        $_ | Remove-AzStorageBlob -Force\n                        Write-Host \"Deleted unattached VHD with Uri: $($_.ICloudBlob.Uri.AbsoluteUri)\"\n                    }\n                    else{\n                        $_.ICloudBlob.Uri.AbsoluteUri\n                    }\n            }\n        }\n    }\n}\n \n",
+        "script_arguments": "",
+        "timeout": 0,
+        "executable": "Powershell.exe",
+        "capture_output": true
+      }
+    }
+  ]
+}
