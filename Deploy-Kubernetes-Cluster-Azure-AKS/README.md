@@ -1,6 +1,6 @@
 # Deploying a Kubernetes Cluster on Azure AKS with Snow® Commander®
 
-This project enables you to use an ARM template to deploy an Azure Container Service (AKS) cluster with Commander and add the deployed cluster to Commander's inventory as a managed system.
+This project enables you to use an ARM template to deploy an Azure Container Service (AKS) cluster with Commander and add the deployed cluster to Commander's inventory as a cloud account.
 
 ## Changelog
 
@@ -9,13 +9,13 @@ This project enables you to use an ARM template to deploy an Azure Container Ser
 ## Prerequisites
 
 * Commander release 7.0.2 or greater
-* Add an Azure subscription as a Commander managed system. See [Adding Azure Managed Systems](https://docs.embotics.com/commander/adding-azure-managed-systems.htm) to learn how.
+* Add an Azure subscription as a Commander cloud account. See [Adding Azure Cloud Accounts](https://docs.embotics.com/commander/adding-azure-cloud-accounts.htm) to learn how.
 
 ## Install plug-in workflow step packages
 
 This scenario uses the following plug-in workflow steps:
 
-- Kubernetes plug-in workflow step package (`wfplugins-k8s.jar`), which provides a plug-in workflow step to add the deployed Kubernetes cluster to Commander’s inventory as a managed system
+- Kubernetes plug-in workflow step package (`wfplugins-k8s.jar`), which provides a plug-in workflow step to add the deployed Kubernetes cluster to Commander’s inventory as a cloud account
 - Azure plug-in workflow step package (`wfplugins-azure.jar`), which provides a plug-in workflow step to retrieve the kubeconfig of an AKS Kubernetes cluster created through an Azure template in a Commander service
 
 Go to [Embotics GitHub / Plug-in Workflow-Steps](https://github.com/Embotics/Plug-in-Workflow-Steps) and clone or download the repository. Then in your local version of the repo, browse to the `k8s` and `azure` directories, which contain the Kubernetes and Azure plug-in workflow step packages. 
@@ -148,4 +148,4 @@ The service is now configured and ready to test.
 1. In Commander or the Service Portal, go to the Service Catalog and request the service you just created. 
 1. On the Component form, enter a cluster name and click **Submit**. 
 
-    The deployed cluster will automatically be added to Commander as a managed system.
+    The deployed cluster will automatically be added to Commander as a cloud account.

@@ -8,16 +8,16 @@ This guide is intended for systems administrators, engineers and IT professional
 
 ## Prerequisites
 
-Before you begin, you must add a Kubernetes cluster as a managed system. You can do this in one of two ways:
+Before you begin, you must add a Kubernetes cluster as a cloud account. You can do this in one of two ways:
 
-- Add an existing Kubernetes cluster as a Commander managed system. See [Adding a Kubernetes Managed System](https://docs.embotics.com/commander/adding-kubernetes-managed-systems.htm).
-- Create a new Kubernetes cluster through Commander and have it automatically added as a Commander managed system. To learn how, search for "Kubernetes" on our [Knowledge Base](https://support.embotics.com/support/solutions/8000051955) and choose the article for your preferred platform for deploying Kubernetes clusters.
+- Add an existing Kubernetes cluster as a Commander cloud account. See [Adding a Kubernetes Cloud account](https://docs.embotics.com/commander/adding-kubernetes-managed-systems.htm).
+- Create a new Kubernetes cluster through Commander and have it automatically added as a Commander cloud account. To learn how, search for "Kubernetes" on our [Knowledge Base](https://support.embotics.com/support/solutions/8000051955) and choose the article for your preferred platform for deploying Kubernetes clusters.
 
 ## Install plug-in workflow step packages
 
 This scenario uses the following plug-in workflow steps:
 
-- Kubernetes plug-in workflow step package (`wfplugins-k8s.jar`), which provides a plug-in workflow step to add the deployed Kubernetes cluster to vCommander’s inventory as a managed system
+- Kubernetes plug-in workflow step package (`wfplugins-k8s.jar`), which provides a plug-in workflow step to add the deployed Kubernetes cluster to vCommander’s inventory as a cloud account
 - Text processing plug-in workflow step package (`wfplugins-text.jar`), which provides a plug-in workflow step to manipulate text input
 - Email plug-in workflow step package (`wfplugins-email.jar`), which provides a plug-in workflow step to send an email with an optional attachment
 

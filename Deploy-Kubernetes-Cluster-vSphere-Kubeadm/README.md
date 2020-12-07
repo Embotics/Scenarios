@@ -2,7 +2,7 @@
 
 Kubernetes is an open-source system for deploying and managing containerized applications within a hybrid or cloud environment. Using the Snow Commander cloud management platform, you can instantiate a Kubernetes cluster, and then use vCommander’s orchestration, self-service, cloud governance and cost optimization features to manage the cluster.
 
-This article shows you how to use Commander and greater to get a Kubernetes cluster up and running quickly on VMware vSphere 6.5+, and to add the deployed cluster to vCommander’s inventory as a managed system. While there are many ways to deploy Kubernetes, this solution uses the kubeadm deployment and installation method on Centos 7 Linux, 64-bit architecture. 
+This article shows you how to use Commander and greater to get a Kubernetes cluster up and running quickly on VMware vSphere 6.5+, and to add the deployed cluster to vCommander’s inventory as a cloud account. While there are many ways to deploy Kubernetes, this solution uses the kubeadm deployment and installation method on Centos 7 Linux, 64-bit architecture. 
 
 This article is intended for systems administrators, engineers and IT professionals. Previous experience with Kubernetes is required.
 
@@ -16,7 +16,7 @@ This article is intended for systems administrators, engineers and IT profession
 
 Before you begin, you must:
 
-- Add a vCenter as a Commander managed system. See [Adding vCenter managed systems](https://docs.embotics.com/commander/adding_a_managed_system.htm#AddingvCentermanagedsystems).
+- Add a vCenter as a Commander cloud account. See [Get started with vCenter in Commander](https://docs.embotics.com/commander/vmware-vcenter.htm).
 - Create a Commander deployment destination, targeting the location in vCenter where the Kubernetes cluster will be deployed. See [Configuring Automated Deployment for Approved Service Requests](<https://docs.embotics.com/commander/config_auto_placement_depl_vms.htm>). 
 - Ensure that the user requesting the Kubernetes cluster has permission to deploy to the targeted location in vSphere.
 - Ensure that the root Linux user can log in through SSH, because Docker and Kubernetes require the configuration of system-level resources.
@@ -30,7 +30,7 @@ To provision a Kubernetes cluster on vCenter with Commander, the following steps
 1. Install a workflow plug-in step that automatically adds the deployed cluster to vCommander’s inventory.
 1. Import completion workflows from the Embotics Git repository; these workflows will run once the cluster is deployed.
 1. Create a custom attribute for the Kubernetes version.
-1. Create a custom attribute for the managed system name.
+1. Create a custom attribute for the cloud account name.
 1. Create a service catalog entry for users to request a Kubernetes cluster.
 1. Submit a service request.
 
@@ -55,7 +55,7 @@ Create a generic VM template in vSphere to use as the base image for all nodes i
 
 ## Install the plug-in workflow step package
 
-Go to [Embotics GitHub / Plug-in Workflow-Steps](https://github.com/Embotics/Plug-in-Workflow-Steps) and clone or download the repository. Then using your local version of the repo, install the Kubernetes plug-in workflow step package (located in the `k8s` directory), which contains a plug-in workflow step to add the deployed Kubernetes cluster to vCommander’s inventory as a managed system. The completion workflows in this scenario reference this plug-in step.
+Go to [Embotics GitHub / Plug-in Workflow-Steps](https://github.com/Embotics/Plug-in-Workflow-Steps) and clone or download the repository. Then using your local version of the repo, install the Kubernetes plug-in workflow step package (located in the `k8s` directory), which contains a plug-in workflow step to add the deployed Kubernetes cluster to vCommander’s inventory as a cloud account. The completion workflows in this scenario reference this plug-in step.
 
 To learn how to download and install workflow plug-in steps, see [Adding Workflow Plug-In Steps](https://docs.embotics.com/commander/Using-Plug-In-WF-Steps.htm#Adding). 
 
@@ -109,9 +109,9 @@ To enable requesters to select which version of Kubernetes to install, create a 
    This name is hard-coded in the completion workflows, so you must use this exact name.
 1. Click **Next**, add the appropriate Kubernetes versions, and click **Finish**.
 
-## Create a custom attribute for the managed system name
+## Create a custom attribute for the cloud account name
 
-To store the name of the Kubernetes managed system, create another custom attribute.
+To store the name of the Kubernetes cloud account, create another custom attribute.
 
 1. In Commander, go to **Configuration > Custom Attributes**.
 1. Click **Add**.
@@ -126,7 +126,7 @@ To store the name of the Kubernetes managed system, create another custom attrib
 Next, create an entry in the service catalog that:
 
 - Allows the requester to choose which Kubernetes version to deploy (optional)
-- Allows the requester to specify the name of the Commander managed system
+- Allows the requester to specify the name of the Commander cloud account
 - Provisions three linked clones from the previously built vSphere template
 - Applies the component-level completion workflow to each deployed VM
 - Applies the service-level completion workflow to the deployed cluster
@@ -147,7 +147,7 @@ Next, create an entry in the service catalog that:
 
     This name is hard-coded in the completion workflows, so you must use this exact name.
 
-1. Create a second custom component to store the value for the name of the Kubernetes cluster when it’s added to Commander as a managed system. On the Component Blueprints page, click **Add > New Component Type**. In the Create New Component Type dialog, enter a name of **kubernetes_name** and an annual cost of 0, then click **Add to Service**.
+1. Create a second custom component to store the value for the name of the Kubernetes cluster when it’s added to Commander as a cloud account. On the Component Blueprints page, click **Add > New Component Type**. In the Create New Component Type dialog, enter a name of **kubernetes_name** and an annual cost of 0, then click **Add to Service**.
 
     This name is hard-coded in the completion workflows, so you must use this exact name.
 
@@ -166,7 +166,7 @@ Next, create an entry in the service catalog that:
 
 1. Configure the blueprint for the second custom component. On the Component Blueprint page for kubernetes_name, go to the **Attributes** tab, click **Add Attributes**, select **kubernetes_name** from the list and click **OK**.
 
-1. If you want to allow requesters to choose the name of the Kubernetes managed system, add the custom attribute to the request form. On the Form tab, in the Toolbox on the right, click the **kubernetes_name** form element.
+1. If you want to allow requesters to choose the name of the Kubernetes cloud account, add the custom attribute to the request form. On the Form tab, in the Toolbox on the right, click the **kubernetes_name** form element.
 
 1. Click **Edit** to enable the **Required** flag and click **OK**.
 
@@ -184,6 +184,6 @@ Next, create an entry in the service catalog that:
 
 Our service is now configured and ready to test. In Commander or the Service Portal, go to the Service Catalog and request the Kubernetes service. Notice that you can specify the cluster name and select the Kubernetes version on the request form.
 
-Once the service request has completed, the new cluster is added to vCommander’s inventory as a Kubernetes managed system.
+Once the service request has completed, the new cluster is added to vCommander’s inventory as a Kubernetes cloud account.
 
 To learn more about Commander's support for Kubernetes, see [Managing Kubernetes](https://docs.embotics.com/commander/managing-kubernetes.htm).

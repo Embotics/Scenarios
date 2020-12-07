@@ -9,14 +9,14 @@ This guide is intended for systems administrators, engineers and IT professional
 ## Prerequisites
 - Commander release 7.0.2 or higher
 
-Before you begin, you must add a Kubernetes cluster as a cloud account (managed system). You can do this in one of two ways:
+Before you begin, you must add a Kubernetes cluster as a cloud account (cloud account). You can do this in one of two ways:
 
-- Add an existing Kubernetes cluster as a Commander cloud account. See [Adding a Kubernetes managed system](https://docs.embotics.com/commander/adding-kubernetes-managed-systems.htm) a Kubernetes Managed System.
-- Create a new Kubernetes cluster through Commander and have it automatically added as a Commander managed system. To learn how, see [Workflow Extension Scenarios](https://support.embotics.com/support/solutions/folders/8000085541).
+- Add an existing Kubernetes cluster as a Commander cloud account. See [Adding a Kubernetes cloud account](https://docs.embotics.com/commander/adding-kubernetes-managed-systems.htm) a Kubernetes Cloud account.
+- Create a new Kubernetes cluster through Commander and have it automatically added as a Commander cloud account. To learn how, see [Workflow Extension Scenarios](https://support.embotics.com/support/solutions/folders/8000085541).
 
 ## Install the plug-in step package
 
-This scenario uses the Kubernetes plug-in workflow step package (`wfplugins-k8s.jar`), which provides a plug-in workflow step to add the deployed Kubernetes cluster to vCommander’s inventory as a managed system. The completion workflow in this scenario reference this plug-in step.
+This scenario uses the Kubernetes plug-in workflow step package (`wfplugins-k8s.jar`), which provides a plug-in workflow step to add the deployed Kubernetes cluster to vCommander’s inventory as a cloud account. The completion workflow in this scenario reference this plug-in step.
 
 Go to [Embotics GitHub / Plug-in Workflow-Steps](https://github.com/Embotics/Plug-in-Workflow-Steps) and clone or download the repository. Then in your local version of the repo, browse to the `k8s` directory, which contains the Kubernetes plug-in workflow step package. 
 
@@ -72,7 +72,7 @@ The completion workflow includes manifest files for nginx, mongo and redis. You 
 
 ## Submit a change request
 
-1. In Commander or the Service Portal, select a Kubernetes managed system and run the **Request Change** command.
+1. In Commander or the Service Portal, select a Kubernetes cloud account and run the **Request Change** command.
 2. In the Select Change Request dialog, click **Install Apps**.
 3. Complete the request form by selecting an application to install and click **OK**.
    The chosen application is installed on the selected Kubernetes cluster.
