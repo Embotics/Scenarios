@@ -1,6 +1,6 @@
-# Deploying a Kubernetes Cluster on vSphere through kubeadm with Embotics® Commander®
+# Deploying a Kubernetes Cluster on vSphere through kubeadm with Snow® Commander®
 
-Kubernetes is an open-source system for deploying and managing containerized applications within a hybrid or cloud environment. Using the Embotics Commander cloud management platform, you can instantiate a Kubernetes cluster, and then use vCommander’s orchestration, self-service, cloud governance and cost optimization features to manage the cluster.
+Kubernetes is an open-source system for deploying and managing containerized applications within a hybrid or cloud environment. Using the Snow Commander cloud management platform, you can instantiate a Kubernetes cluster, and then use vCommander’s orchestration, self-service, cloud governance and cost optimization features to manage the cluster.
 
 This article shows you how to use Commander and greater to get a Kubernetes cluster up and running quickly on VMware vSphere 6.5+, and to add the deployed cluster to vCommander’s inventory as a managed system. While there are many ways to deploy Kubernetes, this solution uses the kubeadm deployment and installation method on Centos 7 Linux, 64-bit architecture. 
 

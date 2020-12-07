@@ -1,6 +1,6 @@
 # Running Ansible Playbooks
 
-This scenario enables you to use Embotics® Commander® to run an Ansible playbook on a target system using the `ansible-playbook` command.
+This scenario enables you to use Snow® Commander® to run an Ansible playbook on a target system using the `ansible-playbook` command.
 
 ## Changelog
 

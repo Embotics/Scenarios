@@ -1,6 +1,6 @@
 # Workflow Extension Scenarios
 
-This repository contains files required to set up Embotics workflow extension scenarios.
+This repository contains files required to set up Snow workflow extension scenarios.
 
 You can find complete scenario documentation on the [Embotics Support Knowledge Base](https://support.embotics.com/support/home). 
 

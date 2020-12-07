@@ -1,6 +1,6 @@
 # Requesting and Releasing IP Addresses with Infoblox
 
-This scenario enables you to use Embotics® Commander® to request an IP address for a VM from the Infoblox IPAM solution as part of a Commander Approval Workflow as well as releasing IP addresses as part of a Commander Decommissioning Workflow.
+This scenario enables you to use Snow® Commander® to request an IP address for a VM from the Infoblox IPAM solution as part of a Commander Approval Workflow as well as releasing IP addresses as part of a Commander Decommissioning Workflow.
 
 ## Changelog
 

@@ -1,6 +1,6 @@
 # Deploying Embedded Terraform Configurations
 
-This scenario enables you to use deploy resources using Terraform configurations in the Embotics® Commander® service catalog. It includes an optional approval workflow that uses the output of the Terraform plan command.
+This scenario enables you to use deploy resources using Terraform configurations in the Snow® Commander® service catalog. It includes an optional approval workflow that uses the output of the Terraform plan command.
 
 ## Changelog
 

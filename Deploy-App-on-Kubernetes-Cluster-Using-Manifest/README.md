@@ -1,6 +1,6 @@
 # Deploying an Application into a Kubernetes Cluster Using a Manifest File
 
-Kubernetes is an open-source system for deploying and managing containerized applications within a hybrid or cloud environment. Using the Embotics® Commander® cloud management platform, you can deploy applications into Kubernetes clusters. 
+Kubernetes is an open-source system for deploying and managing containerized applications within a hybrid or cloud environment. Using the Snow® Commander® cloud management platform, you can deploy applications into Kubernetes clusters. 
 
 This guide shows you how to use Commander 7.0.2 or greater to deploy a new application into an existing Kubernetes cluster. The requester provides input in the form of a Kubernetes manifest file. An optional approval workflow can be added to check the files before deploying. 
 

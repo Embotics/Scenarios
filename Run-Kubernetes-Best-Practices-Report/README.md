@@ -1,6 +1,6 @@
-# Running a Kubernetes Best Practices Report with Embotics® Commander®
+# Running a Kubernetes Best Practices Report with Snow® Commander®
 
-Kubernetes is an open-source system for deploying and managing containerized applications within a hybrid or cloud environment. Using the Embotics Commander cloud management platform, you can run a best practices report that compares the current state of a Kubernetes cluster against a set of checks to ensure that the resources (such as pods and containers) deployed on the cluster follow best practices and corporate standards.
+Kubernetes is an open-source system for deploying and managing containerized applications within a hybrid or cloud environment. Using the Snow Commander cloud management platform, you can run a best practices report that compares the current state of a Kubernetes cluster against a set of checks to ensure that the resources (such as pods and containers) deployed on the cluster follow best practices and corporate standards.
 
 This guide shows you how to use Commander 7.0.2 or greater to run a best practices report as a command workflow against a Kubernetes cluster. The best practices report is based on best practices documented by Kubernetes related to [configuration](https://kubernetes.io/docs/concepts/configuration/overview/), [security](https://kubernetes.io/blog/2016/08/security-best-practices-kubernetes-deployment), and [large clusters](https://kubernetes.io/docs/setup/cluster-large/), as well as on our own experience with Kubernetes.
 

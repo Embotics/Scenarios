@@ -1,4 +1,4 @@
-# Deploying a Kubernetes Cluster on Azure AKS with Embotics® Commander®
+# Deploying a Kubernetes Cluster on Azure AKS with Snow® Commander®
 
 This project enables you to use an ARM template to deploy an Azure Container Service (AKS) cluster with Commander and add the deployed cluster to Commander's inventory as a managed system.
 

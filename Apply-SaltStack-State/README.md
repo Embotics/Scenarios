@@ -1,6 +1,6 @@
 # Applying a SaltStack State
 
-This scenario explores using Embotics® Commander® to apply a SaltStack state on a new or existing system.
+This scenario explores using Snow® Commander® to apply a SaltStack state on a new or existing system.
 
 ## Change Log
 

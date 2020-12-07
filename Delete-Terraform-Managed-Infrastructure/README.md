@@ -1,6 +1,6 @@
 # Deleting Terraform Managed Infrastructure
 
-This scenario enables you to destroy resources provisioned through Terraform and Embotics® Commander®. An optional approval workflow using the output of the Terraform plan command is also included.
+This scenario enables you to destroy resources provisioned through Terraform and Snow® Commander®. An optional approval workflow using the output of the Terraform plan command is also included.
 
 ## Changelog
 

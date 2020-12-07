@@ -1,6 +1,6 @@
 # Deploying User-Provided Terraform Configurations
 
-This scenario enables you to provision resources specified in a Terraform configuration that has been uploaded by an end-user of Embotics® Commander®. An optional approval workflow using the output of the Terraform plan command is also included.
+This scenario enables you to provision resources specified in a Terraform configuration that has been uploaded by an end-user of Snow® Commander®. An optional approval workflow using the output of the Terraform plan command is also included.
 
 ## Changelog
 
