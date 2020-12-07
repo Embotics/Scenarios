@@ -1,6 +1,6 @@
 # Running Ansible Playbooks
 
-This scenario enables you to use Embotics® vCommander® to run an Ansible playbook on a target system using the `ansible-playbook` command.
+This scenario enables you to use Embotics® Commander® to run an Ansible playbook on a target system using the `ansible-playbook` command.
 
 ## Changelog
 
@@ -8,13 +8,13 @@ This scenario enables you to use Embotics® vCommander® to run an Ansible playb
 
 ## Prerequisites
 
-* This scenario requires vCommander release 7.0.2 or higher
+* This scenario requires Commander release 7.0.2 or higher
 * Target systems must be accessible for Guest OS commands (VMware tools or SSH)
 * Ansible must be installed on the target system (see section below for more details)
 
 ### Installing Ansible on target instances
 
-To run an Ansible playbook on a target system, you must install Ansible on that system. Ansible can be installed as part of the bootstrapping of the instance (that is, the template used has Ansible pre-installed). It can also be installed through a vCommander **Guest OS > Run Program** workflow step. You can choose whichever is more appropriate for you development needs. 
+To run an Ansible playbook on a target system, you must install Ansible on that system. Ansible can be installed as part of the bootstrapping of the instance (that is, the template used has Ansible pre-installed). It can also be installed through a Commander **Guest OS > Run Program** workflow step. You can choose whichever is more appropriate for you development needs. 
 
 The commands required to install Ansible varies for the different Linux distributions.
 
@@ -54,7 +54,7 @@ This section describes how to set up a component blueprint in the service catalo
 ### Create a custom attribute to hold the list of available playbooks
 **Note:** To update this list automatically see "Optional: Updating the list of playbooks automatically" below.
 
-1. In vCommander, go to **Configuration menu > Custom Attributes.** 
+1. In Commander, go to **Configuration menu > Custom Attributes.** 
 1. On the **Custom Attributes** pane, click **Add**.
 1. In the Configure Custom Attribute dialog, enter a name for the custom attribute, and do the following:
 
@@ -66,15 +66,15 @@ This section describes how to set up a component blueprint in the service catalo
 
 ### Install the plug-in workflow step package
 
-This scenario uses the Ansible plug-in workflow step package (`wfplugins-ansible.jar`), which provides a plug-in workflow step to enable vCommander to execute the ansible-playbook command to install playbook on a target VM.
+This scenario uses the Ansible plug-in workflow step package (`wfplugins-ansible.jar`), which provides a plug-in workflow step to enable Commander to execute the ansible-playbook command to install playbook on a target VM.
 
 Go to [Embotics GitHub / Plug-in Workflow-Steps](https://github.com/Embotics/Plug-in-Workflow-Steps) and clone or download the repository. Then in your local version of the repo, browse to the `ansible` directory, which contains the Ansible plug-in workflow step package. 
 
-To learn how to download and install workflow plug-in steps, see [Adding plug-in workflow steps](https://docs.embotics.com/vCommander/Using-Plug-In-WF-Steps.htm#Adding).
+To learn how to download and install workflow plug-in steps, see [Adding plug-in workflow steps](https://docs.embotics.com/Commander/Using-Plug-In-WF-Steps.htm#Adding).
 
 ### Create guest OS credentials
 The completion workflows require guest OS credentials to run Ansible playbooks on the deployed VM. Before importing the workflow, you must create a set of guest OS credentials.
-1. In vCommander, go to **Configuration > Credentials**.
+1. In Commander, go to **Configuration > Credentials**.
 1. Click **Add**.
 1. In the Add Credentials dialog: 
 
@@ -84,7 +84,7 @@ The completion workflows require guest OS credentials to run Ansible playbooks o
 
    b. Enter **admin** for the Name.
 
-   ​    This name is hard-coded in the completion workflow, so enter the name exactly as shown. Note that the Name field is vCommander-specific, and is separate from the Username field.
+   ​    This name is hard-coded in the completion workflow, so enter the name exactly as shown. Note that the Name field is Commander-specific, and is separate from the Username field.
 
    c. Enter the required username (for example "root", "ec2-user", or "ubuntu") and password.
 
@@ -95,7 +95,7 @@ The completion workflows require guest OS credentials to run Ansible playbooks o
    g. Click **OK**.
 
 ## Download and edit the Ansible completion workflow
-Download the completion workflow,`ansible-vm-component-workflow` from the [Embotics Git Hub / Scenarios](https://github.com/Embotics/Scenarios) repo and then import it into vCommander. To learn how to import workflows, see [Exporting and Importing Workflow Definitions](https://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm).
+Download the completion workflow,`ansible-vm-component-workflow` from the [Embotics Git Hub / Scenarios](https://github.com/Embotics/Scenarios) repo and then import it into Commander. To learn how to import workflows, see [Exporting and Importing Workflow Definitions](https://docs.embotics.com/commander/exporting-and-importing-workflows.htm).
 The workflow contains two instances of the **Run ansible-playbook** step. 
 
 - the first shows you how to run Ansible playbooks using inline playbook YAML. Note that the YAML used for this step is an example that works for Amazon EC2 instances, since it includes the action "ec2_facts". Edit the YAML for your target as required. 
@@ -108,7 +108,7 @@ You need to add a **Run ansible-playbook** step for each playbook on offer, usin
 **Note**: On the Assigned Components page of the Completion Workflow Configuration wizard, you can keep the default setting, **Do not apply this workflow to any component**, for now. You will apply the workflow when you create the service.
 
 ### Create the service catalog entry and component blueprint
-1. In vCommander, go to **Configuration > Service Request Configuration**, then click **Add Service**.
+1. In Commander, go to **Configuration > Service Request Configuration**, then click **Add Service**.
 1. On the Service Description page, type a name for the server, then click **Next**.
 1. On the Component Blueprints page, click **Add > VM Template, Image or AMI**. 
 1. In the dialog that appears, select a Linux template as the component, click **Add to Service**, then **Close**.
@@ -121,7 +121,7 @@ You need to add a **Run ansible-playbook** step for each playbook on offer, usin
    - If you want to allow end users to upload their own Ansible playbooks, add the File Upload attribute. This attribute requires a `#{target.settings.uploadedFile['Uploaded Playbook'].file[1].content}` entry in the **Playbook YAML** field of the workflow step.
 1. Click **Next**. 
 1. On the Deployment page, use the default and click **Next**.
-1. For the purposes of this walk-through, we’ll skip the Intelligent Placement page. Click **Next**. To learn more about Intelligent Placement, see [Intelligent Placement](https://docs.embotics.com/vCommander/intelligent-placement.htm) in the vCommander User Guide.  
+1. For the purposes of this walk-through, we’ll skip the Intelligent Placement page. Click **Next**. To learn more about Intelligent Placement, see [Intelligent Placement](https://docs.embotics.com/commander/intelligent-placement.htm) in the Commander User Guide.  
 1. On the Visibility page, specify who can request this service, then click **Next**.
 1. On the Summary page, review the service's configuration details, and click **Finish**. 
 
@@ -140,22 +140,22 @@ To allow your end users to provide their own Ansible playbooks:
 
 ## Optional: Updating the list of playbooks automatically
 
-If you maintain a repository of playbooks and wish to offer all of them to your end users, vCommander can retrieve the list of playbooks from your repository and update the service catalog and workflow as the list of playbooks changes. We've published a command workflow, `Update CA`, that performs this task. This command workflow has no inventory target and can be scheduled to run regularly.
+If you maintain a repository of playbooks and wish to offer all of them to your end users, Commander can retrieve the list of playbooks from your repository and update the service catalog and workflow as the list of playbooks changes. We've published a command workflow, `Update CA`, that performs this task. This command workflow has no inventory target and can be scheduled to run regularly.
 
 ### Create system credentials
 
-The command workflow requires system credentials to execute a vCommander REST API call. Before importing the workflow, you must create a set of system credentials.
+The command workflow requires system credentials to execute a Commander REST API call. Before importing the workflow, you must create a set of system credentials.
 
-1. In vCommander, go to **Configuration > Credentials**.
+1. In Commander, go to **Configuration > Credentials**.
 1. Click **Add**.
 1. In the Add Credentials dialog:
 
    a. Select **Username/Password** for the Credentials Type.
 
-   b. Enter **vCommander superuser** for the Name.
+   b. Enter **Commander superuser** for the Name.
    ​    This name is hard-coded in the command workflow, so enter the name exactly as shown.
 
-   c. Enter the username and password for the vCommander Superuser account.
+   c. Enter the username and password for the Commander Superuser account.
 
    d. Enter a description if you wish.
 
@@ -166,9 +166,9 @@ The command workflow requires system credentials to execute a vCommander REST AP
 ### Import the command workflow
 
 1. Go to the [Embotics Git repository](https://github.com/Embotics/Scenarios) and download the Update CA workflow. 
-1. In vCommander, go to **Configuration > Command Workflows**.
+1. In Commander, go to **Configuration > Command Workflows**.
 1. Click **Import** and browse to the Upload CA file you downloaded.
-1. vCommander automatically validates the workflow. Click **Import**.
+1. Commander automatically validates the workflow. Click **Import**.
 
 ### Edit the command workflow
 1. Select the imported workflow in the list and click **Edit**.
