@@ -9,9 +9,9 @@ This guide is intended for systems administrators, engineers and IT professional
 ## Prerequisites
 - vCommander release 7.0.2 or higher
 
-Before you begin, you must add a Kubernetes cluster as a managed system. You can do this in one of two ways:
+Before you begin, you must add a Kubernetes cluster as a cloud account (managed system). You can do this in one of two ways:
 
-- Add an existing Kubernetes cluster as a vCommander managed system. See [Adding a Kubernetes managed system](https://docs.embotics.com/vCommander/adding-kubernetes-managed-systems.htm) a Kubernetes Managed System.
+- Add an existing Kubernetes cluster as a vCommander cloud account. See [Adding a Kubernetes managed system](https://docs.embotics.com/vCommander/adding-kubernetes-managed-systems.htm) a Kubernetes Managed System.
 - Create a new Kubernetes cluster through vCommander and have it automatically added as a vCommander managed system. To learn how, see [Workflow Extension Scenarios](https://support.embotics.com/support/solutions/folders/8000085541).
 
 ## Install the plug-in step package

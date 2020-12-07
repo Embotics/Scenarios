@@ -10,14 +10,14 @@ This guide is intended for systems administrators, engineers and IT professional
 
 ## Prerequisites
 
-Before you begin, you must add a Kubernetes cluster as a managed system. You can do this in one of two ways:
+Before you begin, you must add a Kubernetes cluster as a cloud account (managed system). You can do this in one of two ways:
 
-- Add an existing Kubernetes cluster as a vCommander managed system. See [Adding a Kubernetes Managed System](https://docs.embotics.com/vCommander/adding-kubernetes-managed-systems.htm).
-- Create a new Kubernetes cluster through vCommander and have it automatically added as a vCommander managed system. To learn how, search for "Kubernetes" on our [Knowledge Base](https://support.embotics.com/support/solutions/8000051955) and choose the article for your preferred platform for deploying Kubernetes clusters.
+- Add an existing Kubernetes cluster as a vCommander cloud account. See [Adding Kubernetes Cloud Accounts](https://docs.embotics.com/commander/adding-kubernetes-cloud-accounts.htm).
+- Create a new Kubernetes cluster through vCommander and have it automatically added as a vCommander cloud account. To learn how, search for "Kubernetes" on our [Knowledge Base](https://support.embotics.com/support/solutions/8000051955) and choose the article for your preferred platform for deploying Kubernetes clusters.
 
 ## Install the plug-in step package
 
-This scenario uses the Kubernetes plug-in workflow step package (`wfplugins-k8s.jar`), which provides a plug-in workflow step to add the deployed Kubernetes cluster to vCommander’s inventory as a managed system. The completion workflow in this scenario reference this plug-in step.
+This scenario uses the Kubernetes plug-in workflow step package (`wfplugins-k8s.jar`), which provides a plug-in workflow step to add the deployed Kubernetes cluster to vCommander’s inventory as a cloud account. The completion workflow in this scenario reference this plug-in step.
 
 Go to [Embotics GitHub / Plug-in Workflow-Steps](https://github.com/Embotics/Plug-in-Workflow-Steps) and clone or download the repository. Then in your local version of the repo, browse to the `k8s` directory, which contains the Kubernetes plug-in workflow step package. 
 
@@ -38,7 +38,7 @@ For information on how to download and install workflow plug-in steps, see [Addi
 1. In vCommander, go to **Configuration > Service Request Configuration**, then click the **Form Designer** tab.
 1. Click **Add**, and in the Add Request Form dialog, for **Form Name**, type “Deploy K8s App”.
 1. From the **Form Type** list, select **Change Request Form**.
-1. From the **Target Type** list, select **Managed System**.
+1. From the **Target Type** list, select **Cloud Account**.
 1. From the **Completion Workflow** list, select **Deploy on K8s**.
 1. Click **OK**.
 1. From the Toolbox at the right side of the window, add the following form elements:
@@ -50,8 +50,8 @@ For information on how to download and install workflow plug-in steps, see [Addi
 
 ## Submit a change request
 
-1. In vCommander or the Service Portal, select a Kubernetes managed system and run the **Request Change** command.
-1. If you have multiple service change request forms available for managed systems, in the Select Change Request dialog, click **Deploy K8s App**.
+1. In vCommander or the Service Portal, select a Kubernetes cloud account and run the **Request Change** command.
+1. If you have multiple service change request forms available for cloud accounts, in the Select Change Request dialog, click **Deploy K8s App**.
 1.  In the Request Service Change dialog, complete the request form by entering a Namespace, browsing to a manifest file, and clicking **OK**.
 
 The chosen application is installed on the selected Kubernetes cluster.

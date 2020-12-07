@@ -46,7 +46,7 @@ The Terraform service request needs a form that can identify the owner of the de
 
 For the Terraform configuration to be able to provision resources, configure an automated deployment destination and assign the destination to Terraform Org.
 
-The specific steps that are required depend on whether you are using vCenter, AWS, Azure, and SCVMM managed systems. For more information, see [Configuring Automated Deployment for Approved Service Requests](https://docs.embotics.com/vCommander/config_auto_placement_depl_vms.htm).
+The specific steps that are required depend on whether you are using vCenter, AWS, Azure, and SCVMM cloud accounts. For more information, see [Configuring Automated Deployment for Approved Service Requests](https://docs.embotics.com/vCommander/config_auto_placement_depl_vms.htm).
 
 ### Configure a default ownership policy
 
