@@ -1,6 +1,6 @@
-# Deploying a Kubernetes Cluster on Azure AKS with Embotics® vCommander®
+# Deploying a Kubernetes Cluster on Azure AKS with Snow® Commander®
 
-This project enables you to use an ARM template to deploy an Azure Container Service (AKS) cluster with vCommander and add the deployed cluster to vCommander's inventory as a managed system.
+This project enables you to use an ARM template to deploy an Azure Container Service (AKS) cluster with Commander and add the deployed cluster to Commander's inventory as a cloud account.
 
 ## Changelog
 
@@ -8,19 +8,19 @@ This project enables you to use an ARM template to deploy an Azure Container Ser
 
 ## Prerequisites
 
-* vCommander release 7.0.2 or greater
-* Add an Azure subscription as a vCommander managed system. See [Adding Azure Managed Systems](https://docs.embotics.com/vCommander/adding-azure-managed-systems.htm) to learn how.
+* Commander release 7.0.2 or greater
+* Add an Azure subscription as a Commander cloud account. See [Adding Azure Cloud Accounts](https://docs.embotics.com/commander/adding-azure-cloud-accounts.htm) to learn how.
 
 ## Install plug-in workflow step packages
 
 This scenario uses the following plug-in workflow steps:
 
-- Kubernetes plug-in workflow step package (`wfplugins-k8s.jar`), which provides a plug-in workflow step to add the deployed Kubernetes cluster to vCommander’s inventory as a managed system
-- Azure plug-in workflow step package (`wfplugins-azure.jar`), which provides a plug-in workflow step to retrieve the kubeconfig of an AKS Kubernetes cluster created through an Azure template in a vCommander service
+- Kubernetes plug-in workflow step package (`wfplugins-k8s.jar`), which provides a plug-in workflow step to add the deployed Kubernetes cluster to Commander’s inventory as a cloud account
+- Azure plug-in workflow step package (`wfplugins-azure.jar`), which provides a plug-in workflow step to retrieve the kubeconfig of an AKS Kubernetes cluster created through an Azure template in a Commander service
 
 Go to [Embotics GitHub / Plug-in Workflow-Steps](https://github.com/Embotics/Plug-in-Workflow-Steps) and clone or download the repository. Then in your local version of the repo, browse to the `k8s` and `azure` directories, which contain the Kubernetes and Azure plug-in workflow step packages. 
 
-To learn how to download and install workflow plug-in steps, see [Adding plug-in workflow steps](https://docs.embotics.com/vCommander/Using-Plug-In-WF-Steps.htm#Addingpluginworkflowsteps).
+To learn how to download and install workflow plug-in steps, see [Adding plug-in workflow steps](https://docs.embotics.com/commander/Using-Plug-In-WF-Steps.htm#Addingpluginworkflowsteps).
 
 ## Download scenario files
 
@@ -29,23 +29,23 @@ Go to [Embotics GitHub / Scenarios](https://github.com/Embotics/Scenarios) and c
 Download the following files from this project:
 
 - `aks.template`: an ARM template that you will add to the service catalog
-- `add-aks-cluster.yaml`: a vCommander completion workflow for Cloud Template components that you will import
+- `add-aks-cluster.yaml`: a Commander completion workflow for Cloud Template components that you will import
 
 ## Import the completion workflow
 
-Import a vCommander completion workflow to complete the provisioning and configuration of the cluster. 
+Import a Commander completion workflow to complete the provisioning and configuration of the cluster. 
 
 1. Go to [Embotics Git Hub / Scenarios](https://github.com/Embotics/Scenarios) and clone or download the repository.
-1. In vCommander, go to **Configuration > Service Request Configuration > Completion Workflows** and click **Import**.
+1. In Commander, go to **Configuration > Service Request Configuration > Completion Workflows** and click **Import**.
 1. Go to the Scenarios repo that you cloned or downloaded, then from the `Deploy-Kubernetes-Cluster-Azure-AKS` directory, select the `add-aks-cluster.yaml` file, and click **Open**.
-   vCommander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
+   Commander automatically validates the workflow and displays the validation results in the Messages area of the Import Workflow dialog.
 1. Enter a comment about the workflow in the **Description of Changes** field, and click **Import**.
 
-​        To learn more, see [Exporting and Importing Workflow Definitions](https://docs.embotics.com/vCommander/exporting-and-importing-workflows.htm).
+​        To learn more, see [Exporting and Importing Workflow Definitions](https://docs.embotics.com/commander/exporting-and-importing-workflows.htm).
 
 ## Generate an SSH public key
 
-You must have a valid SSH public key that vCommander can use to connect with the Azure portal. You should generate the key on the same machine on which vCommander has been installed. 
+You must have a valid SSH public key that Commander can use to connect with the Azure portal. You should generate the key on the same machine on which Commander has been installed. 
 
 You can use a tools such as PuTTYgen or ssh-keygen depending on your environment. 
 
@@ -110,9 +110,9 @@ $ az ad sp create-for-rbac --name AKS-SP
   - **Get values for signing in**
 1. The appropriate permissions for assigning roles are required to create the Application Registration.  Refer to the  **Required permissions** section in the Microsoft page for more information. 
 
-## Create a vCommander deployment destination
+## Create a Commander deployment destination
 
-For general information on creating a deployment destination for Azure, see [Configuring Automated Deployment for Approved Service Requests](https://docs.embotics.com/vCommander/config_auto_placement_depl_vms.htm). 
+For general information on creating a deployment destination for Azure, see [Configuring Automated Deployment for Approved Service Requests](https://docs.embotics.com/commander/config_auto_placement_depl_vms.htm). 
 
 **Notes:** 
 
@@ -121,7 +121,7 @@ For general information on creating a deployment destination for Azure, see [Con
 
 ## Create a service catalog entry for users to request
 
-1. In vCommander, go to **Configuration > Service Request Configuration > Service Catalog**.
+1. In Commander, go to **Configuration > Service Request Configuration > Service Catalog**.
 1. Click **Add Service**.
 1. Enter a service name and description, then click **Next**. 
 1. On the Component Blueprints page, click **Add** > **ARM Template**.
@@ -145,7 +145,7 @@ For general information on creating a deployment destination for Azure, see [Con
 ## Submit a service request
 
 The service is now configured and ready to test. 
-1. In vCommander or the Service Portal, go to the Service Catalog and request the service you just created. 
+1. In Commander or the Service Portal, go to the Service Catalog and request the service you just created. 
 1. On the Component form, enter a cluster name and click **Submit**. 
 
-    The deployed cluster will automatically be added to vCommander as a managed system.
+    The deployed cluster will automatically be added to Commander as a cloud account.
