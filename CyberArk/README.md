@@ -33,23 +33,23 @@ Select the Workflow which you would like to add the module step to and Select Ed
 On the steps Selection, choose Add> Run Module.  
 
 Now to set the variable details for this step. These are the variables that need to be populated:
-   image_username
-      -Username used in the image to be rotated by CyberArk.
+image_username
+-Username used in the image to be rotated by CyberArk.
       
-   platform_id
-      -Platform identifier for the account, this must already exist in CyberArk or the request will fail. 
+platform_id
+- Platform identifier for the account, this must already exist in CyberArk or the request will fail. 
       
-   safe_name
-      -Name of the Safe that the account will be created in.
+safe_name
+- Name of the Safe that the account will be created in.
       
-   cyberark_authtype
-      -Auth type for the user account used for API calls to CyberArk,  supported types are: CyberArk, LDAP, RADIUS, Windows.
+cyberark_authtype
+- Auth type for the user account used for API calls to CyberArk,  supported types are: CyberArk, LDAP, RADIUS, Windows.
       
-   cyberark_instance
-      -DNS address of the CyberArk Server.
+cyberark_instance
+- DNS address of the CyberArk Server.
       
-   image_password 
-      -Password in the image for the credential to be rotated by CyberArk
+image_password 
+- Password in the image for the credential to be rotated by CyberArk
 
 
 
