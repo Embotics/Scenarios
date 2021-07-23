@@ -1,6 +1,6 @@
 {
-  "id": 264,
-  "guid": "d53049c7-b71f-41cf-ac39-ad2640ad3df8",
+  "id": "",
+  "guid": "",
   "name": "NTT Test - KernelCare",
   "type": "CHANGE_COMPLETION",
   "change_description": null,
@@ -29,7 +29,7 @@
       "data": {
         "hostname": "#{target.ipAddress}",
         "port": "22",
-        "credentials": "NTT Test - Ubuntu Cred",
+        "credentials": null,
         "failure_action": "FAIL_STEP",
         "timeout": 300,
         "command_line": "dpkg -s kernelcare",
@@ -43,7 +43,7 @@
       "data": {
         "hostname": "#{target.ipAddress}",
         "port": "22",
-        "credentials": "NTT Test - Ubuntu Cred",
+        "credentials": null,
         "failure_action": "PROCEED_TO_NEXT_STEP",
         "timeout": 300,
         "command_line": "sudo wget -qq -O - https://kernelcare.com/installer | sudo bash",
@@ -57,7 +57,7 @@
       "data": {
         "hostname": "#{target.ipAddress}",
         "port": "22",
-        "credentials": "NTT Test - Ubuntu Cred",
+        "credentials": null,
         "failure_action": "FAIL_STEP",
         "timeout": 300,
         "command_line": "  echo \"AUTO_UPDATE=NO\" | sudo tee /etc/sysconfig/kcare/kcare.conf >/dev/null",
@@ -71,10 +71,10 @@
       "data": {
         "hostname": "#{target.ipAddress}",
         "port": "22",
-        "credentials": "NTT Test - Ubuntu Cred",
+        "credentials": null,
         "failure_action": "FAIL_STEP",
         "timeout": 300,
-        "command_line": "sudo kcarectl --register 27RTs5g6j249NIx1",
+        "command_line": "sudo kcarectl --register XXXXXXXXXXXXXXXXXXX",
         "capture_output": true
       }
     },
@@ -85,7 +85,7 @@
       "data": {
         "hostname": "#{target.ipAddress}",
         "port": "22",
-        "credentials": "NTT Test - Ubuntu Cred",
+        "credentials": null,
         "failure_action": "FAIL_STEP",
         "timeout": 300,
         "command_line": "sudo kcarectl --update",
@@ -99,7 +99,7 @@
       "data": {
         "hostname": "#{target.ipAddress}",
         "port": "22",
-        "credentials": "NTT Test - Ubuntu Cred",
+        "credentials": null,
         "failure_action": "FAIL_STEP",
         "timeout": 300,
         "command_line": "sudo kcarectl --lib-update",
