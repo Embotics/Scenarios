@@ -1,7 +1,7 @@
 {
-  "id": 57,
-  "guid": "42fb1d3f-90a2-4d3b-a5ab-0d8568b0c043",
-  "name": "NTT Test - Restore Snapshot",
+  "id": "",
+  "guid": "",
+  "name": "Restore Snapshot",
   "description": null,
   "type": "CHANGE_COMPLETION",
   "change_description": null,
