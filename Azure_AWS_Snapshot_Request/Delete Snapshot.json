@@ -1,7 +1,7 @@
 {
-  "id": 56,
-  "guid": "a0e0699f-95fe-40d2-86a3-ec63348d5a5c",
-  "name": "NTT Test - Delete Snapshot",
+  "id": "",
+  "guid": "",
+  "name": "Delete Snapshot",
   "description": null,
   "type": "CHANGE_COMPLETION",
   "change_description": null,
