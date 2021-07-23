@@ -1,7 +1,7 @@
 {
   "id": "",
   "guid": "",
-  "name": "NTT Test - KernelCare",
+  "name": "KernelCare",
   "type": "CHANGE_COMPLETION",
   "change_description": null,
   "fulfillment_rule": null,
@@ -19,7 +19,7 @@
       "type": "MODULE",
       "condition": null,
       "data": {
-        "module_name": "NTT Test - Take Snapshot"
+        "module_name": "Take Snapshot"
       }
     },
     {
@@ -111,7 +111,7 @@
       "type": "MODULE",
       "condition": "(#{steps[6].output} -notcontains \"Kernel is safe\") -or (#{steps[7].output} -notcontains \"was patched\")",
       "data": {
-        "module_name": "NTT Test - Restore Snapshot"
+        "module_name": "Restore Snapshot"
       }
     },
     {
@@ -119,7 +119,7 @@
       "type": "MODULE",
       "condition": null,
       "data": {
-        "module_name": "NTT Test - Delete Snapshot"
+        "module_name": "Delete Snapshot"
       }
     }
   ]
