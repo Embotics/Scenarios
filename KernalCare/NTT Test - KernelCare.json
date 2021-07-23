@@ -1,0 +1,126 @@
+{
+  "id": 264,
+  "guid": "d53049c7-b71f-41cf-ac39-ad2640ad3df8",
+  "name": "NTT Test - KernelCare",
+  "type": "CHANGE_COMPLETION",
+  "change_description": null,
+  "fulfillment_rule": null,
+  "add_owner_as_admin": false,
+  "auto_deploy": false,
+  "users": [],
+  "organizations": [],
+  "target_type": null,
+  "info_messages": [],
+  "prompt_message": null,
+  "system_version": "8.7.1 (1007120055)",
+  "steps": [
+    {
+      "name": "Take Snapshot",
+      "type": "MODULE",
+      "condition": null,
+      "data": {
+        "module_name": "NTT Test - Take Snapshot"
+      }
+    },
+    {
+      "name": "Check if Kernelcare is Installed",
+      "type": "SSH",
+      "condition": null,
+      "data": {
+        "hostname": "#{target.ipAddress}",
+        "port": "22",
+        "credentials": "NTT Test - Ubuntu Cred",
+        "failure_action": "FAIL_STEP",
+        "timeout": 300,
+        "command_line": "dpkg -s kernelcare",
+        "capture_output": true
+      }
+    },
+    {
+      "name": "Download KernelCare",
+      "type": "SSH",
+      "condition": "#{steps[2].output} -contains \"Status: install ok installed\"",
+      "data": {
+        "hostname": "#{target.ipAddress}",
+        "port": "22",
+        "credentials": "NTT Test - Ubuntu Cred",
+        "failure_action": "PROCEED_TO_NEXT_STEP",
+        "timeout": 300,
+        "command_line": "sudo wget -qq -O - https://kernelcare.com/installer | sudo bash",
+        "capture_output": true
+      }
+    },
+    {
+      "name": "Change config file",
+      "type": "SSH",
+      "condition": null,
+      "data": {
+        "hostname": "#{target.ipAddress}",
+        "port": "22",
+        "credentials": "NTT Test - Ubuntu Cred",
+        "failure_action": "FAIL_STEP",
+        "timeout": 300,
+        "command_line": "  echo \"AUTO_UPDATE=NO\" | sudo tee /etc/sysconfig/kcare/kcare.conf >/dev/null",
+        "capture_output": true
+      }
+    },
+    {
+      "name": "Register KernelCare",
+      "type": "SSH",
+      "condition": "#{steps[2].output} -notcontains \"Status: install ok installed\"",
+      "data": {
+        "hostname": "#{target.ipAddress}",
+        "port": "22",
+        "credentials": "NTT Test - Ubuntu Cred",
+        "failure_action": "FAIL_STEP",
+        "timeout": 300,
+        "command_line": "sudo kcarectl --register 27RTs5g6j249NIx1",
+        "capture_output": true
+      }
+    },
+    {
+      "name": "Update Kernel",
+      "type": "SSH",
+      "condition": null,
+      "data": {
+        "hostname": "#{target.ipAddress}",
+        "port": "22",
+        "credentials": "NTT Test - Ubuntu Cred",
+        "failure_action": "FAIL_STEP",
+        "timeout": 300,
+        "command_line": "sudo kcarectl --update",
+        "capture_output": true
+      }
+    },
+    {
+      "name": "Update Libs",
+      "type": "SSH",
+      "condition": "#{steps[6].output} -contains \"Kernel is safe\"",
+      "data": {
+        "hostname": "#{target.ipAddress}",
+        "port": "22",
+        "credentials": "NTT Test - Ubuntu Cred",
+        "failure_action": "FAIL_STEP",
+        "timeout": 300,
+        "command_line": "sudo kcarectl --lib-update",
+        "capture_output": true
+      }
+    },
+    {
+      "name": "Restore if update failed",
+      "type": "MODULE",
+      "condition": "(#{steps[6].output} -notcontains \"Kernel is safe\") -or (#{steps[7].output} -notcontains \"was patched\")",
+      "data": {
+        "module_name": "NTT Test - Restore Snapshot"
+      }
+    },
+    {
+      "name": "Delete Snapshots",
+      "type": "MODULE",
+      "condition": null,
+      "data": {
+        "module_name": "NTT Test - Delete Snapshot"
+      }
+    }
+  ]
+}
