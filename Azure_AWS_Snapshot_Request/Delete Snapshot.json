@@ -1,0 +1,42 @@
+{
+  "id": 56,
+  "guid": "a0e0699f-95fe-40d2-86a3-ec63348d5a5c",
+  "name": "NTT Test - Delete Snapshot",
+  "description": null,
+  "type": "CHANGE_COMPLETION",
+  "change_description": null,
+  "target_type": null,
+  "input_variables": [],
+  "info_messages": [],
+  "system_version": "8.7.1 (1007120055)",
+  "steps": [
+    {
+      "name": "Delete AWS",
+      "type": "EMBEDDED_SCRIPT",
+      "condition": "#{target.cloudAccount.type} -eq \"amazon_aws\"",
+      "data": {
+        "credentials": null,
+        "failure_action": "FAIL_STEP",
+        "script_contents": "<#\nAWS Delete Snapshot\nRequires AWS module - \"AWSPowershell.netcore\"\n#>\n\n$accessKey = (Get-Item Env:AWS_ACCESS_KEY_ID).value\n$secretKey = (Get-Item Env:AWS_SECRET_ACCESS_KEY).value\n$region = \"#{target.region.name}\"\n$requestId = \"#{request.id}\"\n\n#Check if credentials were supplied\nif(!($accesskey) -or !($secretKey)){\n        Write-error \"Please provide AWS Login information\"\n        Exit 1\n        } \n#Remove white space for older versions of powershell\n$accesskey = $accesskey -replace \"\\s\", \"\"\n$secretKey = $secretKey -replace \"\\s\", \"\"\n\n#Import PS module\n$module = \"AWSPowershell.netcore\"\nif (Get-Module -ListAvailable -Name $module) {\n    Import-Module $module\n    Write-Debug \"Module $module is installed.\"\n} \nelse {\n    Write-Error \"Module $module does not appear to be installed, Please install and run again.\"\n    Exit 2\n}\n\n#Initialize credentials\nSet-AWSCredentials -AccessKey $accessKey -SecretKey $secretKey -StoreAs SnowCommander \nInitialize-AWSDefaults -ProfileName SnowCommander\n#Use provided region as default\nSet-DefaultAWSRegion -Region $region\n\n#Check if snapshots exist for this request\nif (!(Get-EC2Snapshot | ? { $_.Tags.Count -gt 0 -and $_.Tags.Key -eq \"Commander Request ID\" -and $_.Tags.Value -eq $requestId })) {\n\tWrite-Error \"Could not find snapshots for request $requestId\"\n\tExit 3\n}\n\n#Get snapshot data\n$snapshotList = Get-EC2Snapshot | ? { $_.Tags.Count -gt 0 -and $_.Tags.Key -eq \"Commander Request ID\" -and $_.Tags.Value -eq $requestId }\n\n#Remove all snapshots for this request\nforeach ($snapshot in $snapshotList) {\n    Write-Host \"Removing snapshot $($snapshot.SnapshotId)\"\n    Remove-EC2Snapshot -SnapshotId $snapshot.SnapshotId -Force\n}",
+        "script_arguments": "",
+        "timeout": 300,
+        "executable": "powershell.exe",
+        "capture_output": true
+      }
+    },
+    {
+      "name": "Delete Azure",
+      "type": "EMBEDDED_SCRIPT",
+      "condition": "#{target.cloudAccount.type} -eq \"ms_arm\"",
+      "data": {
+        "credentials": null,
+        "failure_action": "FAIL_STEP",
+        "script_contents": "<#\nAzure Instance Remove Snapshot.\nRequires PS module AZ on the Commander server.\n*Commander 8.6.0 or higher\n*Advanced property \"embotics.workflow.script.credentials\" must be set to \"true\"\n#> \n\n$subscriptionId = (Get-Item Env:AZURE_SUBSCRIPTION_ID).value\n$tenantId = (Get-Item Env:AZURE_TENANT_ID).value\n$apiKey = (Get-Item Env:AZURE_API_KEY).value\n$applicationId = (Get-Item Env:AZURE_APPLICATION_ID).value\n$resourceGroup = \"#{target.resourceGroup.name}\"\n$requestId = \"#{request.id}\"\n$module = \"AZ\"\n\nif(!($subscriptionId) -or !($tenantId) -or !($apiKey) -or !($applicationId)-or !($module) -or !($resourceGroup)){\n        Write-error \"Please provide Azure Login information\"\n        Exit 1\n}\n\n#Remove white space for older versions of powershell\n$subscriptionId = $subscriptionId -replace \"\\s\", \"\"\n$tenantId = $tenantId -replace \"\\s\", \"\"\n$apiKey = $apiKey -replace \"\\s\", \"\"\n$applicationId = $applicationId -replace \"\\s\", \"\" \n\n#Check for Module\nif (Get-Module -ListAvailable -Name \"$module.*\") {\n    Import-Module $module\n    Write-Debug \"Module $module is installed.\"\n} \nelse {\n    Write-Error \"Module $module does not appear to be installed, Please install and run again.\"\n    Exit 2\n}\n\n#Credential Object\n[pscredential]$credential= New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList \"$applicationId\",(\"$apiKey\" | ConvertTo-SecureString -AsPlainText -Force) \n\n#Connect to Azure\n$connect = Connect-AzAccount -Credential $credential -Subscription $subscriptionId -Tenant $tenantId -ServicePrincipal -Confirm:$false\nif($connect){\n    Write-Debug \"Connected to $($connect[0].Context.Environment.name)\"\n}\n\n#Get Snapshot Data\n$snapshotData = Get-AzSnapshot -ResourceGroupName $resourceGroup\n$validSnapshots = @()\nforeach ($snapshot in $snapshotData) {\n    Write-Host \"Looping through snapshot\" $snapshot.Name\n    if ($snapshot.Tags.Count -gt 0 -and $snapshot.Tags.Keys -contains \"CommanderRequestID\" -and $snapshot.Tags.Values -contains $requestId) {\n        Write-Host \"Snapshot found\"\n        $validSnapshots += $snapshot\n    }\n}\n\nif (!$validSnapshots) {\n    Write-Error \"No Snapshot found for request $requestId\"\n    Exit 3\n}\n\n#Remove Snapshot\nforeach ($snapshot in $validSnapshots) {\n    Write-Host \"Removing snapshot\" $snapshot.Name\n    Remove-AzSnapshot -ResourceGroupName $resourceGroup -SnapshotName $snapshot.Name -Force\n}",
+        "script_arguments": "",
+        "timeout": 300,
+        "executable": "powershell.exe",
+        "capture_output": true
+      }
+    }
+  ]
+}

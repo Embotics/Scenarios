@@ -1,0 +1,42 @@
+{
+  "id": 50,
+  "guid": "abb5413e-cb0e-4d51-b12f-22443073fd33",
+  "name": "NTT Test - Take Snapshot",
+  "description": null,
+  "type": "CHANGE_COMPLETION",
+  "change_description": null,
+  "target_type": null,
+  "input_variables": [],
+  "info_messages": [],
+  "system_version": "8.7.1 (1007120055)",
+  "steps": [
+    {
+      "name": "AWS Snapshot",
+      "type": "EMBEDDED_SCRIPT",
+      "condition": "#{target.cloudAccount.type} -eq \"amazon_aws\"",
+      "data": {
+        "credentials": null,
+        "failure_action": "FAIL_STEP",
+        "script_contents": "<#\nAWS Take Snapshot \nRequires AWS module - \"AWSPowershell.netcore\"\n#>\n\n$accessKey = (Get-Item Env:AWS_ACCESS_KEY_ID).value\n$secretKey = (Get-Item Env:AWS_SECRET_ACCESS_KEY).value\n$instanceId = \"#{target.remoteId}\"\n$region = \"#{target.region.name}\"\n$requestId = \"#{request.id}\"\n\n#Check if credentials were supplied\nif(!($accesskey) -or !($secretKey) -or !($instanceID)){\n        Write-error \"Please provide AWS Login information\"\n        Exit 1\n        } \n#Remove white space for older versions of powershell\n$accesskey = $accesskey -replace \"\\s\", \"\"\n$secretKey = $secretKey -replace \"\\s\", \"\"\n\n#Import PS module\n$module = \"AWSPowershell.netcore\"\nif (Get-Module -ListAvailable -Name $module) {\n    Import-Module $module\n    Write-Debug \"Module $module is installed.\"\n} \nelse {\n    Write-Error \"Module $module does not appear to be installed, Please install and run again.\"\n    Exit 2\n}\n\n#Initialize credentials\nSet-AWSCredentials -AccessKey $accessKey -SecretKey $secretKey -StoreAs SnowCommander \nInitialize-AWSDefaults -ProfileName SnowCommander\n#Use provided region as default\nSet-DefaultAWSRegion -Region $region\n\n#Check if instance exists\nif (!(Get-EC2Instance -InstanceId $instanceId)) {\n\tWrite-Error \"Could not find EC2 Instance $instanceId\"\n\tExit 3\n}\n\n#Stop instance before taking snapshot per AWS recommendation   \nStop-EC2Instance -Instance $instanceId > $null\n#Wait for instance to fully stop\ndo {\n    Sleep -Seconds 5\n    $instance = (Get-EC2Instance -Instance $instanceId).Instances\n}\nuntil($instance.State.Name -eq \"stopped\")\n\n\n#Get all volumes attached to the instance\n$volumeList = Get-EC2Volume | Where-Object { $_.attachments.InstanceId -eq $instanceID }\n\n#Create a tag to identify the snapshot\n$tag = New-Object Amazon.EC2.Model.Tag\n$tag.Key = 'Commander Request ID'\n$tag.Value = $requestId\n$tagSpec = New-Object Amazon.EC2.Model.TagSpecification\n$tagSpec.Tags = $tag\n$tagSpec.ResourceType = 'snapshot'\n\n#Take a snapshot of every volume\nforeach ($volume in $volumeList) {\n    Write-Host \"Taking snapshot of volume $($volume.VolumeId)\"\n    New-EC2Snapshot -VolumeId $volume.VolumeId -Description \"Created by Snow Commander for $instanceID from $($volume.VolumeId)\" -TagSpecification $tagSpec > $null\n    do {\n        Sleep -Seconds 10\n        $snapshotStatus = Get-EC2Snapshot -SnapshotId $snapshot.SnapshotId\n        if ($snapshotStatus.State -eq \"error\") {\n            Write-Error \"Snapshot failed!\"\n            Exit 4\n        }\n    }\n    until($snapshotStatus.State -eq \"completed\")\n}\n\nWrite-Host \"Snapshots completed\"\n#Start instance\nStart-EC2Instance -InstanceId $InstanceId > $null\n#Wait for instance to fully start\ndo {\n    Sleep -Seconds 5\n    $instance = (Get-EC2Instance -Instance $instanceId).Instances\n}\nuntil($instance.State.Name -eq \"running\")",
+        "script_arguments": "",
+        "timeout": 300,
+        "executable": "powershell.exe",
+        "capture_output": true
+      }
+    },
+    {
+      "name": "Azure Snapshot",
+      "type": "EMBEDDED_SCRIPT",
+      "condition": "#{target.cloudAccount.type} -eq \"ms_arm\"",
+      "data": {
+        "credentials": null,
+        "failure_action": "FAIL_STEP",
+        "script_contents": "<#\nAzure Instance Take Snapshot.\nRequires PS module AZ on the Commander server.\n*Commander 8.6.0 or higher\n*Advanced property \"embotics.workflow.script.credentials\" must be set to \"true\"\n#> \n\n$subscriptionId = (Get-Item Env:AZURE_SUBSCRIPTION_ID).value\n$tenantId = (Get-Item Env:AZURE_TENANT_ID).value\n$apiKey = (Get-Item Env:AZURE_API_KEY).value\n$applicationId = (Get-Item Env:AZURE_APPLICATION_ID).value\n$instanceId = \"#{target.remoteId}\"\n$resourceGroup = \"#{target.resourceGroup.name}\"\n$requestId = \"#{request.id}\"\n$module = \"AZ\"\n\nif(!($subscriptionId) -or !($tenantId) -or !($apiKey) -or !($applicationId)-or !($module) -or !($instanceId)-or !($resourceGroup)){\n        Write-error \"Please provide Azure Login information\"\n        Exit 1\n}\n\n#Remove white space for older versions of powershell\n$subscriptionId = $subscriptionId -replace \"\\s\", \"\"\n$tenantId = $tenantId -replace \"\\s\", \"\"\n$apiKey = $apiKey -replace \"\\s\", \"\"\n$applicationId = $applicationId -replace \"\\s\", \"\" \n\n#Check for Module\nif (Get-Module -ListAvailable -Name \"$module.*\") {\n    Import-Module $module\n    Write-Debug \"Module $module is installed.\"\n} \nelse {\n    Write-Error \"Module $module does not appear to be installed, Please install and run again.\"\n    Exit 2\n}\n\n#Credential Object\n[pscredential]$credential= New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList \"$applicationId\",(\"$apiKey\" | ConvertTo-SecureString -AsPlainText -Force) \n\n#Connect to Azure\n$connect = Connect-AzAccount -Credential $credential -Subscription $subscriptionId -Tenant $tenantId -ServicePrincipal -Confirm:$false\nif($connect){\n    Write-Debug \"Connected to $($connect[0].Context.Environment.name)\"\n}\n\n#Get-VMdata\nTry{\n    $vmName = $instanceId.Split('/') | select -Last 1\n    $vmData = Get-AzVM -Name $vmName -ResourceGroupName $resourceGroup\n    $location = $vmData.Location\n    $osType = $vmData.StorageProfile.OsDisk.OsType\n}\nCatch{\n    $exception = \"$_.\"\n    Write-Error $exception\n    Exit 3     \n}\n\n#Stop VM\nStop-AzVM -ResourceGroupName $resourceGroup -Name $vmData.Name -Force\n\n#VM Snapshot \nWrite-Output \"VM $($vmData.name) OS Disk Snapshot Begin\"\n$snapshotDisk = $vmData.StorageProfile\n     \n#Configure Tags\n$tags = @{CommanderRequestID=$requestId}\n$tags += @{Description=\"Created by Snow Commander for $vmName from $($snapshotDisk.OsDisk.ManagedDisk.Id.Split('/') | select -Last 1)\"}\n\n$snapshotConfig = New-AzSnapshotConfig -SourceUri $snapshotDisk.OsDisk.ManagedDisk.id -CreateOption Copy -Location $location -OsType $osType -Tag $tags\n$snapshotNameOS = \"$($snapshotDisk.OsDisk.Name)_snapshot_$(Get-Date -Format ddMMyy)\"\n \n# OS Disk Snapshot \ntry {\n    New-AzSnapshot -ResourceGroupName $resourceGroup -SnapshotName $snapshotNameOS -Snapshot $snapshotConfig -ErrorAction Stop\n} catch {\n    $exception = \"$_.\"\n    Write-Error $exception\n    Exit 4\n}\n     \nWrite-Output \"VM $($vmData.name) OS Disk Snapshot End\"\n \n# Data Disk Snapshots  \nWrite-Output \"VM $($vmData.name) Data Disk Snapshots Begin\" \n$dataDisks = ($snapshotDisk.DataDisks).name\n \nforeach ($disk in $datadisks) {\n \n    $disk = Get-AzDisk -ResourceGroupName $vmData.ResourceGroupName -DiskName $disk\n \n    Write-Output \"VM $($vmData.name) data Disk $($disk.Name) Snapshot Begin\"\n    #Configure Tags\n    $tags = @{CommanderRequestID=$requestId}\n    $tags += @{Description=\"Created by Snow Commander for $vmName from $($disk.Id.Split('/') | select -Last 1)\"}\n\n    $snapshotConfig = New-AzSnapshotConfig -SourceUri $disk.Id -CreateOption Copy -Location $location -Tag $tags\n    $snapshotNameData = \"$($disk.name)_snapshot_$(Get-Date -Format ddMMyy)\"\n\n    try {\n        Write-Host $snapshotNameData\n        New-AzSnapshot -ResourceGroupName $resourceGroup -SnapshotName $snapshotNameData -Snapshot $snapshotConfig -ErrorAction Stop\n    } catch {\n        $exception = \"$_.\"\n        Write-Error $exception\n        Exit 5\n    }      \n    Write-Output \"VM $($vmData.name) data Disk $($disk.Name) Snapshot End\"   \n}\nWrite-Output \"VM $($vmData.name) Data Disk Snapshots End\" \n\n#Start VM\nStart-AzVM -ResourceGroupName $resourceGroup -Name $vmData.Name -Force",
+        "script_arguments": "",
+        "timeout": 300,
+        "executable": "powershell.exe",
+        "capture_output": true
+      }
+    }
+  ]
+}
