@@ -8,9 +8,9 @@ This scenario enables you to onboard a Deployed VM or instance to CyberArk as an
 
 ## Prerequisites
 
-- Commander release 8.7.1 or higher
+- Commander release 8.8.0 or higher
 - A system with CyberArk installed that is accessible Via API. This system is referred to hereafter as the CyberArk instance. 
-
+- Commander Advanced property "embotics.rest.credentials.retrievesensitive" set to true
 
 ## Install the CyberArk module workflow step package
 
@@ -33,23 +33,21 @@ Select the Workflow which you would like to add the module step to and Select Ed
 On the steps Selection, choose Add> Run Module.  
 
 Now to set the variable details for this step. These are the variables that need to be populated:
-image_username
--Username used in the image to be rotated by CyberArk.
+
+commander_base_url
+- Base url for commander "https://commander.address.com"
+
+cyberark_authtype
+- Auth type for the user account used for API calls to CyberArk,  supported types are: CyberArk, LDAP, RADIUS, Windows.
+
+cyberark_instance
+- DNS address of the CyberArk Server.
+
+image_credential_name
+- Credential object to be used when creating the Account registration in Cyberark
       
 platform_id
 - Platform identifier for the account, this must already exist in CyberArk or the request will fail. 
       
 safe_name
 - Name of the Safe that the account will be created in.
-      
-cyberark_authtype
-- Auth type for the user account used for API calls to CyberArk,  supported types are: CyberArk, LDAP, RADIUS, Windows.
-      
-cyberark_instance
-- DNS address of the CyberArk Server.
-      
-image_password 
-- Password in the image for the credential to be rotated by CyberArk
-
-
-
